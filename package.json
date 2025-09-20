@@ -1,0 +1,13 @@
+{
+  "name": "devmcp-ai-landing",
+  "version": "1.0.0", 
+  "description": "Landing page for DevMCP.ai - The future of MCP-powered developer tooling",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": ["MCP", "developer tools", "AI agents", "Model Context Protocol"],
+  "author": "Noosphere",
+  "license": "MIT"
+}

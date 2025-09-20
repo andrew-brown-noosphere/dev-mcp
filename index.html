@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Developer Journey Has Changed Forever | DevMCP.ai</title>
+    <meta name="description" content="The future of developer tooling is here. A new protocol that changes everything.">
+    
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #3b82f6;
+            --accent-dim: #1e40af;
+            --border: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .journey-story {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .journey-story p {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .journey-story p:nth-child(1) { animation-delay: 0.5s; }
+        .journey-story p:nth-child(2) { animation-delay: 1s; }
+        .journey-story p:nth-child(3) { animation-delay: 1.5s; }
+        .journey-story p:nth-child(4) { animation-delay: 2s; }
+        .journey-story p:nth-child(5) { animation-delay: 2.5s; }
+        .journey-story p:nth-child(6) { animation-delay: 3s; }
+
+        .old-way {
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .old-way::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ef4444;
+            transform: scaleX(0);
+            animation: strikethrough 1s ease forwards;
+            animation-delay: 1.8s;
+        }
+
+        .broken {
+            color: #ef4444;
+        }
+
+        .new-way {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .waitlist-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            margin: 4rem auto;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waitlist-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+        }
+
+        .waitlist-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .waitlist-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .email-form {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+
+        .email-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-dim);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin: 0 4px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes strikethrough {
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .success-message {
+            display: none;
+            background: #065f46;
+            color: #d1fae5;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .journey-story {
+                font-size: 1.1rem;
+            }
+            
+            .waitlist-section {
+                margin: 4rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+            
+            .email-form {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>The Developer Journey Has Changed Forever</h1>
+            
+            <div class="journey-story">
+                <p class="old-way">It used to flow through your API portal.<br>
+                Your carefully crafted documentation.<br>
+                Your developer community.</p>
+                
+                <p class="new-way">Now it flows through AI.</p>
+                
+                <p>Developers don't visit your docs anymore.<br>
+                They ask Claude. They ask ChatGPT. They ask Cursor.</p>
+                
+                <p class="broken">Your beautiful portal? Empty.<br>
+                Your engagement metrics? Falling.<br>
+                Your developer funnel? Broken.</p>
+                
+                <p>The companies that survive will be the ones<br>
+                that understand the new journey.</p>
+                
+                <p class="new-way">AI agents<span class="pulse-dot"></span>Intent signals<span class="pulse-dot"></span>A new protocol that changes everything.</p>
+            </div>
+        </section>
+
+        <section class="waitlist-section">
+            <h2 class="waitlist-title">Be Among the First</h2>
+            <p class="waitlist-subtitle">Discover the new protocol that's changing how developers interact with AI agents.</p>
+            
+            <form class="email-form" id="waitlistForm">
+                <input 
+                    type="email" 
+                    class="email-input" 
+                    placeholder="Enter your email address" 
+                    required 
+                    id="emailInput"
+                >
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Request Early Access
+                </button>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                ✓ You're on the list. Prepare for what's coming.
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>For developers who see the future of AI tooling.</p>
+    </footer>
+
+    <script>
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailInput').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Joining...';
+            
+            try {
+                // Track the signup
+                gtag('event', 'signup', {
+                    event_category: 'waitlist',
+                    event_label: 'devmcp.ai'
+                });
+                
+                // Here you would typically send to your backend/email service
+                // For now, we'll simulate the request
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Show success
+                document.querySelector('.email-form').style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Store email locally for now (replace with real backend)
+                console.log('DevMCP.ai waitlist signup:', email);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Request Early Access';
+                alert('Something went wrong. Please try again.');
+            }
+        });
+
+        // Track page views
+        gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+</body>
+</html>

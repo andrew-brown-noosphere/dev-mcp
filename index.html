@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Developer Journey Has Changed Forever | DevMCP.ai</title>
-    <meta name="description" content="The future of developer tooling is here. A new protocol that changes everything.">
+    <title>MCP as a Channel for Product-Led Growth | DevMCP.ai</title>
+    <meta name="description" content="The developer journey has changed forever. How Model Context Protocol transforms developer tool distribution through AI agents.">
     
     <!-- Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
@@ -36,12 +36,12 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-dark);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -71,7 +71,7 @@
             font-weight: 700;
             margin-bottom: 3rem;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -125,6 +125,80 @@
         .new-way {
             color: var(--accent);
             font-weight: 600;
+        }
+
+        .content {
+            padding: 3rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--accent);
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-flow {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--accent-dim);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
         }
 
         .waitlist-section {
@@ -203,11 +277,14 @@
             cursor: not-allowed;
         }
 
-        .footer {
-            text-align: center;
-            padding: 4rem 0 2rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            opacity: 0.7;
         }
 
         .pulse-dot {
@@ -218,6 +295,25 @@
             border-radius: 50%;
             margin: 0 4px;
             animation: pulse 2s ease-in-out infinite;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        .success-message {
+            display: none;
+            background: #065f46;
+            color: #d1fae5;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 16px;
         }
 
         @keyframes fadeInUp {
@@ -238,17 +334,17 @@
             50% { opacity: 0.3; }
         }
 
-        .success-message {
-            display: none;
-            background: #065f46;
-            color: #d1fae5;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 16px;
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
             .journey-story {
                 font-size: 1.1rem;
             }
@@ -258,8 +354,13 @@
                 padding: 2rem 1.5rem;
             }
             
-            .email-form {
-                gap: 12px;
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
             }
         }
     </style>
@@ -288,33 +389,159 @@
                 
                 <p class="new-way">AI agents<span class="pulse-dot"></span>Intent signals<span class="pulse-dot"></span>A new protocol that changes everything.</p>
             </div>
-        </section>
 
-        <section class="waitlist-section">
-            <h2 class="waitlist-title">Be Among the First</h2>
-            <p class="waitlist-subtitle">Discover the new protocol that's changing how developers interact with AI agents.</p>
-            
-            <form class="email-form" id="waitlistForm">
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    placeholder="Enter your email address" 
-                    required 
-                    id="emailInput"
-                >
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    Request Early Access
-                </button>
-            </form>
-            
-            <div class="success-message" id="successMessage">
-                ✓ You're on the list. Prepare for what's coming.
+            <div class="scroll-indicator" onclick="document.querySelector('.content').scrollIntoView({behavior: 'smooth'})">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
             </div>
         </section>
+
+        <main class="content">
+            <section>
+                <h2>MCP: Protocol-Driven PLG</h2>
+                <p>Model Context Protocol isn't just a new way for AI agents to access tools—it's a fundamental shift in how developer products reach their users through <strong>protocol-native distribution</strong>.</p>
+                
+                <div class="highlight">
+                    <strong>MCP creates the first protocol where AI agents drive product discovery, evaluation, and adoption through standardized interfaces.</strong>
+                </div>
+            </section>
+
+            <section>
+                <h3>Protocol-Level Distribution</h3>
+                
+                <h4>Traditional Distribution:</h4>
+                <div class="code-flow">
+Developer Problem → Search → Documentation → Trial → Implementation → Conversion
+                </div>
+
+                <h4>MCP Distribution:</h4>
+                <div class="code-flow">
+Developer Problem → AI Query → MCP Server Discovery → Automated Testing → Implementation → Conversion
+                </div>
+
+                <div class="highlight">
+                    <strong>MCP servers become your product's distribution mechanism through AI agent ecosystems.</strong>
+                </div>
+            </section>
+
+            <section>
+                <h3>Technical Example: Database Benchmarking</h3>
+
+                <p><strong>Developer Query:</strong> <em>"I need a database that can handle 1M writes/second with sub-10ms latency"</em></p>
+
+                <p><strong>MCP Agent Workflow:</strong></p>
+                <ol style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Discovery:</strong> Query MCP servers tagged with "database", "high-throughput"</li>
+                    <li><strong>Capability Check:</strong> Examine MCP server schemas for performance testing endpoints</li>
+                    <li><strong>Benchmark Execution:</strong> Run automated performance tests via MCP</li>
+                    <li><strong>Result Analysis:</strong> Compare latency, throughput, resource usage</li>
+                    <li><strong>Implementation:</strong> Generate production-ready configuration</li>
+                    <li><strong>Deployment:</strong> Provide working setup with optimal parameters</li>
+                </ol>
+
+                <p><strong>Outcome:</strong> The database with the best MCP-testable performance characteristics wins deployment—regardless of marketing budget.</p>
+            </section>
+
+            <section>
+                <h3>Why MCP Enables Superior PLG</h3>
+
+                <div class="highlight">
+                    <h4>Protocol-Level Product Discovery:</h4>
+                    <p>• Products expose capabilities through standardized interfaces<br>
+                    • AI agents discover functionality programmatically<br>
+                    • <strong>Better products naturally achieve better discoverability</strong></p>
+                </div>
+
+                <div class="highlight">
+                    <h4>Automated Competitive Benchmarking:</h4>
+                    <p>• AI agents compare products using identical test scenarios<br>
+                    • Performance differences become immediately apparent<br>
+                    • <strong>Technical superiority translates directly to adoption</strong></p>
+                </div>
+
+                <div class="highlight">
+                    <h4>Network Effect Amplification:</h4>
+                    <p>• Successful MCP implementations improve AI training data<br>
+                    • Better AI recommendations create more successful implementations<br>
+                    • <strong>Product success compounds exponentially</strong></p>
+                </div>
+            </section>
+
+            <section>
+                <h3>MCP vs Traditional Distribution</h3>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Traditional Distribution</th>
+                            <th>MCP Distribution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Human-driven discovery</td>
+                            <td>Protocol-driven discovery</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing-based selection</td>
+                            <td>Performance-based selection</td>
+                        </tr>
+                        <tr>
+                            <td>Manual integration</td>
+                            <td>Automated integration</td>
+                        </tr>
+                        <tr>
+                            <td>Subjective evaluation</td>
+                            <td>Objective benchmarking</td>
+                        </tr>
+                        <tr>
+                            <td>Linear adoption curve</td>
+                            <td>Exponential network effects</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight">
+                    <strong>MCP transforms product distribution from a marketing challenge into a technical optimization problem.</strong>
+                </div>
+            </section>
+
+            <section>
+                <h2>The MCP Advantage</h2>
+                <p>Model Context Protocol creates a distribution channel where technical excellence drives market success through AI agent mediation.</p>
+
+                <div class="highlight">
+                    <strong>The companies that master MCP-native distribution will dominate their categories through product quality, not marketing spend.</strong>
+                </div>
+            </section>
+
+            <section class="waitlist-section">
+                <h2 class="waitlist-title">Be Among the First</h2>
+                <p class="waitlist-subtitle">Discover how MCP transforms developer tool distribution through protocol-native AI agent interactions.</p>
+                
+                <form class="email-form" id="waitlistForm">
+                    <input 
+                        type="email" 
+                        class="email-input" 
+                        placeholder="Enter your email address" 
+                        required 
+                        id="emailInput"
+                    >
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Request Early Access
+                    </button>
+                </form>
+                
+                <div class="success-message" id="successMessage">
+                    ✓ You're on the list. Prepare for what's coming.
+                </div>
+            </section>
+        </main>
     </div>
 
     <footer class="footer">
-        <p>For developers who see the future of AI tooling.</p>
+        <p>For developers who see the future of protocol-driven AI tooling.</p>
     </footer>
 
     <script>

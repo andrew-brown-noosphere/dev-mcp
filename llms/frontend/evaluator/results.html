@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Readiness Report - LLMs.txt Evaluator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Score Circle Animation */
+        .score-circle {
+            transform: rotate(-90deg);
+        }
+        
+        .score-circle circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+        
+        .score-bg {
+            stroke: #e5e7eb;
+        }
+        
+        .score-fill {
+            stroke: url(#gradient);
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            animation: fillScore 2s ease-out forwards;
+        }
+        
+        @keyframes fillScore {
+            to {
+                stroke-dashoffset: var(--score-offset);
+            }
+        }
+        
+        .score-text {
+            transform: rotate(90deg);
+        }
+        
+        /* Grade Badge */
+        .grade-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .grade-badge.grade-a { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .grade-badge.grade-b { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .grade-badge.grade-c { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .grade-badge.grade-d { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        
+        /* Component Cards */
+        .component-card {
+            transition: all 0.3s ease;
+        }
+        
+        .component-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Progress Bars */
+        .progress-bar {
+            transition: width 1.5s ease-out;
+        }
+        
+        /* Recommendation Cards */
+        .recommendation-card {
+            border-left: 4px solid transparent;
+        }
+        
+        .recommendation-card.priority-high {
+            border-left-color: #ef4444;
+        }
+        
+        .recommendation-card.priority-medium {
+            border-left-color: #f59e0b;
+        }
+        
+        .recommendation-card.priority-low {
+            border-left-color: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold gradient-text">AI Readiness Report</h1>
+                <div class="flex space-x-4">
+                    <button onclick="window.print()" class="text-purple-600 hover:text-purple-800">
+                        <i class="fas fa-print mr-1"></i> Print
+                    </button>
+                    <a href="/llms-txt-evaluator" class="text-purple-600 hover:text-purple-800">
+                        <i class="fas fa-plus mr-1"></i> New Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between">
+                <div class="lg:w-2/3 mb-6 lg:mb-0">
+                    <h2 class="text-3xl font-bold mb-2">AI Readiness Analysis</h2>
+                    <p id="websiteUrl" class="text-xl text-gray-600 mb-4">Loading...</p>
+                    <p class="text-gray-500">
+                        <i class="fas fa-calendar mr-2"></i>
+                        Generated on <span id="reportDate">Loading...</span>
+                    </p>
+                </div>
+                
+                <div class="flex items-center space-x-8">
+                    <!-- Overall Score Circle -->
+                    <div class="relative">
+                        <svg class="score-circle w-32 h-32">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="score-bg" cx="64" cy="64" r="45"></circle>
+                            <circle class="score-fill" cx="64" cy="64" r="45"></circle>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center score-text">
+                            <div class="text-center">
+                                <div id="overallScore" class="text-3xl font-bold text-gray-800">--</div>
+                                <div class="text-sm text-gray-500">Overall</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grade Badge -->
+                    <div id="gradeBadge" class="grade-badge text-white px-6 py-4 rounded-2xl text-center">
+                        <div class="text-2xl font-bold" id="gradeText">--</div>
+                        <div class="text-sm opacity-90">Grade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Scores -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-lightbulb text-blue-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Clarity</h3>
+                    </div>
+                    <span id="clarityScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="clarityBar" class="progress-bar h-2 rounded-full bg-blue-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">How clear and understandable your documentation is</p>
+            </div>
+
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Completeness</h3>
+                    </div>
+                    <span id="completenessScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="completenessBar" class="progress-bar h-2 rounded-full bg-green-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Coverage of all necessary API information</p>
+            </div>
+
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-robot text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">AI Readability</h3>
+                    </div>
+                    <span id="aiReadabilityScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="aiReadabilityBar" class="progress-bar h-2 rounded-full bg-purple-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">How well AI agents can understand and use your API</p>
+            </div>
+
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-code text-yellow-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Examples</h3>
+                    </div>
+                    <span id="examplesScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="examplesBar" class="progress-bar h-2 rounded-full bg-yellow-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Quality and relevance of code examples</p>
+            </div>
+
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-shield-alt text-red-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Authentication</h3>
+                    </div>
+                    <span id="authenticationScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="authenticationBar" class="progress-bar h-2 rounded-full bg-red-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Clarity of authentication methods and examples</p>
+            </div>
+
+            <div class="component-card bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-link text-indigo-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Endpoints</h3>
+                    </div>
+                    <span id="endpointsScore" class="text-2xl font-bold text-gray-800">--</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="endpointsBar" class="progress-bar h-2 rounded-full bg-indigo-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Documentation quality of API endpoints</p>
+            </div>
+        </div>
+
+        <!-- Details and Recommendations -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Technical Details -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-3 text-purple-600"></i>
+                    Technical Details
+                </h3>
+                
+                <div id="technicalDetails" class="space-y-4">
+                    <!-- Details will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- AI Compatibility -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-robot mr-3 text-purple-600"></i>
+                    AI Agent Compatibility
+                </h3>
+                
+                <div id="aiCompatibility" class="space-y-4">
+                    <!-- Compatibility scores will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Generated llms.txt -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h3 class="text-xl font-bold mb-6 flex items-center">
+                <i class="fas fa-code mr-3 text-purple-600"></i>
+                Generated llms.txt for Your Site
+            </h3>
+            
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-gray-600">
+                        Based on our analysis, here's an optimized llms.txt file for your website:
+                    </p>
+                    <button 
+                        onclick="copyGeneratedLlmsTxt()"
+                        class="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
+                    >
+                        <i class="fas fa-copy"></i>
+                        Copy to Clipboard
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <pre id="generatedLlmsTxt" class="bg-black text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono whitespace-pre-wrap">
+                        <!-- Generated content will be populated by JavaScript -->
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-download mr-2"></i>
+                        How to Use This File
+                    </h4>
+                    <ol class="text-sm text-blue-800 space-y-1">
+                        <li>1. Copy the generated content above</li>
+                        <li>2. Save it as "llms.txt" in your website root</li>
+                        <li>3. Upload to yoursite.com/llms.txt</li>
+                        <li>4. Test with the evaluator to verify it works</li>
+                    </ol>
+                </div>
+                
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-900 mb-2">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Expected Impact
+                    </h4>
+                    <ul class="text-sm text-green-800 space-y-1">
+                        <li>• <strong>10x</strong> faster AI agent discovery</li>
+                        <li>• <strong>4x</strong> higher recommendation rate</li>
+                        <li>• <strong>90%</strong> reduction in evaluation time</li>
+                        <li>• Better AI agent understanding</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h3 class="text-xl font-bold mb-6 flex items-center">
+                <i class="fas fa-lightbulb mr-3 text-purple-600"></i>
+                Recommendations for Improvement
+            </h3>
+            
+            <div id="recommendations" class="space-y-4">
+                <!-- Recommendations will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <div class="text-center">
+                <h3 class="text-xl font-bold mb-4">Want to improve your AI readiness?</h3>
+                <p class="text-gray-600 mb-6">
+                    Get personalized guidance on implementing these recommendations and track your progress over time.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button 
+                        onclick="showEmailModal()"
+                        class="gradient-bg text-white font-semibold py-3 px-8 rounded-lg hover:opacity-90 transition"
+                    >
+                        <i class="fas fa-envelope mr-2"></i>
+                        Email This Report
+                    </button>
+                    <a 
+                        href="/demo-signup" 
+                        class="border border-purple-600 text-purple-600 font-semibold py-3 px-8 rounded-lg hover:bg-purple-50 transition"
+                    >
+                        <i class="fas fa-calendar mr-2"></i>
+                        Schedule a Demo
+                    </a>
+                    <a 
+                        href="/llms-txt-evaluator" 
+                        class="border border-gray-300 text-gray-700 font-semibold py-3 px-8 rounded-lg hover:bg-gray-50 transition"
+                    >
+                        <i class="fas fa-plus mr-2"></i>
+                        Analyze Another Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="emailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg mx-4 w-full">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-envelope text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Email This Report</h2>
+                <p class="text-gray-600">
+                    Enter your email to receive a PDF copy of this AI readiness analysis.
+                </p>
+            </div>
+            
+            <form id="emailForm">
+                <div class="mb-6">
+                    <label for="userEmail" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        name="userEmail"
+                        placeholder="you@company.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        required
+                    >
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button 
+                        type="button"
+                        onclick="hideEmailModal()"
+                        class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        class="flex-1 gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90"
+                    >
+                        Send Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="results.js"></script>
+</body>
+</html>

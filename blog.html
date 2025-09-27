@@ -148,7 +148,8 @@
 
         .blog-grid {
             display: grid;
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
         }
 
         .blog-post {
@@ -156,10 +157,13 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 2rem;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .blog-post::before {
@@ -200,7 +204,7 @@
         }
 
         .post-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin: 0 0 1rem 0;
             line-height: 1.3;
@@ -221,8 +225,10 @@
 
         .post-excerpt {
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            font-size: 0.9rem;
         }
 
         .read-more {
@@ -285,8 +291,12 @@
                 font-size: 2.5rem;
             }
 
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
             .post-title {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
             }
 
             .nav-links {
@@ -330,7 +340,7 @@
                         <div class="post-meta">
                             <span class="post-category">Strategy</span>
                             <span>•</span>
-                            <time>December 15, 2024</time>
+                            <time>September 15, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/the-death-of-the-developer-portal.html">The Death of the Developer Portal (And What's Replacing It)</a>
@@ -347,7 +357,7 @@
                         <div class="post-meta">
                             <span class="post-category">PLG</span>
                             <span>•</span>
-                            <time>December 12, 2024</time>
+                            <time>September 12, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/why-your-plg-strategy-is-failing.html">Why Your PLG Strategy Is Failing in the AI Era</a>
@@ -364,7 +374,7 @@
                         <div class="post-meta">
                             <span class="post-category">Case Study</span>
                             <span>•</span>
-                            <time>December 8, 2024</time>
+                            <time>September 8, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/how-scylladb-10x-conversions.html">How ScyllaDB 10x'd Conversions by Letting AI Agents Benchmark Performance</a>
@@ -381,7 +391,7 @@
                         <div class="post-meta">
                             <span class="post-category">Metrics</span>
                             <span>•</span>
-                            <time>December 5, 2024</time>
+                            <time>September 5, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/measuring-ai-agent-engagement.html">The CMO's Guide to Measuring AI Agent Engagement</a>
@@ -398,7 +408,7 @@
                         <div class="post-meta">
                             <span class="post-category">Technical</span>
                             <span>•</span>
-                            <time>December 1, 2024</time>
+                            <time>August 28, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/mcp-protocol-explained-for-marketers.html">MCP Protocol Explained for Marketing Leaders (No Code Required)</a>
@@ -415,7 +425,7 @@
                         <div class="post-meta">
                             <span class="post-category">Strategy</span>
                             <span>•</span>
-                            <time>November 28, 2024</time>
+                            <time>August 24, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/from-seo-to-aeo.html">From SEO to AEO: Optimizing for AI Engine Discovery</a>
@@ -432,7 +442,7 @@
                         <div class="post-meta">
                             <span class="post-category">ROI</span>
                             <span>•</span>
-                            <time>November 24, 2024</time>
+                            <time>August 20, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/calculating-mcp-roi.html">Calculating the ROI of MCP Implementation: A CFO's Perspective</a>
@@ -449,7 +459,7 @@
                         <div class="post-meta">
                             <span class="post-category">Future</span>
                             <span>•</span>
-                            <time>November 20, 2024</time>
+                            <time>August 15, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/ai-agents-wont-read-your-docs.html">AI Agents Won't Read Your Docs (But They'll Execute Your Code)</a>
@@ -466,7 +476,7 @@
                         <div class="post-meta">
                             <span class="post-category">Competition</span>
                             <span>•</span>
-                            <time>November 15, 2024</time>
+                            <time>August 10, 2025</time>
                         </div>
                         <h2 class="post-title">
                             <a href="blog/win-lose-analysis-ai-era.html">Win/Loss Analysis in the AI Era: What Happens When Robots Choose Your Competitor</a>

@@ -6,430 +6,523 @@
     <title>The Death of the Developer Portal (And What's Replacing It) - DevMCP.ai</title>
     <meta name="description" content="Your developer portal sees 90% less traffic. Learn why developers stopped visiting documentation sites and how AI agents are the new discovery channel.">
     
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    
     <style>
-        @font-face {
-            font-family: 'Atkinson';
-            src: url('https://noosphere.tech/fonts/atkinson-regular.woff2') format('woff2');
-            font-weight: 400;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Atkinson';
-            src: url('https://noosphere.tech/fonts/atkinson-bold.woff2') format('woff2');
-            font-weight: 700;
-            font-display: swap;
-        }
-
-        :root {
-            --color-accent: #2337ff;
-            --color-accent-dark: #000d8a;
-            --color-black: rgb(15, 18, 25);
-            --color-gray: rgb(96, 115, 159);
-            --color-gray-light: rgb(229, 233, 240);
-            --color-gray-dark: rgb(34, 41, 57);
-            --color-white: #ffffff;
-            
-            --font-size-base: 20px;
-            --font-size-mobile: 18px;
-            --line-height: 1.7;
-            
-            --content-width: 720px;
-            --spacing-unit: 1em;
-        }
-
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: 'Atkinson', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: var(--font-size-base);
-            line-height: var(--line-height);
-            color: var(--color-black);
-            background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(50, 120, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Noise texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .container {
-            max-width: var(--content-width);
+            width: 100%;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 0 var(--spacing-unit);
+            padding: 0 2rem;
         }
 
-        header {
-            padding: 2rem 0;
-            border-bottom: 1px solid var(--color-gray-light);
-            margin-bottom: 4rem;
-        }
-
-        .nav {
+        .nav-wrapper {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.5rem;
+        .nav-brand {
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--color-black);
+            color: #ffffff;
             text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
-            list-style: none;
+            gap: 3rem;
+            align-items: center;
         }
 
         .nav-links a {
-            color: var(--color-gray);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s ease;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: var(--color-accent);
+            color: #ffffff;
         }
 
+        /* Article Styles */
         article {
-            margin-bottom: 6rem;
+            padding: 80px 0 100px;
         }
 
         .post-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .post-meta {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--color-gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .post-category {
-            color: var(--color-accent);
+            color: #7850ff;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
         }
 
         h1 {
-            font-size: 2.5em;
+            font-size: 3.5rem;
             font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: var(--color-black);
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 8s ease infinite;
+            background-size: 200% auto;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto 3rem;
         }
 
         h2 {
-            font-size: 1.75em;
-            font-weight: 700;
+            font-size: 2.25rem;
+            font-weight: 600;
             line-height: 1.3;
-            margin: 2.5rem 0 1rem 0;
-            color: var(--color-black);
+            margin: 3rem 0 1.5rem 0;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
         }
 
         h3 {
-            font-size: 1.25em;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 600;
             line-height: 1.4;
-            margin: 2rem 0 1rem 0;
-            color: var(--color-black);
+            margin: 2.5rem 0 1rem 0;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
         }
 
         p {
             margin-bottom: 1.5em;
-        }
-
-        .lead {
-            font-size: 1.25em;
-            color: var(--color-gray);
-            line-height: 1.6;
-            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.8;
         }
 
         blockquote {
             margin: 2rem 0;
-            padding-left: 2rem;
-            border-left: 4px solid var(--color-accent);
+            padding: 1.5rem 2rem;
+            background: rgba(120, 80, 255, 0.1);
+            border-left: 4px solid #7850ff;
+            border-radius: 8px;
             font-style: italic;
-            color: var(--color-gray);
+            color: rgba(255, 255, 255, 0.8);
         }
 
+        /* Highlight Box */
         .highlight-box {
-            background: linear-gradient(to bottom, #f8f9fb 0%, #fafbfc 100%);
-            border: 1px solid var(--color-gray-light);
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2rem 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2.5rem 0;
         }
 
         .data-point {
-            font-size: 2.5em;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--color-accent);
+            color: #7850ff;
             display: block;
             margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
         }
 
+        /* Lists */
+        ul, ol {
+            margin-bottom: 1.5em;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* CTA Box */
         .cta-box {
-            background: var(--color-accent);
-            color: var(--color-white);
+            background: linear-gradient(135deg, rgba(120, 80, 255, 0.2) 0%, rgba(80, 50, 255, 0.2) 100%);
+            border: 1px solid rgba(120, 80, 255, 0.4);
+            color: #ffffff;
             padding: 3rem;
-            border-radius: 8px;
+            border-radius: 16px;
             text-align: center;
             margin: 3rem 0;
         }
 
         .cta-box h3 {
-            color: var(--color-white);
+            color: #ffffff;
             margin-bottom: 1rem;
         }
 
         .cta-box p {
-            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 2rem;
         }
 
         .button {
-            display: inline-block;
-            background: var(--color-white);
-            color: var(--color-accent);
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
             text-decoration: none;
-            font-weight: 700;
-            transition: transform 0.2s ease;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 400;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            background-size: 200% auto;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
 
         .button:hover {
+            background-position: right center;
             transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(120, 80, 255, 0.4);
         }
 
+        .button:hover::before {
+            left: 100%;
+        }
+
+        /* Footer */
         .footer {
-            padding: 4rem 0 3rem;
-            border-top: 1px solid var(--color-gray-light);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 0;
             text-align: center;
-            color: var(--color-gray);
-            font-size: 0.9rem;
         }
 
+        .footer-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                font-size: var(--font-size-mobile);
+            h1 {
+                font-size: 2.5rem;
             }
             
-            h1 {
-                font-size: 2em;
+            h2 {
+                font-size: 1.75rem;
             }
             
             .data-point {
-                font-size: 2em;
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="logo">DevMCP.ai</a>
-                <ul class="nav-links">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/blog.html">Blog</a></li>
-                    <li><a href="#demo">Get Demo</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <article class="container">
-            <div class="post-header">
-                <div class="post-meta">
-                    <span class="post-category">Strategy</span>
-                    <span>•</span>
-                    <time>December 15, 2024</time>
-                    <span>•</span>
-                    <span>8 min read</span>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevMCP.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="#demo">Get Demo</a>
+                    </div>
                 </div>
-                <h1>The Death of the Developer Portal (And What's Replacing It)</h1>
-                <p class="lead">
-                    Your beautifully crafted developer portal sees 90% less traffic than 18 months ago. 
-                    You're not alone. The way developers discover and evaluate tools has fundamentally changed.
-                </p>
             </div>
+        </nav>
 
-            <p>
-                Last month, I spoke with the CMO of a major database company. She showed me their analytics dashboard 
-                with a mix of confusion and concern. "Our developer portal traffic is down 92% year-over-year," she said, 
-                "but our product adoption is up 3x. How is this possible?"
-            </p>
+        <main>
+            <article class="container">
+                <div class="post-header">
+                    <div class="post-meta">
+                        <span class="post-category">Strategy</span>
+                        <span>•</span>
+                        <time>September 15, 2025</time>
+                        <span>•</span>
+                        <span>8 min read</span>
+                    </div>
+                    <h1>The Death of the Developer Portal (And What's Replacing It)</h1>
+                    <p class="lead">
+                        Your beautifully crafted developer portal sees 90% less traffic than 18 months ago. 
+                        You're not alone. The way developers discover and evaluate tools has fundamentally changed.
+                    </p>
+                </div>
 
-            <p>
-                The answer reveals a seismic shift in developer behavior that's upending everything we know about 
-                developer marketing and PLG strategies.
-            </p>
-
-            <h2>The Numbers Don't Lie</h2>
-
-            <div class="highlight-box">
-                <span class="data-point">87%</span>
-                <p>of developers now discover new tools through AI assistants rather than documentation sites</p>
-                
-                <span class="data-point">4.2x</span>
-                <p>faster evaluation cycles when tools are accessible via AI agents</p>
-                
-                <span class="data-point">$12M</span>
-                <p>average annual spend on developer portals that developers no longer visit</p>
-            </div>
-
-            <h2>Where Did All the Developers Go?</h2>
-
-            <p>
-                They didn't disappear. They're busier than ever, building more software, evaluating more tools. 
-                They just stopped coming to your portal. Instead, they're asking Claude. They're prompting ChatGPT. 
-                They're coding with Cursor.
-            </p>
-
-            <blockquote>
-                "I haven't visited a documentation site in months. I just ask my AI assistant how to implement 
-                something, and it either knows or it doesn't. If it doesn't know about your product, 
-                you basically don't exist." - Senior Developer at Fortune 500
-            </blockquote>
-
-            <p>
-                This isn't a temporary trend or a generational preference. It's a fundamental shift in how 
-                technical knowledge is discovered, evaluated, and applied.
-            </p>
-
-            <h2>The Old Funnel Is Broken</h2>
-
-            <h3>Traditional Developer Journey (2022)</h3>
-            <ol>
-                <li>Google search for solution</li>
-                <li>Land on documentation site</li>
-                <li>Read getting started guide</li>
-                <li>Try example code</li>
-                <li>Evaluate fit</li>
-                <li>Implement in project</li>
-            </ol>
-
-            <h3>AI-Native Developer Journey (2024)</h3>
-            <ol>
-                <li>Describe problem to AI assistant</li>
-                <li>AI suggests and implements solution</li>
-                <li>Developer accepts or refines</li>
-            </ol>
-
-            <p>
-                Notice what's missing? Your portal. Your carefully crafted onboarding flow. Your interactive tutorials. 
-                The entire middle of your funnel has been disintermediated by AI.
-            </p>
-
-            <h2>Why AI Agents Don't Visit Documentation Sites</h2>
-
-            <p>
-                AI agents are fundamentally different users than humans. They don't browse. They don't explore. 
-                They execute. When a developer asks "How do I implement real-time sync with a distributed database?", 
-                the AI needs to:
-            </p>
-
-            <ul>
-                <li>Understand available options</li>
-                <li>Evaluate tradeoffs</li>
-                <li>Generate working code</li>
-                <li>Handle edge cases</li>
-            </ul>
-
-            <p>
-                All in under 3 seconds. Your documentation site, optimized for human reading and gradual learning, 
-                simply can't serve this use case.
-            </p>
-
-            <h2>Enter the Model Context Protocol</h2>
-
-            <p>
-                This is where MCP changes everything. Instead of documentation for humans, MCP provides 
-                executable interfaces for AI agents. Think of it as:
-            </p>
-
-            <div class="highlight-box">
-                <p><strong>Documentation:</strong> Tells humans how your product works</p>
-                <p><strong>APIs:</strong> Let programs use your product</p>
-                <p><strong>MCP Servers:</strong> Let AI agents understand, evaluate, and implement your product</p>
-            </div>
-
-            <h2>Real-World Results</h2>
-
-            <p>
-                Companies that have shifted from documentation-centric to MCP-native distribution are seeing 
-                remarkable results:
-            </p>
-
-            <ul>
-                <li><strong>ScyllaDB:</strong> 10x increase in conversion rate when AI agents could run performance benchmarks</li>
-                <li><strong>Temporal:</strong> 65% reduction in time-to-first-value via AI-assisted implementation</li>
-                <li><strong>Prisma:</strong> 89% of new users now onboard through AI agents rather than docs</li>
-            </ul>
-
-            <h2>What This Means for Marketing Leaders</h2>
-
-            <h3>1. Shift Investment from Content to Code</h3>
-            <p>
-                Every dollar spent on documentation that AI can't execute is a dollar wasted. 
-                Invest in making your product programmatically discoverable and testable.
-            </p>
-
-            <h3>2. Redefine Success Metrics</h3>
-            <p>
-                Page views, time on site, and documentation engagement are vanity metrics in the AI era. 
-                Track AI agent interactions, successful implementations, and automated evaluation outcomes.
-            </p>
-
-            <h3>3. Partner with Engineering Earlier</h3>
-            <p>
-                MCP implementation isn't a marketing initiative—it's a product feature. Get engineering 
-                buy-in early and make AI-native distribution part of your product roadmap.
-            </p>
-
-            <div class="cta-box">
-                <h3>Ready for the AI-Native Future?</h3>
                 <p>
-                    Learn how DevMCP can help you reach developers through AI agents, 
-                    not documentation portals.
+                    Last month, I spoke with the CMO of a major database company. She showed me their analytics dashboard 
+                    with a mix of confusion and concern. "Our developer portal traffic is down 92% year-over-year," she said, 
+                    "but our product adoption is up 3x. How is this possible?"
                 </p>
-                <a href="#demo" class="button">Schedule a Demo</a>
+
+                <p>
+                    The answer reveals a seismic shift in developer behavior that's upending everything we know about 
+                    developer marketing and PLG strategies.
+                </p>
+
+                <h2>The Numbers Don't Lie</h2>
+
+                <div class="highlight-box">
+                    <span class="data-point">87%</span>
+                    <p>of developers now discover new tools through AI assistants rather than documentation sites</p>
+                    
+                    <span class="data-point">4.2x</span>
+                    <p>faster evaluation cycles when tools are accessible via AI agents</p>
+                    
+                    <span class="data-point">$12M</span>
+                    <p>average annual spend on developer portals that developers no longer visit</p>
+                </div>
+
+                <h2>Where Did All the Developers Go?</h2>
+
+                <p>
+                    They didn't disappear. They're busier than ever, building more software, evaluating more tools. 
+                    They just stopped coming to your portal. Instead, they're asking Claude. They're prompting ChatGPT. 
+                    They're coding with Cursor.
+                </p>
+
+                <blockquote>
+                    "I haven't visited a documentation site in months. I just ask my AI assistant how to implement 
+                    something, and it either knows or it doesn't. If it doesn't know about your product, 
+                    you basically don't exist." - Senior Developer at Fortune 500
+                </blockquote>
+
+                <p>
+                    This isn't a temporary trend or a generational preference. It's a fundamental shift in how 
+                    technical knowledge is discovered, evaluated, and applied.
+                </p>
+
+                <h2>The Old Funnel Is Broken</h2>
+
+                <h3>Traditional Developer Journey (2022)</h3>
+                <ol>
+                    <li>Google search for solution</li>
+                    <li>Land on documentation site</li>
+                    <li>Read getting started guide</li>
+                    <li>Try example code</li>
+                    <li>Evaluate fit</li>
+                    <li>Implement in project</li>
+                </ol>
+
+                <h3>AI-Native Developer Journey (2024)</h3>
+                <ol>
+                    <li>Describe problem to AI assistant</li>
+                    <li>AI suggests and implements solution</li>
+                    <li>Developer accepts or refines</li>
+                </ol>
+
+                <p>
+                    Notice what's missing? Your portal. Your carefully crafted onboarding flow. Your interactive tutorials. 
+                    The entire middle of your funnel has been disintermediated by AI.
+                </p>
+
+                <h2>Why AI Agents Don't Visit Documentation Sites</h2>
+
+                <p>
+                    AI agents are fundamentally different users than humans. They don't browse. They don't explore. 
+                    They execute. When a developer asks "How do I implement real-time sync with a distributed database?", 
+                    the AI needs to:
+                </p>
+
+                <ul>
+                    <li>Understand available options</li>
+                    <li>Evaluate tradeoffs</li>
+                    <li>Generate working code</li>
+                    <li>Handle edge cases</li>
+                </ul>
+
+                <p>
+                    All in under 3 seconds. Your documentation site, optimized for human reading and gradual learning, 
+                    simply can't serve this use case.
+                </p>
+
+                <h2>Enter the Model Context Protocol</h2>
+
+                <p>
+                    This is where MCP changes everything. Instead of documentation for humans, MCP provides 
+                    executable interfaces for AI agents. Think of it as:
+                </p>
+
+                <div class="highlight-box">
+                    <p><strong>Documentation:</strong> Tells humans how your product works</p>
+                    <p><strong>APIs:</strong> Let programs use your product</p>
+                    <p><strong>MCP Servers:</strong> Let AI agents understand, evaluate, and implement your product</p>
+                </div>
+
+                <h2>Real-World Results</h2>
+
+                <p>
+                    Companies that have shifted from documentation-centric to MCP-native distribution are seeing 
+                    remarkable results:
+                </p>
+
+                <ul>
+                    <li><strong>ScyllaDB:</strong> 10x increase in conversion rate when AI agents could run performance benchmarks</li>
+                    <li><strong>Temporal:</strong> 65% reduction in time-to-first-value via AI-assisted implementation</li>
+                    <li><strong>Prisma:</strong> 89% of new users now onboard through AI agents rather than docs</li>
+                </ul>
+
+                <h2>What This Means for Marketing Leaders</h2>
+
+                <h3>1. Shift Investment from Content to Code</h3>
+                <p>
+                    Every dollar spent on documentation that AI can't execute is a dollar wasted. 
+                    Invest in making your product programmatically discoverable and testable.
+                </p>
+
+                <h3>2. Redefine Success Metrics</h3>
+                <p>
+                    Page views, time on site, and documentation engagement are vanity metrics in the AI era. 
+                    Track AI agent interactions, successful implementations, and automated evaluation outcomes.
+                </p>
+
+                <h3>3. Partner with Engineering Earlier</h3>
+                <p>
+                    MCP implementation isn't a marketing initiative—it's a product feature. Get engineering 
+                    buy-in early and make AI-native distribution part of your product roadmap.
+                </p>
+
+                <div class="cta-box">
+                    <h3>Ready for the AI-Native Future?</h3>
+                    <p>
+                        Learn how DevMCP can help you reach developers through AI agents, 
+                        not documentation portals.
+                    </p>
+                    <a href="#demo" class="button">Schedule a Demo</a>
+                </div>
+
+                <h2>The Path Forward</h2>
+
+                <p>
+                    The death of the developer portal isn't a crisis—it's an opportunity. Companies that recognize 
+                    this shift and adapt their distribution strategies will capture the next generation of developers. 
+                    Those that cling to traditional documentation-centric approaches will find themselves invisible 
+                    to AI agents and, by extension, to developers.
+                </p>
+
+                <p>
+                    The question isn't whether this shift will affect your business. It's whether you'll lead the 
+                    change or be left behind.
+                </p>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-text">
+                    © 2025 DevMCP.ai - Enterprise MCP Hosting for Developer Tools
+                </div>
             </div>
-
-            <h2>The Path Forward</h2>
-
-            <p>
-                The death of the developer portal isn't a crisis—it's an opportunity. Companies that recognize 
-                this shift and adapt their distribution strategies will capture the next generation of developers. 
-                Those that cling to traditional documentation-centric approaches will find themselves invisible 
-                to AI agents and, by extension, to developers.
-            </p>
-
-            <p>
-                The question isn't whether this shift will affect your business. It's whether you'll lead the 
-                change or be left behind.
-            </p>
-        </article>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>© 2024 DevMCP.ai - Enterprise MCP Hosting for Developer Tools</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 </body>
 </html>

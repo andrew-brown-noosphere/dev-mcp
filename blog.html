@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - DevMCP.ai | AI-Native Developer Distribution</title>
+    <meta name="description" content="Insights on PLG strategy, AI-driven developer experience, and the future of developer tool distribution.">
+    
+    <style>
+        @font-face {
+            font-family: 'Atkinson';
+            src: url('https://noosphere.tech/fonts/atkinson-regular.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Atkinson';
+            src: url('https://noosphere.tech/fonts/atkinson-bold.woff2') format('woff2');
+            font-weight: 700;
+            font-display: swap;
+        }
+
+        :root {
+            --color-accent: #2337ff;
+            --color-accent-dark: #000d8a;
+            --color-black: rgb(15, 18, 25);
+            --color-gray: rgb(96, 115, 159);
+            --color-gray-light: rgb(229, 233, 240);
+            --color-gray-dark: rgb(34, 41, 57);
+            --color-white: #ffffff;
+            
+            --font-size-base: 20px;
+            --font-size-mobile: 18px;
+            --line-height: 1.7;
+            
+            --content-width: 720px;
+            --spacing-unit: 1em;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Atkinson', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-black);
+            background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: var(--content-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-unit);
+        }
+
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--color-gray-light);
+            margin-bottom: 4rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-black);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--color-black);
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .blog-subtitle {
+            font-size: 1.25em;
+            color: var(--color-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            gap: 3rem;
+            margin-bottom: 6rem;
+        }
+
+        .blog-post {
+            border-bottom: 1px solid var(--color-gray-light);
+            padding-bottom: 3rem;
+            transition: all 0.3s ease;
+        }
+
+        .blog-post:last-child {
+            border-bottom: none;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--color-gray);
+        }
+
+        .post-category {
+            color: var(--color-accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .post-title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .post-title a {
+            color: var(--color-black);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .post-title a:hover {
+            color: var(--color-accent);
+        }
+
+        .post-excerpt {
+            color: var(--color-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .read-more {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.2s ease;
+        }
+
+        .read-more:hover {
+            gap: 0.75rem;
+        }
+
+        .footer {
+            padding: 4rem 0 3rem;
+            border-top: 1px solid var(--color-gray-light);
+            text-align: center;
+            color: var(--color-gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: var(--font-size-mobile);
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .post-title {
+                font-size: 1.5em;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">DevMCP.ai</a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/blog.html">Blog</a></li>
+                    <li><a href="#demo">Get Demo</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="blog-header">
+                <h1>AI-Native PLG Insights</h1>
+                <p class="blog-subtitle">
+                    How marketing leaders are using AI agents to transform developer distribution
+                </p>
+            </div>
+
+            <div class="blog-grid">
+                <!-- Post 1 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Strategy</span>
+                        <span>•</span>
+                        <time>December 15, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/the-death-of-the-developer-portal.html">The Death of the Developer Portal (And What's Replacing It)</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Your beautifully crafted developer portal sees 90% less traffic than 18 months ago. You're not alone. 
+                        Learn why developers stopped visiting documentation sites and how AI agents are becoming the new discovery channel.
+                    </p>
+                    <a href="blog/the-death-of-the-developer-portal.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">PLG</span>
+                        <span>•</span>
+                        <time>December 12, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/why-your-plg-strategy-is-failing.html">Why Your PLG Strategy Is Failing in the AI Era</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Traditional PLG metrics don't work when AI agents are your primary users. Discover the new funnel 
+                        metrics that matter and how to optimize for AI-driven adoption.
+                    </p>
+                    <a href="blog/why-your-plg-strategy-is-failing.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 3 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Case Study</span>
+                        <span>•</span>
+                        <time>December 8, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/how-scylladb-10x-conversions.html">How ScyllaDB 10x'd Conversions by Letting AI Agents Benchmark Performance</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        When ScyllaDB made their database testable by AI agents via MCP, something unexpected happened. 
+                        Developers started choosing them over competitors 10x more often. Here's the playbook.
+                    </p>
+                    <a href="blog/how-scylladb-10x-conversions.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 4 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Metrics</span>
+                        <span>•</span>
+                        <time>December 5, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/measuring-ai-agent-engagement.html">The CMO's Guide to Measuring AI Agent Engagement</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Forget page views and time on site. When AI agents are evaluating your product, you need entirely 
+                        new metrics. Learn what to track and how to optimize the AI discovery journey.
+                    </p>
+                    <a href="blog/measuring-ai-agent-engagement.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 5 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Technical</span>
+                        <span>•</span>
+                        <time>December 1, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/mcp-protocol-explained-for-marketers.html">MCP Protocol Explained for Marketing Leaders (No Code Required)</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Your engineering team keeps talking about MCP, but what does it mean for your PLG strategy? 
+                        A plain-English guide to the protocol that's reshaping developer distribution.
+                    </p>
+                    <a href="blog/mcp-protocol-explained-for-marketers.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 6 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Strategy</span>
+                        <span>•</span>
+                        <time>November 28, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/from-seo-to-aeo.html">From SEO to AEO: Optimizing for AI Engine Discovery</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Google SEO is becoming less relevant for developer tools. The new battlefield is AI Engine Optimization (AEO). 
+                        Learn how to make your product the default choice for Claude, ChatGPT, and Cursor.
+                    </p>
+                    <a href="blog/from-seo-to-aeo.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 7 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">ROI</span>
+                        <span>•</span>
+                        <time>November 24, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/calculating-mcp-roi.html">Calculating the ROI of MCP Implementation: A CFO's Perspective</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Is investing in AI-native distribution worth it? We break down the costs, timelines, and expected 
+                        returns based on data from 50+ enterprise implementations.
+                    </p>
+                    <a href="blog/calculating-mcp-roi.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 8 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Future</span>
+                        <span>•</span>
+                        <time>November 20, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/ai-agents-wont-read-your-docs.html">AI Agents Won't Read Your Docs (But They'll Execute Your Code)</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        The future of developer marketing isn't content—it's executable experiences. Learn why documentation 
+                        is dying and how to build AI-first developer journeys.
+                    </p>
+                    <a href="blog/ai-agents-wont-read-your-docs.html" class="read-more">Read more →</a>
+                </article>
+
+                <!-- Post 9 -->
+                <article class="blog-post">
+                    <div class="post-meta">
+                        <span class="post-category">Competition</span>
+                        <span>•</span>
+                        <time>November 15, 2024</time>
+                    </div>
+                    <h2 class="post-title">
+                        <a href="blog/win-lose-analysis-ai-era.html">Win/Loss Analysis in the AI Era: What Happens When Robots Choose Your Competitor</a>
+                    </h2>
+                    <p class="post-excerpt">
+                        Your sales team can't call an AI agent to understand why it chose MongoDB over your database. 
+                        New strategies for competitive intelligence when machines make the decisions.
+                    </p>
+                    <a href="blog/win-lose-analysis-ai-era.html" class="read-more">Read more →</a>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 DevMCP.ai - Enterprise MCP Hosting for Developer Tools</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -129,9 +129,39 @@
             text-decoration: underline;
         }
 
+        /* Header */
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--color-gray-light);
+            margin-bottom: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
         /* Hero Section */
         .hero {
-            padding: 6rem 0 4rem;
+            padding: 4rem 0 4rem;
             text-align: center;
             position: relative;
         }
@@ -576,6 +606,18 @@
     </style>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">DevMCP.ai</a>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/blog.html">Blog</a></li>
+                    <li><a href="#demo">Get Demo</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <main>
         <!-- Hero Section -->
         <section class="hero">

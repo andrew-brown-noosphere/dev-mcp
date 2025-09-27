@@ -39,6 +39,27 @@ class LLMsTxtEvaluator {
             }, 3000);
             this.fetchedContent = fetchResult.content;
             this.updateProgress(20);
+            
+            // If no llms.txt found, show special results
+            if (!fetchResult.found || !this.fetchedContent) {
+                this.analysisResults = {
+                    url: this.websiteUrl,
+                    timestamp: new Date().toISOString(),
+                    overallScore: 0,
+                    llmsTxtFound: false,
+                    needsGeneration: true,
+                    message: "No llms.txt file found. This site needs an AI discovery file to be accessible to AI agents."
+                };
+                
+                // Jump to 100% and redirect
+                this.updateProgress(100);
+                setTimeout(() => {
+                    this.hideModal('progressModal');
+                    localStorage.setItem('evaluationResults', JSON.stringify(this.analysisResults));
+                    window.location.href = `results.html?url=${encodeURIComponent(this.websiteUrl)}`;
+                }, 1000);
+                return;
+            }
 
             // Step 2: Analyze content
             await this.executeStep(2, async () => {

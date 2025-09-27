@@ -84,6 +84,12 @@ class ResultsDisplay {
         document.getElementById('websiteUrl').textContent = this.results.url;
         document.getElementById('reportDate').textContent = new Date(this.results.timestamp).toLocaleDateString();
 
+        // Check if llms.txt was found
+        if (this.results.needsGeneration || this.results.llmsTxtFound === false) {
+            this.displayNoLlmsTxtMessage();
+            return;
+        }
+
         // Display overall score with animation
         this.animateScore(this.results.overallScore);
         

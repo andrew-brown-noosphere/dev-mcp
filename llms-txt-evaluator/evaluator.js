@@ -34,9 +34,10 @@ class LLMsTxtEvaluator {
         // Execute analysis steps with delays for better UX
         try {
             // Step 1: Fetch llms.txt
-            await this.executeStep(1, async () => {
+            const fetchResult = await this.executeStep(1, async () => {
                 return await this.fetchLLMsTxt();
             }, 3000);
+            this.fetchedContent = fetchResult.content;
             this.updateProgress(20);
 
             // Step 2: Analyze content
@@ -134,44 +135,207 @@ class LLMsTxtEvaluator {
     }
 
     async fetchLLMsTxt() {
-        // Simulate fetching llms.txt with realistic results
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve({
-                    found: Math.random() > 0.3, // 70% chance of finding it
-                    locations: ['/llms.txt', '/.well-known/llms.txt'],
-                    content: `# AI Instructions for ${this.websiteUrl}\n\n## Authentication\nUse Bearer token authentication...\n\n## Endpoints\nGET /api/v1/data\nPOST /api/v1/create`
-                });
-            }, 500);
-        });
+        // Normalize the URL to just the domain
+        let domain = this.websiteUrl;
+        if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
+            domain = 'https://' + domain;
+        }
+        
+        const url = new URL(domain);
+        const baseUrl = `${url.protocol}//${url.host}`;
+        
+        // Standard llms.txt locations
+        const locations = [
+            `${baseUrl}/llms.txt`,
+            `${baseUrl}/.well-known/llms.txt`
+        ];
+        
+        let content = null;
+        let foundLocation = null;
+        
+        // Try each location
+        for (const location of locations) {
+            try {
+                console.log(`Checking for llms.txt at: ${location}`);
+                
+                // Use a CORS proxy for cross-origin requests in demo
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(location)}`;
+                
+                const response = await fetch(proxyUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.contents && data.contents.trim()) {
+                        content = data.contents;
+                        foundLocation = location;
+                        console.log(`Found llms.txt at: ${location}`);
+                        break;
+                    }
+                }
+            } catch (error) {
+                console.log(`Could not fetch from ${location}:`, error.message);
+                // Continue to next location
+            }
+        }
+        
+        return {
+            found: !!content,
+            location: foundLocation,
+            locations: locations,
+            content: content || null
+        };
     }
 
     async analyzeLLMsTxtContent() {
-        // Simulate AI-powered content analysis
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve({
-                    clarity: 75 + Math.random() * 20,
-                    completeness: 65 + Math.random() * 25,
-                    aiReadability: 80 + Math.random() * 15,
-                    examples: 60 + Math.random() * 30,
-                    authentication: 85 + Math.random() * 10,
-                    endpoints: 70 + Math.random() * 20,
-                    sections: {
-                        authentication: true,
-                        endpoints: true,
-                        examples: Math.random() > 0.4,
-                        rate_limits: Math.random() > 0.6,
-                        error_handling: Math.random() > 0.5
-                    },
-                    aiCompatibility: {
-                        claude: 0.85 + Math.random() * 0.15,
-                        gpt4: 0.8 + Math.random() * 0.2,
-                        general: 0.75 + Math.random() * 0.25
-                    }
-                });
-            }, 800);
+        // Get the fetched content from previous step
+        if (!this.fetchedContent) {
+            // If no content was fetched, return low scores
+            return {
+                clarity: 20,
+                completeness: 15,
+                aiReadability: 25,
+                examples: 10,
+                authentication: 20,
+                endpoints: 15,
+                sections: {
+                    authentication: false,
+                    endpoints: false,
+                    examples: false,
+                    rate_limits: false,
+                    error_handling: false
+                },
+                aiCompatibility: {
+                    claude: 0.2,
+                    gpt4: 0.15,
+                    general: 0.1
+                }
+            };
+        }
+
+        // Analyze the actual content
+        const content = this.fetchedContent.toLowerCase();
+        const lines = this.fetchedContent.split('\n');
+        
+        // Check for key sections
+        const sections = {
+            authentication: content.includes('auth') || content.includes('token') || content.includes('key'),
+            endpoints: content.includes('endpoint') || content.includes('api') || content.includes('get ') || content.includes('post '),
+            examples: content.includes('example') || content.includes('curl') || content.includes('```'),
+            rate_limits: content.includes('rate') || content.includes('limit') || content.includes('throttle'),
+            error_handling: content.includes('error') || content.includes('status') || content.includes('code')
+        };
+
+        // Score based on content analysis
+        const scores = {
+            clarity: this.scoreClarity(lines),
+            completeness: this.scoreCompleteness(sections, lines),
+            aiReadability: this.scoreAIReadability(content, lines),
+            examples: this.scoreExamples(content, lines),
+            authentication: this.scoreAuthentication(content),
+            endpoints: this.scoreEndpoints(content, lines)
+        };
+
+        // AI compatibility based on structure and clarity
+        const avgScore = Object.values(scores).reduce((sum, score) => sum + score, 0) / Object.keys(scores).length;
+        const aiCompatibility = {
+            claude: Math.max(0.1, Math.min(1.0, avgScore / 100 + 0.1)),
+            gpt4: Math.max(0.1, Math.min(1.0, avgScore / 100 + 0.05)),
+            general: Math.max(0.1, Math.min(1.0, avgScore / 100))
+        };
+
+        return {
+            ...scores,
+            sections,
+            aiCompatibility
+        };
+    }
+
+    scoreClarity(lines) {
+        let score = 30; // Base score
+        
+        // Check for headers and structure
+        const hasHeaders = lines.some(line => line.startsWith('#'));
+        if (hasHeaders) score += 20;
+        
+        // Check for clear sections
+        const hasStructure = lines.length > 5;
+        if (hasStructure) score += 15;
+        
+        // Check for consistent formatting
+        const hasConsistentFormatting = lines.filter(line => line.trim()).length > lines.length * 0.7;
+        if (hasConsistentFormatting) score += 15;
+        
+        return Math.min(100, score + Math.random() * 20);
+    }
+
+    scoreCompleteness(sections, lines) {
+        let score = 20; // Base score
+        
+        // Score based on essential sections
+        if (sections.authentication) score += 25;
+        if (sections.endpoints) score += 25;
+        if (sections.examples) score += 15;
+        if (sections.rate_limits) score += 10;
+        if (sections.error_handling) score += 5;
+        
+        return Math.min(100, score);
+    }
+
+    scoreAIReadability(content, lines) {
+        let score = 25; // Base score
+        
+        // Check for clear instructions
+        if (content.includes('instruction') || content.includes('how to')) score += 20;
+        
+        // Check for structured format
+        if (lines.some(line => line.includes('##') || line.includes('###'))) score += 15;
+        
+        // Check for code blocks
+        if (content.includes('```') || content.includes('`')) score += 15;
+        
+        // Check for bullet points or lists
+        if (content.includes('- ') || content.includes('* ')) score += 10;
+        
+        return Math.min(100, score + Math.random() * 15);
+    }
+
+    scoreExamples(content, lines) {
+        let score = 10; // Base score
+        
+        // Check for code examples
+        if (content.includes('curl')) score += 30;
+        if (content.includes('```')) score += 25;
+        if (content.includes('example')) score += 20;
+        if (content.includes('http')) score += 15;
+        
+        return Math.min(100, score);
+    }
+
+    scoreAuthentication(content) {
+        let score = 20; // Base score
+        
+        if (content.includes('bearer')) score += 25;
+        if (content.includes('api key') || content.includes('api-key')) score += 25;
+        if (content.includes('oauth')) score += 20;
+        if (content.includes('token')) score += 15;
+        if (content.includes('authorization')) score += 10;
+        
+        return Math.min(100, score);
+    }
+
+    scoreEndpoints(content, lines) {
+        let score = 15; // Base score
+        
+        // Count HTTP methods
+        const methods = ['get', 'post', 'put', 'delete', 'patch'];
+        methods.forEach(method => {
+            if (content.includes(method + ' ') || content.includes(method + '\t')) score += 15;
         });
+        
+        // Check for URL patterns
+        if (content.includes('/api/')) score += 20;
+        if (content.includes('https://') || content.includes('http://')) score += 10;
+        
+        return Math.min(100, score);
     }
 
     async scanWebsite() {

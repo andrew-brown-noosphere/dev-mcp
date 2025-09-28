@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>llms.txt Metrics Dashboard - DevMCP.ai</title>
+    <meta name="description" content="Track how AI agents discover and use your APIs through llms.txt">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        /* Background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(50, 120, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 1rem 0;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+        
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #7850ff 0%, #ff5078 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+        
+        .metric-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        
+        /* Charts */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* AI Agents List */
+        .agent-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .agent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .agent-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(120, 80, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .agent-stats {
+            text-align: right;
+        }
+        
+        .agent-count {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #7850ff;
+        }
+        
+        /* Insights */
+        .insight-card {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .insight-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .insight-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .insight-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Setup Instructions */
+        .setup-section {
+            background: rgba(120, 80, 255, 0.05);
+            border: 1px solid rgba(120, 80, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/" style="font-size: 1.75rem; font-weight: 700; color: #ffffff; text-decoration: none; font-family: 'Space Grotesk', sans-serif;">
+                        DevMCP.ai
+                    </a>
+                    <div style="display: flex; gap: 2rem;">
+                        <a href="/llms-generator.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Generator</a>
+                        <a href="/llms-txt-evaluator" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Evaluator</a>
+                        <a href="/llms-metrics.html" style="color: #ffffff; text-decoration: none;">Metrics</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            <div class="hero-section">
+                <h1 class="hero-title">llms.txt Metrics Dashboard</h1>
+                <p class="hero-subtitle">
+                    Track how AI agents discover and interact with your APIs. 
+                    Get insights into adoption patterns and optimize for AI.
+                </p>
+            </div>
+            
+            <!-- Key Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <p class="metric-label">Total AI Discoveries</p>
+                    <h2 class="metric-value">1,247</h2>
+                    <div class="metric-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+23% this week</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <p class="metric-label">Unique AI Agents</p>
+                    <h2 class="metric-value">7</h2>
+                    <div class="metric-trend">
+                        <span>Claude, GPT-4, Cursor...</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <p class="metric-label">Implementation Rate</p>
+                    <h2 class="metric-value">7.1%</h2>
+                    <div class="metric-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+2.3% from last month</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <p class="metric-label">Avg Time to Integration</p>
+                    <h2 class="metric-value">4.2h</h2>
+                    <div class="metric-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>-1.3h improvement</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Agents Breakdown -->
+            <div class="chart-container">
+                <h3 class="chart-title">AI Agents Discovering Your API</h3>
+                <div class="agent-list">
+                    <div class="agent-item">
+                        <div class="agent-info">
+                            <div class="agent-icon">🤖</div>
+                            <div>
+                                <div style="font-weight: 600;">Claude</div>
+                                <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">Anthropic</div>
+                            </div>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-count">561</div>
+                            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">45% of total</div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-info">
+                            <div class="agent-icon">🧠</div>
+                            <div>
+                                <div style="font-weight: 600;">GPT-4</div>
+                                <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">OpenAI</div>
+                            </div>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-count">349</div>
+                            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">28% of total</div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-info">
+                            <div class="agent-icon">💬</div>
+                            <div>
+                                <div style="font-weight: 600;">ChatGPT</div>
+                                <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">OpenAI</div>
+                            </div>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-count">187</div>
+                            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">15% of total</div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-item">
+                        <div class="agent-info">
+                            <div class="agent-icon">⚡</div>
+                            <div>
+                                <div style="font-weight: 600;">Cursor</div>
+                                <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">AI Code Editor</div>
+                            </div>
+                        </div>
+                        <div class="agent-stats">
+                            <div class="agent-count">100</div>
+                            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">8% of total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Discovery Timeline -->
+            <div class="chart-container">
+                <h3 class="chart-title">Discovery Timeline (Last 7 Days)</h3>
+                <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 1rem;">
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 145px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Mon</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 168px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Tue</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 201px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Wed</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 189px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Thu</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 223px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Fri</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 195px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Sat</div>
+                    </div>
+                    <div style="flex: 1; margin: 0 4px;">
+                        <div style="background: linear-gradient(to top, #7850ff, #ff5078); height: 126px; border-radius: 4px 4px 0 0;"></div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Sun</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insights -->
+            <div class="chart-container">
+                <h3 class="chart-title">AI Integration Insights</h3>
+                
+                <div class="insight-card insight-success">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                    <div>
+                        <strong>Claude Success Rate:</strong> Claude agents have a 94% success rate when integrating with your API. Your examples are well-suited for Claude's parsing.
+                    </div>
+                </div>
+                
+                <div class="insight-card insight-warning">
+                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                    <div>
+                        <strong>Authentication Issues:</strong> GPT-4 agents are failing authentication 38% of the time. Consider adding OAuth examples to your llms.txt.
+                    </div>
+                </div>
+                
+                <div class="insight-card insight-info">
+                    <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+                    <div>
+                        <strong>Peak Discovery Time:</strong> Most AI agents discover your API between 2-4 PM PST. This aligns with peak developer activity.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Setup Instructions -->
+            <div class="setup-section">
+                <h3 style="font-size: 1.5rem; margin: 0 0 1rem 0; font-family: 'Space Grotesk', sans-serif;">
+                    Start Tracking Your llms.txt
+                </h3>
+                <p style="margin-bottom: 1.5rem;">
+                    Add our analytics beacon to your llms.txt file to start tracking AI agent discoveries:
+                </p>
+                
+                <div class="code-block">
+# Your existing llms.txt content...
+
+# Analytics Beacon (Do not remove - tracks AI adoption)
+# beacon: https://api.devmcp.ai/v1/beacon/your-domain-com
+                </div>
+                
+                <p style="margin: 1.5rem 0;">
+                    Or use our JavaScript SDK for more detailed tracking:
+                </p>
+                
+                <div class="code-block">
+npm install @devmcp/llms-metrics
+
+// In your API handler
+import { trackLLMsUsage } from '@devmcp/llms-metrics';
+
+trackLLMsUsage({
+    endpoint: req.path,
+    userAgent: req.headers['user-agent'],
+    success: true
+});
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="/docs/llms-metrics" class="btn">
+                        <i class="fas fa-book"></i>
+                        View Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include metrics dashboard JS -->
+    <script src="/js/llms-metrics-dashboard.js"></script>
+</body>
+</html>

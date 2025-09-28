@@ -53,7 +53,8 @@ class LLMsGenerator {
             { id: 'marketing', label: 'Extracting marketing content', status: 'pending' },
             { id: 'technical', label: 'Finding API documentation', status: 'pending' },
             { id: 'examples', label: 'Collecting code examples', status: 'pending' },
-            { id: 'performance', label: 'Checking performance metrics', status: 'pending' }
+            { id: 'performance', label: 'Checking performance metrics', status: 'pending' },
+            { id: 'ai-analysis', label: 'AI analyzing content & generating llms.txt', status: 'pending' }
         ];
         
         this.updateProgress(steps);
@@ -113,12 +114,27 @@ class LLMsGenerator {
         this.analysisData.performance = data.performance;
         await this.updateStep(steps, 'performance', 'complete');
         
+        // Show AI thinking step
+        await new Promise(r => setTimeout(r, 1000));
+        await this.updateStep(steps, 'ai-analysis', 'analyzing');
+        
+        // Add thinking animation
+        this.showAIThinking();
+        
+        // Wait to simulate AI processing (actual processing happens on backend)
+        await new Promise(r => setTimeout(r, 3000));
+        
         // Store AI-generated content if available
         if (data.aiGeneratedLLMsTxt) {
             this.analysisData.aiGeneratedContent = data.aiGeneratedLLMsTxt;
             this.analysisData.generatedWithAI = true;
+            await this.updateStep(steps, 'ai-analysis', 'complete');
             console.log('Using AI-generated llms.txt content');
+        } else {
+            await this.updateStep(steps, 'ai-analysis', 'partial');
         }
+        
+        this.hideAIThinking();
     }
     
     detectLanguages(examples) {
@@ -163,6 +179,14 @@ class LLMsGenerator {
         await new Promise(r => setTimeout(r, 1000));
         this.analysisData.performance = this.extractPerformance(hostname);
         await this.updateStep(steps, 'performance', 'complete');
+        
+        // Step 6: AI Analysis (simulated)
+        await new Promise(r => setTimeout(r, 1000));
+        await this.updateStep(steps, 'ai-analysis', 'analyzing');
+        this.showAIThinking();
+        await new Promise(r => setTimeout(r, 2500));
+        await this.updateStep(steps, 'ai-analysis', 'partial');
+        this.hideAIThinking();
     }
 
     extractMarketingPatterns(hostname) {
@@ -739,6 +763,47 @@ support: support@${new URL('https://' + this.websiteUrl).hostname}
             `;
             outputHeader.appendChild(badge);
         }
+    }
+    
+    showAIThinking() {
+        // Find the AI analysis step and add special thinking animation
+        const aiStep = document.querySelector('.progress-item:last-child');
+        if (aiStep) {
+            aiStep.innerHTML = `
+                <i class="fas fa-brain fa-pulse" style="color: #7850ff;"></i>
+                <span style="color: #7850ff; font-weight: 600;">AI is analyzing content and crafting your llms.txt...</span>
+                <div class="ai-thinking-dots" style="display: inline-block; margin-left: 8px;">
+                    <span style="animation: blink 1.4s infinite;">.</span>
+                    <span style="animation: blink 1.4s infinite 0.2s;">.</span>
+                    <span style="animation: blink 1.4s infinite 0.4s;">.</span>
+                </div>
+            `;
+            
+            // Add CSS animation if not already added
+            if (!document.getElementById('ai-thinking-styles')) {
+                const style = document.createElement('style');
+                style.id = 'ai-thinking-styles';
+                style.textContent = `
+                    @keyframes blink {
+                        0%, 60% { opacity: 0; }
+                        100% { opacity: 1; }
+                    }
+                    .fa-pulse {
+                        animation: fa-pulse 2s infinite;
+                    }
+                    @keyframes fa-pulse {
+                        0% { transform: scale(1); opacity: 0.8; }
+                        50% { transform: scale(1.1); opacity: 1; }
+                        100% { transform: scale(1); opacity: 0.8; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    }
+    
+    hideAIThinking() {
+        // The status will be updated by updateStep, so nothing special needed here
     }
 }
 

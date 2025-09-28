@@ -563,7 +563,4 @@ async function handleScrapeRequest(req, res) {
     }
 }
 
-// For serverless environments
-if (typeof window === 'undefined') {
-    module.exports.handler = handleScanRequest;
-}
+// For serverless environments - removed for now since it's not needed

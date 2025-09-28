@@ -61,7 +61,12 @@ class LLMsGenerator {
         
         // Try real scanning first, fallback to simulation
         try {
-            const scannerUrl = 'http://localhost:3001/api/scan';
+            // Use Vercel endpoint in production, local in development
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const scannerUrl = isLocal 
+                ? 'http://localhost:3001/api/scan'
+                : '/api/scan'; // Vercel will handle this
+            
             const response = await fetch(scannerUrl, {
                 method: 'POST',
                 headers: {

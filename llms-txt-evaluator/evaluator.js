@@ -4,7 +4,49 @@ class LLMsTxtEvaluator {
     constructor() {
         this.websiteUrl = '';
         this.analysisResults = null;
+        this.generatedContent = null;
         this.setupEventListeners();
+        this.checkForGeneratedContent();
+    }
+
+    checkForGeneratedContent() {
+        // Check if we're coming from the generator
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('test') === 'generated') {
+            // Get the generated content from sessionStorage
+            const generatedContent = sessionStorage.getItem('generatedLlmsTxt');
+            const generatedUrl = sessionStorage.getItem('generatedForUrl');
+            
+            if (generatedContent && generatedUrl) {
+                this.generatedContent = generatedContent;
+                this.websiteUrl = generatedUrl;
+                
+                // Pre-fill the URL field
+                const urlField = document.getElementById('websiteUrl');
+                if (urlField) {
+                    urlField.value = generatedUrl;
+                }
+                
+                // Show a message that we're testing generated content
+                this.showGeneratedContentMessage();
+                
+                // Clean up sessionStorage
+                sessionStorage.removeItem('generatedLlmsTxt');
+                sessionStorage.removeItem('generatedForUrl');
+            }
+        }
+    }
+    
+    showGeneratedContentMessage() {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
+        messageDiv.innerHTML = `
+            <strong>Testing Generated llms.txt</strong><br>
+            We'll evaluate the llms.txt file you just generated instead of fetching it from the website.
+        `;
+        
+        const form = document.getElementById('evaluationForm');
+        form.parentNode.insertBefore(messageDiv, form);
     }
 
     setupEventListeners() {
@@ -85,7 +127,8 @@ class LLMsTxtEvaluator {
                 // Call the simulated API
                 analysisResult = await window.handleEvaluatorAPI({
                     url: domain,
-                    domain: this.websiteUrl
+                    domain: this.websiteUrl,
+                    generatedContent: this.generatedContent
                 });
                 
                 return { generated: true };

@@ -730,8 +730,21 @@ function downloadFile() {
 }
 
 function testWithEvaluator() {
+    // Get the generated content
+    const content = document.getElementById('generatedContent').value;
     const url = document.getElementById('websiteUrl').value;
-    window.location.href = `/llms-txt-evaluator/?test=${encodeURIComponent(url)}`;
+    
+    if (!content) {
+        alert('Please generate an llms.txt file first');
+        return;
+    }
+    
+    // Store the generated content in sessionStorage to pass to evaluator
+    sessionStorage.setItem('generatedLlmsTxt', content);
+    sessionStorage.setItem('generatedForUrl', url);
+    
+    // Redirect to evaluator with special flag
+    window.location.href = `/llms-txt-evaluator/?test=generated&url=${encodeURIComponent(url)}`;
 }
 
 // Initialize

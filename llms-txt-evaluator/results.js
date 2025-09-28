@@ -83,6 +83,11 @@ class ResultsDisplay {
         document.getElementById('websiteUrl').textContent = this.results.domain || this.results.url;
         document.getElementById('reportDate').textContent = new Date(this.results.timestamp).toLocaleDateString();
 
+        // Show badge if testing generated content
+        if (this.results.generatedContent) {
+            this.showGeneratedContentBadge();
+        }
+
         // Check if llms.txt was found
         if (!this.results.llmsTxtFound || this.results.overallScore === 0) {
             this.displayNoLlmsTxtMessage();
@@ -106,6 +111,20 @@ class ResultsDisplay {
         
         // Display recommendations
         this.displayRecommendations();
+    }
+
+    showGeneratedContentBadge() {
+        // Add a badge showing this is generated content
+        const headerSection = document.querySelector('.text-center.mb-8');
+        if (headerSection) {
+            const badge = document.createElement('div');
+            badge.className = 'inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4';
+            badge.innerHTML = `
+                <i class="fas fa-magic mr-2"></i>
+                Testing Generated llms.txt
+            `;
+            headerSection.insertBefore(badge, headerSection.firstChild);
+        }
     }
 
     displayNoLlmsTxtMessage() {

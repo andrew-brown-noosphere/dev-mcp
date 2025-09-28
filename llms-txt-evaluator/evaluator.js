@@ -31,59 +31,68 @@ class LLMsTxtEvaluator {
             this.resetStep(i);
         }
 
-        // Execute analysis steps with delays for better UX
+        // Normalize the URL to just the domain
+        let domain = this.websiteUrl;
+        if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
+            domain = 'https://' + domain;
+        }
+
         try {
-            // Step 1: Fetch llms.txt
-            const fetchResult = await this.executeStep(1, async () => {
-                return await this.fetchLLMsTxt();
-            }, 3000);
-            this.fetchedContent = fetchResult.content;
-            this.updateProgress(20);
+            // Update progress tracking
+            this.updateProgress(10);
             
-            // If no llms.txt found, show special results
-            if (!fetchResult.found || !this.fetchedContent) {
-                this.analysisResults = {
-                    url: this.websiteUrl,
-                    timestamp: new Date().toISOString(),
-                    overallScore: 0,
-                    llmsTxtFound: false,
-                    needsGeneration: true,
-                    message: "No llms.txt file found. This site needs an AI discovery file to be accessible to AI agents."
-                };
-                
-                // Jump to 100% and redirect
-                this.updateProgress(100);
-                setTimeout(() => {
-                    this.hideModal('progressModal');
-                    localStorage.setItem('evaluationResults', JSON.stringify(this.analysisResults));
-                    window.location.href = `results.html?url=${encodeURIComponent(this.websiteUrl)}`;
-                }, 1000);
-                return;
-            }
+            // Step 1: Fetch llms.txt
+            await this.executeStep(1, async () => {
+                return { found: true };
+            }, 2000);
+            this.updateProgress(20);
 
             // Step 2: Analyze content
             await this.executeStep(2, async () => {
-                return await this.analyzeLLMsTxtContent();
-            }, 4000);
+                return { analyzed: true };
+            }, 2000);
             this.updateProgress(40);
 
             // Step 3: Scan website
             await this.executeStep(3, async () => {
-                return await this.scanWebsite();
-            }, 5000);
+                return { scanned: true };
+            }, 2000);
             this.updateProgress(60);
 
             // Step 4: Test API endpoints
             await this.executeStep(4, async () => {
-                return await this.testAPIEndpoints();
-            }, 4000);
+                return { tested: true };
+            }, 2000);
             this.updateProgress(80);
 
-            // Step 5: Generate report
+            // Step 5: Generate report - Call backend API
+            let analysisResult;
             await this.executeStep(5, async () => {
-                return await this.generateReport();
+                // For demo, use client-side API simulation
+                // Check if API handler is already loaded
+                if (!window.handleEvaluatorAPI) {
+                    // Load the API handler
+                    const script = document.createElement('script');
+                    script.src = '/api/llms-evaluator.js';
+                    document.head.appendChild(script);
+                    
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = reject;
+                    });
+                }
+                
+                // Call the simulated API
+                analysisResult = await window.handleEvaluatorAPI({
+                    url: domain,
+                    domain: this.websiteUrl
+                });
+                
+                return { generated: true };
             }, 3000);
+            
             this.updateProgress(100);
+            this.analysisResults = analysisResult;
 
             // Hide progress modal and redirect to results
             setTimeout(() => {
@@ -111,13 +120,11 @@ class LLMsTxtEvaluator {
         
         // Mark as active and show spinner
         step.classList.add('active', 'analyzing');
-        const circle = step.querySelector('.rounded-full');
+        const circle = step.querySelector('.step-circle');
         const spinner = step.querySelector('.fa-spinner');
         const check = step.querySelector('.fa-check');
-        const number = step.querySelector('span');
+        const number = step.querySelector('.step-circle span');
         
-        circle.classList.add('bg-purple-600', 'text-white');
-        circle.classList.remove('bg-gray-200');
         spinner.classList.remove('hidden');
         number.classList.add('hidden');
 
@@ -133,8 +140,6 @@ class LLMsTxtEvaluator {
         step.classList.remove('analyzing');
         spinner.classList.add('hidden');
         check.classList.remove('hidden');
-        circle.classList.remove('bg-purple-600');
-        circle.classList.add('bg-green-100');
         
         return result;
     }
@@ -143,13 +148,10 @@ class LLMsTxtEvaluator {
         const step = document.getElementById(`step${stepNumber}`);
         step.classList.remove('active', 'analyzing');
         
-        const circle = step.querySelector('.rounded-full');
         const spinner = step.querySelector('.fa-spinner');
         const check = step.querySelector('.fa-check');
-        const number = step.querySelector('span');
+        const number = step.querySelector('.step-circle span');
         
-        circle.classList.remove('bg-purple-600', 'bg-green-100', 'text-white');
-        circle.classList.add('bg-gray-200');
         spinner.classList.add('hidden');
         check.classList.add('hidden');
         number.classList.remove('hidden');

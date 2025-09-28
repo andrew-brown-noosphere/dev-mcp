@@ -328,6 +328,23 @@
         .step.active .step-circle {
             background: linear-gradient(135deg, #7850ff 0%, #5040ff 100%);
         }
+        
+        .step .step-circle span {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+        
+        .step.active .step-circle span {
+            color: #ffffff;
+        }
+        
+        .step .fa-spinner,
+        .step .fa-check {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
         .step-info h3 {
             margin: 0 0 0.25rem 0;

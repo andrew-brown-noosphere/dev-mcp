@@ -81,11 +81,11 @@ class ResultsDisplay {
 
     displayResults() {
         // Update page title and URL
-        document.getElementById('websiteUrl').textContent = this.results.url;
+        document.getElementById('websiteUrl').textContent = this.results.domain || this.results.url;
         document.getElementById('reportDate').textContent = new Date(this.results.timestamp).toLocaleDateString();
 
         // Check if llms.txt was found
-        if (this.results.needsGeneration || this.results.llmsTxtFound === false) {
+        if (!this.results.llmsTxtFound || this.results.overallScore === 0) {
             this.displayNoLlmsTxtMessage();
             return;
         }
@@ -107,6 +107,48 @@ class ResultsDisplay {
         
         // Display recommendations
         this.displayRecommendations();
+    }
+
+    displayNoLlmsTxtMessage() {
+        // Update the main container to show the missing llms.txt message
+        const mainContainer = document.querySelector('.max-w-6xl');
+        if (!mainContainer) return;
+        
+        mainContainer.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div class="mb-6">
+                    <i class="fas fa-file-slash text-6xl text-red-500 mb-4"></i>
+                </div>
+                <h1 class="text-3xl font-bold mb-4">No llms.txt File Found</h1>
+                <p class="text-xl text-gray-600 mb-8">
+                    This site needs an AI discovery file to be accessible to AI agents.
+                </p>
+                
+                <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
+                    <h3 class="text-lg font-semibold mb-3">What is llms.txt?</h3>
+                    <p class="text-gray-600 mb-4">
+                        An llms.txt file is a standardized way to make your APIs discoverable and usable by AI agents like Claude, GPT-4, and others. 
+                        It provides structured information about your API endpoints, authentication methods, and usage examples.
+                    </p>
+                    <h3 class="text-lg font-semibold mb-3">Why do you need it?</h3>
+                    <p class="text-gray-600">
+                        As AI becomes more integrated into development workflows, having an llms.txt file ensures your APIs can be automatically 
+                        discovered, understood, and integrated by AI coding assistants. This dramatically improves developer experience and adoption.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/llms.html" class="gradient-bg text-white font-semibold py-3 px-8 rounded-lg hover:opacity-90 transition">
+                        <i class="fas fa-wand-magic-sparkles mr-2"></i>
+                        Generate llms.txt
+                    </a>
+                    <a href="/" class="border border-purple-600 text-purple-600 font-semibold py-3 px-8 rounded-lg hover:bg-purple-50 transition">
+                        <i class="fas fa-book mr-2"></i>
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        `;
     }
 
     animateScore(score) {
@@ -185,59 +227,96 @@ class ResultsDisplay {
 
     displayTechnicalDetails() {
         const detailsContainer = document.getElementById('technicalDetails');
-        const details = this.results.details;
+        if (!detailsContainer) return;
         
-        const detailItems = [
-            {
-                icon: 'fas fa-file-alt',
-                label: 'LLMs.txt File',
-                value: details.llmsTxtFound ? 'Found' : 'Not Found',
-                status: details.llmsTxtFound ? 'success' : 'warning'
-            },
-            {
-                icon: 'fas fa-book',
-                label: 'API Documentation',
-                value: details.apiDocsFound ? 'Available' : 'Missing',
-                status: details.apiDocsFound ? 'success' : 'warning'
-            },
-            {
-                icon: 'fas fa-link',
-                label: 'Endpoints Tested',
-                value: `${details.successfulTests}/${details.endpointsTested}`,
-                status: (details.successfulTests / details.endpointsTested) > 0.7 ? 'success' : 'warning'
-            },
-            {
-                icon: 'fas fa-globe',
-                label: 'CORS Enabled',
-                value: details.corsEnabled ? 'Yes' : 'No',
-                status: details.corsEnabled ? 'success' : 'warning'
-            },
-            {
-                icon: 'fas fa-lock',
-                label: 'HTTPS Only',
-                value: details.httpsOnly ? 'Yes' : 'No',
-                status: details.httpsOnly ? 'success' : 'warning'
-            }
-        ];
+        // Check for new API response structure
+        if (this.results.details && this.results.details.sections) {
+            const sections = this.results.details.sections;
+            const detailItems = [
+                {
+                    icon: 'fas fa-file-alt',
+                    label: 'LLMs.txt File',
+                    value: this.results.llmsTxtFound ? 'Found' : 'Not Found',
+                    status: this.results.llmsTxtFound ? 'success' : 'warning'
+                },
+                {
+                    icon: 'fas fa-key',
+                    label: 'Authentication Docs',
+                    value: sections.authentication ? 'Present' : 'Missing',
+                    status: sections.authentication ? 'success' : 'warning'
+                },
+                {
+                    icon: 'fas fa-link',
+                    label: 'API Endpoints',
+                    value: sections.endpoints ? 'Documented' : 'Missing',
+                    status: sections.endpoints ? 'success' : 'warning'
+                },
+                {
+                    icon: 'fas fa-code',
+                    label: 'Code Examples',
+                    value: sections.examples ? 'Available' : 'Missing',
+                    status: sections.examples ? 'success' : 'warning'
+                },
+                {
+                    icon: 'fas fa-tachometer-alt',
+                    label: 'Rate Limits',
+                    value: sections.rate_limits ? 'Documented' : 'Missing',
+                    status: sections.rate_limits ? 'success' : 'warning'
+                }
+            ];
 
-        detailsContainer.innerHTML = detailItems.map(item => `
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div class="flex items-center">
-                    <i class="${item.icon} mr-3 text-gray-600"></i>
-                    <span class="font-medium">${item.label}</span>
+            detailsContainer.innerHTML = detailItems.map(item => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="${item.icon} mr-3 text-gray-600"></i>
+                        <span class="font-medium">${item.label}</span>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                        item.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }">
+                        ${item.value}
+                    </span>
                 </div>
-                <span class="px-3 py-1 rounded-full text-sm font-medium ${
-                    item.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }">
-                    ${item.value}
-                </span>
-            </div>
-        `).join('');
+            `).join('');
+        } else {
+            // Fallback for old structure
+            const details = this.results.details;
+            const detailItems = [
+                {
+                    icon: 'fas fa-file-alt',
+                    label: 'LLMs.txt File',
+                    value: details.llmsTxtFound ? 'Found' : 'Not Found',
+                    status: details.llmsTxtFound ? 'success' : 'warning'
+                }
+            ];
+
+            detailsContainer.innerHTML = detailItems.map(item => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="${item.icon} mr-3 text-gray-600"></i>
+                        <span class="font-medium">${item.label}</span>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                        item.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }">
+                        ${item.value}
+                    </span>
+                </div>
+            `).join('');
+        }
     }
 
     displayAICompatibility() {
         const compatibilityContainer = document.getElementById('aiCompatibility');
-        const compatibility = this.results.aiCompatibility;
+        if (!compatibilityContainer) return;
+        
+        // Check for compatibility data in details.aiCompatibility
+        const compatibility = this.results.details?.aiCompatibility || this.results.aiCompatibility;
+        
+        if (!compatibility) {
+            compatibilityContainer.innerHTML = '<p class="text-gray-600">Compatibility data not available</p>';
+            return;
+        }
         
         const aiAgents = [
             { name: 'Claude', key: 'claude', icon: 'fas fa-brain', color: 'purple' },

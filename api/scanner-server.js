@@ -1,7 +1,7 @@
-// Express server for the Playwright scraper with AI generation
+// Express server for the Playwright scanner with AI generation
 const express = require('express');
 const cors = require('cors');
-const { ComprehensiveScraper } = require('./scraper-playwright');
+const { ComprehensiveScanner } = require('./scanner-playwright');
 const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
@@ -102,8 +102,8 @@ Generate a comprehensive llms.txt file that will help AI agents understand and i
     }
 }
 
-// Main scraping endpoint with AI generation
-app.post('/api/scrape', async (req, res) => {
+// Main scanning endpoint with AI generation
+app.post('/api/scan', async (req, res) => {
     const { url, generateWithAI = true } = req.body;
     
     if (!url) {
@@ -154,6 +154,6 @@ app.post('/api/scrape', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Scraper service running on port ${PORT}`);
-    console.log(`Test with: curl -X POST http://localhost:${PORT}/api/scrape -H "Content-Type: application/json" -d '{"url":"https://scylladb.com"}'`);
+    console.log(`Scanner service running on port ${PORT}`);
+    console.log(`Test with: curl -X POST http://localhost:${PORT}/api/scan -H "Content-Type: application/json" -d '{"url":"https://scylladb.com"}'`);
 });

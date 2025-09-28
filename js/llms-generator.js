@@ -59,10 +59,10 @@ class LLMsGenerator {
         
         this.updateProgress(steps);
         
-        // Try real scraping first, fallback to simulation
+        // Try real scanning first, fallback to simulation
         try {
-            const scraperUrl = 'http://localhost:3001/api/scrape';
-            const response = await fetch(scraperUrl, {
+            const scannerUrl = 'http://localhost:3001/api/scan';
+            const response = await fetch(scannerUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ class LLMsGenerator {
                 }
             }
         } catch (error) {
-            console.log('Scraper not available, using simulation');
+            console.log('Scanner not available, using simulation');
         }
         
         // Fallback to simulation
@@ -286,15 +286,15 @@ class LLMsGenerator {
         const date = new Date().toISOString().split('T')[0];
         const domain = new URL('https://' + this.websiteUrl).hostname;
         
-        // Baseline template when scraper/AI unavailable
+        // Baseline template when scanner/AI unavailable
         let content = `# ${this.formatHostnameAsTitle(domain)}
 # Generated: ${date}
-# Note: Run with AI scraper for accurate marketing content from ${domain}
+# Note: Run with AI scanner for accurate marketing content from ${domain}
 
 title: ${data.marketing.title || this.formatHostnameAsTitle(domain)}
 description: |
   Visit ${domain} to see their actual positioning and value proposition.
-  The AI scraper will extract their real marketing messaging.
+  The AI scanner will extract their real marketing messaging.
 
 # Quick Links
 homepage: https://${domain}
@@ -308,7 +308,7 @@ api_endpoints:
   - https://${domain}/api
 
 # To populate with real content:
-# 1. Ensure scraper service is running (npm run scraper)
+# 1. Ensure scanner service is running (npm run scanner)
 # 2. Regenerate - AI will extract actual marketing copy from ${domain}
 # 3. Get their real value props, use cases, and customer stories
 `;
@@ -394,7 +394,7 @@ mcp:
     }
 
     generateMarketingDescription(domain) {
-        // Placeholder when scraper unavailable
+        // Placeholder when scanner unavailable
         return `Company description will be extracted from ${domain}`;
     }
 

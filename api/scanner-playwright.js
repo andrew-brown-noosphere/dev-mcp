@@ -1,7 +1,7 @@
-// Real Web Scraping with Playwright for llms.txt Generator
+// Real Web Scanning with Playwright for llms.txt Generator
 const { chromium } = require('playwright');
 
-class ComprehensiveScraper {
+class ComprehensiveScanner {
     constructor() {
         this.browser = null;
         this.context = null;
@@ -17,7 +17,7 @@ class ComprehensiveScraper {
         });
     }
 
-    async scrapeWebsite(url) {
+    async scanWebsite(url) {
         try {
             await this.initialize();
             
@@ -27,7 +27,7 @@ class ComprehensiveScraper {
             }
 
             const domain = new URL(url).hostname;
-            console.log(`Starting comprehensive scrape of ${domain}...`);
+            console.log(`Starting comprehensive scan of ${domain}...`);
 
             // Create page
             const page = await this.context.newPage();
@@ -37,27 +37,27 @@ class ComprehensiveScraper {
 
             // Step 1: Homepage analysis
             console.log('Analyzing homepage...');
-            const homepageData = await this.scrapeHomepage(page, url);
+            const homepageData = await this.scanHomepage(page, url);
 
             // Step 2: Find and scrape documentation
             console.log('Finding documentation...');
-            const docsData = await this.scrapeDocumentation(page, url, homepageData.links);
+            const docsData = await this.scanDocumentation(page, url, homepageData.links);
 
             // Step 3: Scrape blog for insights
             console.log('Extracting blog insights...');
-            const blogData = await this.scrapeBlog(page, url, homepageData.links);
+            const blogData = await this.scanBlog(page, url, homepageData.links);
 
             // Step 4: Find testimonials/case studies
             console.log('Looking for testimonials...');
-            const testimonialsData = await this.scrapeTestimonials(page, url, homepageData.links);
+            const testimonialsData = await this.scanTestimonials(page, url, homepageData.links);
 
             // Step 5: Extract technical information
             console.log('Extracting technical details...');
-            const technicalData = await this.scrapeTechnicalDetails(page, url, homepageData.links);
+            const technicalData = await this.scanTechnicalDetails(page, url, homepageData.links);
 
             // Step 6: Find workshops/training
             console.log('Finding workshops and resources...');
-            const workshopsData = await this.scrapeWorkshops(page, url, homepageData.links);
+            const workshopsData = await this.scanWorkshops(page, url, homepageData.links);
 
             // Combine all data
             return {
@@ -93,7 +93,7 @@ class ComprehensiveScraper {
             };
 
         } catch (error) {
-            console.error('Scraping error:', error);
+            console.error('Scanning error:', error);
             return {
                 success: false,
                 error: error.message
@@ -103,7 +103,7 @@ class ComprehensiveScraper {
         }
     }
 
-    async scrapeHomepage(page, url) {
+    async scanHomepage(page, url) {
         await page.goto(url, { waitUntil: 'networkidle' });
         
         // Extract title and meta description
@@ -186,7 +186,7 @@ class ComprehensiveScraper {
         };
     }
 
-    async scrapeDocumentation(page, baseUrl, links) {
+    async scanDocumentation(page, baseUrl, links) {
         // Find documentation URLs
         const docLinks = links.filter(link => 
             link.includes('/docs') || 
@@ -242,7 +242,7 @@ class ComprehensiveScraper {
         return docsData;
     }
 
-    async scrapeBlog(page, baseUrl, links) {
+    async scanBlog(page, baseUrl, links) {
         const blogLinks = links.filter(link => 
             link.includes('/blog') || 
             link.includes('/posts') || 
@@ -309,7 +309,7 @@ class ComprehensiveScraper {
         };
     }
 
-    async scrapeTestimonials(page, baseUrl, links) {
+    async scanTestimonials(page, baseUrl, links) {
         const testimonialLinks = links.filter(link => 
             link.includes('/customers') || 
             link.includes('/testimonials') || 
@@ -367,7 +367,7 @@ class ComprehensiveScraper {
         };
     }
 
-    async scrapeTechnicalDetails(page, baseUrl, links) {
+    async scanTechnicalDetails(page, baseUrl, links) {
         const techLinks = links.filter(link => 
             link.includes('/api') || 
             link.includes('/developers') || 
@@ -476,7 +476,7 @@ class ComprehensiveScraper {
         return technicalData;
     }
 
-    async scrapeWorkshops(page, baseUrl, links) {
+    async scanWorkshops(page, baseUrl, links) {
         const workshopLinks = links.filter(link => 
             link.includes('/training') || 
             link.includes('/workshop') || 
@@ -540,7 +540,7 @@ class ComprehensiveScraper {
 }
 
 // Export the scraper
-module.exports = { ComprehensiveScraper };
+module.exports = { ComprehensiveScanner };
 
 // API endpoint handler
 async function handleScrapeRequest(req, res) {
@@ -565,5 +565,5 @@ async function handleScrapeRequest(req, res) {
 
 // For serverless environments
 if (typeof window === 'undefined') {
-    module.exports.handler = handleScrapeRequest;
+    module.exports.handler = handleScanRequest;
 }

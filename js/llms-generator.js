@@ -190,150 +190,43 @@ class LLMsGenerator {
     }
 
     extractMarketingPatterns(hostname) {
-        // Deep content extraction - comprehensive discovery
-        const isScylla = hostname.includes('scylladb');
-        
-        if (isScylla) {
-            return {
-                found: true,
-                title: 'ScyllaDB - The Monstrously Fast NoSQL Database',
-                description: 'Drop-in Apache Cassandra replacement that powers your applications with 10x better performance and 90% cost savings',
-                
-                // Deep blog content
-                blog_insights: [
-                    'How Discord Stores Billions of Messages with ScyllaDB',
-                    'Achieving Single-Digit Millisecond P99 Latency',
-                    'The Cost of Containerization for Your Database',
-                    'Shard-per-Core Architecture Explained',
-                    'Migrating from Cassandra: A Complete Guide'
-                ],
-                
-                // Comprehensive use cases from case studies
-                useCases: [
-                    'Real-time analytics for 100M+ concurrent users (Discord)',
-                    'Time-series data at 1M+ writes/sec (Comcast)',
-                    'Gaming leaderboards with <1ms latency (Epic Games)',
-                    'Ad tech real-time bidding at scale (AppNexus)',
-                    'IoT sensor data: 50M devices (Samsung SmartThings)',
-                    'Fraud detection in financial services (Revolut)',
-                    'E-commerce personalization (Fanatics)',
-                    'Social feeds and messaging (ShareChat - 180M users)'
-                ],
-                
-                // Deep technical differentiators
-                differentiators: [
-                    '10x better performance than Cassandra',
-                    'Consistent <1ms P99 latency',
-                    'Scales to millions of operations/second',
-                    'Shard-per-core architecture (no JVM overhead)',
-                    'Automatic performance optimization',
-                    'Works on-premises, cloud, or Kubernetes',
-                    'Compatible with Cassandra drivers/tools'
-                ],
-                
-                // Actual customer testimonials
-                testimonials: [
-                    {
-                        company: 'Discord',
-                        quote: 'ScyllaDB powers our messages database storing billions of messages with consistent performance',
-                        metric: 'Handles 100M+ concurrent users'
-                    },
-                    {
-                        company: 'Comcast',
-                        quote: 'Reduced P99 latency from 21ms to 2ms while handling 1M writes/sec',
-                        metric: '10x performance improvement'
-                    },
-                    {
-                        company: 'Grab',
-                        quote: 'ScyllaDB handles our critical path with 99.99% availability',
-                        metric: 'Southeast Asia super-app scale'
-                    }
-                ],
-                
-                // Developer workshops and resources
-                workshops: [
-                    'ScyllaDB Essentials: Free online training',
-                    'Data Modeling Masterclass',
-                    'Performance Tuning Deep Dive',
-                    'Migration from Cassandra Workshop',
-                    'ScyllaDB on Kubernetes',
-                    'Time Series Data Modeling'
-                ],
-                
-                // Technical resources
-                technical_resources: [
-                    'Architecture whitepaper',
-                    'Performance benchmarks vs Cassandra/DynamoDB',
-                    'Best practices guide',
-                    'Migration toolkit',
-                    'Monitoring and observability guide'
-                ]
-            };
-        }
-        
-        // Enhanced patterns for other tech companies
-        const techCompanies = ['scylladb', 'mongodb', 'stripe', 'twilio', 'github', 'datadog'];
-        const isKnownTech = techCompanies.some(company => hostname.includes(company));
-        
-        if (isKnownTech) {
-            return {
-                found: true,
-                title: this.generateTitle(hostname),
-                description: this.generateDescription(hostname),
-                useCases: this.generateUseCases(hostname),
-                customers: this.generateCustomers(hostname),
-                differentiators: this.generateDifferentiators(hostname),
-                blog_insights: [],
-                testimonials: [],
-                workshops: [],
-                technical_resources: []
-            };
-        }
-        
+        // For simulation mode only - return minimal placeholder data
+        // Real intelligence comes from AI analysis of scraped content
         return {
             found: false,
-            title: hostname,
-            description: 'Website for ' + hostname,
+            title: this.formatHostnameAsTitle(hostname),
+            description: `Discovering services and capabilities for ${hostname}...`,
             useCases: [],
-            differentiators: []
+            differentiators: [],
+            blog_insights: [],
+            testimonials: [],
+            workshops: [],
+            technical_resources: [],
+            customers: [],
+            category: 'analyzing'
         };
     }
 
     extractTechnicalPatterns(hostname) {
-        const hasAPI = Math.random() > 0.3;
-        
-        if (hasAPI) {
-            return {
-                found: true,
-                endpoints: this.generateEndpoints(hostname),
-                authentication: this.generateAuth(hostname),
-                drivers: ['python', 'javascript', 'java', 'go'],
-                documentation: `https://docs.${hostname}`
-            };
-        }
-        
-        return { found: false };
+        // Minimal placeholder - real data comes from scraping/AI
+        return { 
+            found: false,
+            message: 'Awaiting AI analysis of technical capabilities...'
+        };
     }
 
     extractExamples(hostname) {
-        const hasExamples = Math.random() > 0.4;
-        
-        if (hasExamples) {
-            return {
-                found: true,
-                quickstart: this.generateQuickstart(hostname),
-                languages: ['python', 'javascript', 'curl']
-            };
-        }
-        
-        return { found: false };
+        // Minimal placeholder - real data comes from scraping/AI
+        return { 
+            found: false,
+            message: 'Awaiting AI discovery of code examples...'
+        };
     }
 
     extractPerformance(hostname) {
+        // Minimal placeholder - real data comes from scraping/AI
         return {
-            responseTime: Math.floor(Math.random() * 50) + 10 + 'ms',
-            uptime: '99.' + Math.floor(Math.random() * 9) + '%',
-            scale: Math.floor(Math.random() * 900) + 100 + 'K requests/sec'
+            message: 'Performance metrics will be discovered by AI analysis'
         };
     }
 
@@ -388,145 +281,36 @@ class LLMsGenerator {
             return this.analysisData.aiGeneratedContent;
         }
         
-        // Otherwise, fall back to template-based generation
+        // Fallback when AI generation is not available
         const data = this.analysisData;
         const date = new Date().toISOString().split('T')[0];
+        const domain = new URL('https://' + this.websiteUrl).hostname;
         
-        let content = `# Company: ${data.marketing.title || this.websiteUrl}
-# Updated: ${date}
+        // Baseline template when scraper/AI unavailable
+        let content = `# ${this.formatHostnameAsTitle(domain)}
+# Generated: ${date}
+# Note: Run with AI scraper for accurate marketing content from ${domain}
 
-title: ${data.marketing.title || this.websiteUrl}
-description: ${data.marketing.description || 'No description available'}
-`;
+title: ${data.marketing.title || this.formatHostnameAsTitle(domain)}
+description: |
+  Visit ${domain} to see their actual positioning and value proposition.
+  The AI scraper will extract their real marketing messaging.
 
-        // Add deep blog insights if available
-        if (data.marketing.blog_insights && data.marketing.blog_insights.length > 0) {
-            content += `
+# Quick Links
+homepage: https://${domain}
+documentation: https://docs.${domain}
+api: https://api.${domain}
+support: support@${domain}
 
-# Key Insights & Resources
-blog_insights:`;
-            data.marketing.blog_insights.forEach(insight => {
-                content += `
-  - ${insight}`;
-            });
-        }
+# Common Patterns
+api_endpoints:
+  - https://api.${domain}/v1
+  - https://${domain}/api
 
-        // Add capabilities if found
-        if (data.marketing.useCases || data.technical.found) {
-            content += `
-
-# Core Capabilities
-capabilities:`;
-            
-            if (data.marketing.useCases) {
-                data.marketing.useCases.forEach(uc => {
-                    content += `
-  - ${uc}`;
-                });
-            }
-        }
-
-        // Add performance metrics
-        if (data.performance) {
-            content += `
-
-# Performance Metrics
-performance:
-  response_time_p99: ${data.performance.responseTime}
-  uptime_sla: ${data.performance.uptime}
-  throughput: ${data.performance.scale}`;
-        }
-
-        // Add use cases
-        if (data.marketing.useCases) {
-            content += `
-
-# Use Cases
-use_cases:`;
-            data.marketing.useCases.forEach((uc, i) => {
-                content += `
-  - scenario: "${uc}"
-    example: "${this.generateExampleForUseCase(uc)}"`;
-            });
-        }
-
-        // Add customer testimonials if available
-        if (data.marketing.testimonials && data.marketing.testimonials.length > 0) {
-            content += `
-
-# Customer Success Stories
-testimonials:`;
-            data.marketing.testimonials.forEach(testimonial => {
-                content += `
-  - company: ${testimonial.company}
-    quote: "${testimonial.quote}"
-    metric: ${testimonial.metric}`;
-            });
-        }
-
-        // Add competitive positioning
-        if (data.marketing.differentiators) {
-            content += `
-
-# Competitive Positioning
-differentiators:`;
-            data.marketing.differentiators.forEach(diff => {
-                content += `
-  - ${diff}`;
-            });
-        }
-
-        // Add workshops and training if available
-        if (data.marketing.workshops && data.marketing.workshops.length > 0) {
-            content += `
-
-# Developer Training & Workshops
-workshops:`;
-            data.marketing.workshops.forEach(workshop => {
-                content += `
-  - ${workshop}`;
-            });
-        }
-
-        // Add technical information
-        if (data.technical.found) {
-            content += `
-
-# Integration Information`;
-            
-            if (data.technical.drivers) {
-                content += `
-drivers: [${data.technical.drivers.join(', ')}]`;
-            }
-            
-            if (data.technical.documentation) {
-                content += `
-api_docs: ${data.technical.documentation}`;
-            }
-            
-            if (data.technical.endpoints) {
-                content += `
-api_endpoint: ${data.technical.endpoints[0]}`;
-            }
-        }
-
-        // Add quick start if examples found
-        if (data.examples.found && data.examples.quickstart) {
-            content += `
-
-# Quick Start
-quickstart: |
-${data.examples.quickstart}`;
-        }
-
-        // Add keywords
-        content += `
-
-# Keywords for AI Discovery
-keywords: [${this.generateKeywords().join(', ')}]
-
-# Support & Sales
-support: support@${new URL('https://' + this.websiteUrl).hostname}
+# To populate with real content:
+# 1. Ensure scraper service is running (npm run scraper)
+# 2. Regenerate - AI will extract actual marketing copy from ${domain}
+# 3. Get their real value props, use cases, and customer stories
 `;
 
         // Check for MCP config in template mode too
@@ -587,150 +371,107 @@ mcp:
     }
 
     // Helper methods for generating content
+    formatHostnameAsTitle(hostname) {
+        // Just clean up the hostname for display
+        let cleanName = hostname
+            .replace(/^www\./, '')
+            .replace(/\.(com|org|io|dev|ai|net)$/, '');
+        
+        return cleanName
+            .split(/[.-]/)
+            .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(' ');
+    }
+
     generateTitle(hostname) {
-        const titles = {
-            'scylladb': 'ScyllaDB - The Database for Predictable Performance at Scale',
-            'mongodb': 'MongoDB - The Application Data Platform',
-            'stripe': 'Stripe - Online Payment Processing for Internet Businesses',
-            'github': 'GitHub - Where the world builds software',
-            'twilio': 'Twilio - Cloud Communications Platform'
-        };
-        
-        for (const [key, title] of Object.entries(titles)) {
-            if (hostname.includes(key)) return title;
-        }
-        
-        return hostname.charAt(0).toUpperCase() + hostname.slice(1);
+        // This is only used as fallback - real title comes from AI
+        return this.formatHostnameAsTitle(hostname);
     }
 
     generateDescription(hostname) {
-        const descriptions = {
-            'scylladb': 'Drop-in Apache Cassandra replacement that\'s 10x faster. NoSQL database with consistent <10ms P99 latency at scale.',
-            'mongodb': 'Build faster and build smarter with a developer data platform that helps solve your data challenges.',
-            'stripe': 'A fully integrated suite of payments products to accept payments, send payouts, and manage businesses online.',
-            'github': 'GitHub is where over 100 million developers shape the future of software, together.',
-            'twilio': 'Build personalized customer experiences with APIs for communications and data.'
-        };
+        // This is only used as fallback - real description comes from AI
+        return `AI-powered analysis will determine the actual services and capabilities of ${hostname}`;
+    }
+
+    generateMarketingDescription(domain) {
+        // Placeholder when scraper unavailable
+        return `Company description will be extracted from ${domain}`;
+    }
+
+    generateSmartPatterns(domain) {
+        const lower = domain.toLowerCase();
+        let patterns = [];
         
-        for (const [key, desc] of Object.entries(descriptions)) {
-            if (hostname.includes(key)) return desc;
+        // Detect industry/category
+        if (lower.includes('pay') || lower.includes('stripe')) {
+            patterns.push('category: payment_processing');
+            patterns.push('industry: fintech');
+        } else if (lower.includes('db') || lower.includes('data')) {
+            patterns.push('category: database');
+            patterns.push('industry: data_infrastructure');
+        } else if (lower.includes('auth') || lower.includes('identity')) {
+            patterns.push('category: authentication');
+            patterns.push('industry: security');
+        } else if (lower.includes('api')) {
+            patterns.push('category: api_platform');
+            patterns.push('industry: developer_tools');
+        } else {
+            patterns.push('category: technology');
+            patterns.push('industry: software');
         }
         
-        return `Platform for ${hostname}`;
+        // Add common patterns
+        patterns.push('type: b2b_saas');
+        patterns.push('deployment: cloud_hosted');
+        
+        return patterns.join('\n');
+    }
+
+    generateMarketingKeywords(domain) {
+        const keywords = [];
+        const lower = domain.toLowerCase();
+        
+        // Extract company name parts
+        const parts = lower.replace(/\.(com|org|io|dev|ai|net)$/, '').split(/[-._]/);
+        keywords.push(...parts.filter(p => p.length > 2));
+        
+        // Basic keywords until real ones are extracted
+        keywords.push('api', 'integration', 'platform');
+        
+        return keywords;
     }
 
     generateUseCases(hostname) {
-        if (hostname.includes('database') || hostname.includes('db')) {
-            return [
-                'Real-time analytics at scale',
-                'Time-series data storage',
-                'User session management',
-                'IoT data ingestion'
-            ];
-        }
-        
-        if (hostname.includes('payment') || hostname.includes('stripe')) {
-            return [
-                'Online payment processing',
-                'Subscription billing',
-                'Marketplace payments',
-                'Mobile commerce'
-            ];
-        }
-        
-        return [
-            'API integration',
-            'Data processing',
-            'Workflow automation'
-        ];
+        // Placeholder - real use cases come from AI
+        return [];
+    }
+
+    generateUseCasesForCategory(category, hostname) {
+        // Placeholder - real use cases come from AI
+        return [];
     }
 
     generateCustomers(hostname) {
-        return ['Fortune 500 companies', 'Growing startups', 'Enterprise organizations'];
+        // Placeholder - real customers come from AI
+        return [];
     }
 
     generateDifferentiators(hostname) {
-        if (hostname.includes('scylla')) {
-            return [
-                '10x faster than Apache Cassandra',
-                'Predictable <10ms P99 latency',
-                'No JVM garbage collection pauses',
-                'Auto-tuning and self-optimization'
-            ];
-        }
-        
-        return [
-            'Industry-leading performance',
-            'Enterprise-grade security',
-            'Global scalability',
-            '24/7 support'
-        ];
+        // Placeholder - real differentiators come from AI
+        return [];
     }
 
-    generateEndpoints(hostname) {
-        return [
-            `https://api.${hostname}/v1`,
-            `https://${hostname}/api/v2`
-        ];
+    generateDifferentiatorsForCategory(category, hostname) {
+        // Placeholder - real differentiators come from AI
+        return [];
     }
 
-    generateAuth(hostname) {
-        return {
-            type: 'Bearer token',
-            header: 'Authorization: Bearer YOUR_API_KEY'
-        };
-    }
-
-    generateQuickstart(hostname) {
-        return `  # Install SDK
-  pip install ${hostname.split('.')[0]}-sdk
-  
-  # Initialize client
-  from ${hostname.split('.')[0]} import Client
-  client = Client(api_key="YOUR_API_KEY")
-  
-  # Make your first request
-  response = client.query("SELECT * FROM users LIMIT 10")
-  print(response)`;
-    }
-
-    generateExampleForUseCase(useCase) {
-        const examples = {
-            'Real-time analytics': 'Process 1M events/sec with <10ms latency',
-            'Payment processing': 'Accept payments in 135+ currencies',
-            'Data storage': 'Store petabytes of data across regions'
-        };
-        
-        for (const [key, example] of Object.entries(examples)) {
-            if (useCase.toLowerCase().includes(key.toLowerCase())) {
-                return example;
-            }
-        }
-        
-        return 'Implementation example for ' + useCase;
-    }
-
-    generateKeywords() {
-        const keywords = [];
-        
-        // Add from marketing data
-        if (this.analysisData.marketing.title) {
-            keywords.push(...this.analysisData.marketing.title.toLowerCase().split(' ').filter(w => w.length > 3));
-        }
-        
-        // Add technical keywords
-        if (this.analysisData.technical.found) {
-            keywords.push('api', 'integration', 'sdk');
-        }
-        
-        // Add domain-specific keywords
-        const domain = new URL('https://' + this.websiteUrl).hostname;
-        if (domain.includes('db') || domain.includes('data')) {
-            keywords.push('database', 'nosql', 'sql', 'query');
-        }
-        
-        return [...new Set(keywords)].slice(0, 10);
-    }
+    // All these methods are no longer needed - AI handles everything
+    generateEndpoints(hostname) { return []; }
+    generateAuth(hostname) { return {}; }
+    generateQuickstart(hostname) { return ''; }
+    generateExampleForUseCase(useCase) { return ''; }
+    generateKeywords() { return []; }
 
     // UI Methods
     showProgress() {
@@ -894,7 +635,7 @@ function downloadFile() {
 
 function testWithEvaluator() {
     // Get the generated content
-    const content = document.getElementById('generatedContent').value;
+    const content = document.getElementById('generatedContent').textContent;
     const url = document.getElementById('websiteUrl').value;
     
     if (!content) {

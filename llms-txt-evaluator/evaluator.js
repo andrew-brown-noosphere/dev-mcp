@@ -39,10 +39,11 @@ class LLMsTxtEvaluator {
     
     showGeneratedContentMessage() {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4';
+        messageDiv.className = 'bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4';
         messageDiv.innerHTML = `
-            <strong>Testing Generated llms.txt</strong><br>
-            We'll evaluate the llms.txt file you just generated instead of fetching it from the website.
+            <strong>🧪 Testing Generated llms.txt (Not Yet Deployed)</strong><br>
+            We'll evaluate the llms.txt content you just generated. This file hasn't been deployed to ${this.websiteUrl} yet.
+            <br><small class="text-blue-600">After testing, deploy this file to your website at: <code>/${this.websiteUrl}/llms.txt</code></small>
         `;
         
         const form = document.getElementById('evaluationForm');

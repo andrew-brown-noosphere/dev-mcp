@@ -114,16 +114,46 @@ class ResultsDisplay {
     }
 
     showGeneratedContentBadge() {
-        // Add a badge showing this is generated content
+        // Add a badge and deployment instructions
         const headerSection = document.querySelector('.text-center.mb-8');
         if (headerSection) {
             const badge = document.createElement('div');
-            badge.className = 'inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4';
+            badge.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left max-w-3xl mx-auto';
             badge.innerHTML = `
-                <i class="fas fa-magic mr-2"></i>
-                Testing Generated llms.txt
+                <div class="flex items-start">
+                    <i class="fas fa-flask text-blue-500 mr-3 mt-1"></i>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-blue-900 mb-1">Testing Pre-Deployment llms.txt</h4>
+                        <p class="text-blue-700 text-sm mb-2">
+                            This evaluation is based on the llms.txt content you generated. 
+                            The file hasn't been deployed to <code class="bg-blue-100 px-1 rounded">${this.results.domain}</code> yet.
+                        </p>
+                        <div class="bg-white border border-blue-100 rounded p-3 mt-2">
+                            <p class="text-sm font-medium text-gray-700 mb-1">Next Steps:</p>
+                            <ol class="text-sm text-gray-600 list-decimal list-inside">
+                                <li>Review the evaluation results below</li>
+                                <li>Make any recommended improvements</li>
+                                <li>Deploy the file to: <code class="bg-gray-100 px-1 rounded">https://${this.results.domain}/llms.txt</code></li>
+                                <li>Run the evaluator again to test the live deployment</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
             `;
             headerSection.insertBefore(badge, headerSection.firstChild);
+        }
+        
+        // Add "Back to Generator" button to the action buttons section
+        const buttonContainer = document.querySelector('.flex.flex-col.sm\\:flex-row.gap-4.justify-center');
+        if (buttonContainer) {
+            const backButton = document.createElement('a');
+            backButton.href = `/llms-generator.html?url=${encodeURIComponent(this.results.domain)}`;
+            backButton.className = 'border border-blue-600 text-blue-600 font-semibold py-3 px-8 rounded-lg hover:bg-blue-50 transition';
+            backButton.innerHTML = `
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Generator
+            `;
+            buttonContainer.insertBefore(backButton, buttonContainer.firstChild);
         }
     }
 
@@ -261,7 +291,8 @@ class ResultsDisplay {
                 {
                     icon: 'fas fa-file-alt',
                     label: 'LLMs.txt File',
-                    value: this.results.llmsTxtFound ? 'Found' : 'Not Found',
+                    value: this.results.generatedContent ? 'Generated (Not Deployed)' : 
+                           (this.results.llmsTxtFound ? 'Found' : 'Not Found'),
                     status: this.results.llmsTxtFound ? 'success' : 'warning'
                 },
                 {

@@ -112,6 +112,13 @@ class LLMsGenerator {
         await new Promise(r => setTimeout(r, 500));
         this.analysisData.performance = data.performance;
         await this.updateStep(steps, 'performance', 'complete');
+        
+        // Store AI-generated content if available
+        if (data.aiGeneratedLLMsTxt) {
+            this.analysisData.aiGeneratedContent = data.aiGeneratedLLMsTxt;
+            this.analysisData.generatedWithAI = true;
+            console.log('Using AI-generated llms.txt content');
+        }
     }
     
     detectLanguages(examples) {
@@ -345,6 +352,12 @@ class LLMsGenerator {
     }
 
     generateContent() {
+        // If we have AI-generated content, use it directly
+        if (this.analysisData.aiGeneratedContent) {
+            return this.analysisData.aiGeneratedContent;
+        }
+        
+        // Otherwise, fall back to template-based generation
         const data = this.analysisData;
         const date = new Date().toISOString().split('T')[0];
         
@@ -707,6 +720,25 @@ support: support@${new URL('https://' + this.websiteUrl).hostname}
         document.getElementById('loadingState').classList.add('hidden');
         document.getElementById('outputContainer').classList.remove('hidden');
         document.getElementById('generatedContent').textContent = content;
+        
+        // Show AI badge if content was AI-generated
+        if (this.analysisData.generatedWithAI) {
+            this.showAIGeneratedBadge();
+        }
+    }
+    
+    showAIGeneratedBadge() {
+        // Add badge to output section header
+        const outputHeader = document.querySelector('.output-section h2');
+        if (outputHeader && !outputHeader.querySelector('.ai-badge')) {
+            const badge = document.createElement('span');
+            badge.className = 'ai-badge inline-flex items-center ml-3 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm';
+            badge.innerHTML = `
+                <i class="fas fa-sparkles mr-1"></i>
+                AI Generated
+            `;
+            outputHeader.appendChild(badge);
+        }
     }
 }
 

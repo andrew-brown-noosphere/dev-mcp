@@ -1,4 +1,4 @@
-# llms.txt Generator - Real Web Scraping
+# llms.txt Generator - AI-Powered Web Scraping
 
 ## Setup
 
@@ -12,7 +12,13 @@ npm install
 npx playwright install chromium
 ```
 
-3. Start the scraper service:
+3. Set up environment variables:
+```bash
+cp .env.ai-example .env
+# Edit .env and add your Anthropic API key
+```
+
+4. Start the scraper service:
 ```bash
 npm run scraper
 ```
@@ -21,7 +27,10 @@ The scraper will run on port 3001.
 
 ## How It Works
 
-The scraper uses Playwright to comprehensively crawl websites and extract:
+The system combines web scraping with AI to generate intelligent llms.txt files:
+
+### 1. Web Scraping (Playwright)
+The scraper comprehensively crawls websites and extracts:
 
 ### Marketing Content
 - Homepage title and description
@@ -44,6 +53,21 @@ The scraper uses Playwright to comprehensively crawl websites and extract:
 - Extracts workshop and training information
 - Finds technical benchmarks
 - Discovers developer resources
+
+### 2. AI Generation (Claude)
+After scraping, the system uses Claude AI to:
+- Analyze all extracted content
+- Understand the company's value proposition
+- Generate a comprehensive llms.txt file
+- Structure content for optimal AI agent discovery
+- Include relevant examples and use cases
+
+The AI considers:
+- Marketing messaging and positioning
+- Technical capabilities and APIs
+- Customer success stories
+- Performance metrics
+- Developer resources
 
 ## Testing
 

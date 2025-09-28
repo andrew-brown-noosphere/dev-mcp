@@ -74,8 +74,7 @@ class ResultsDisplay {
                     title: 'Consider adding OpenAPI specification',
                     description: 'An OpenAPI (Swagger) specification would make your API more machine-readable and improve AI agent compatibility.'
                 }
-            ],
-            grade: 'B+'
+            ]
         };
     }
 
@@ -93,8 +92,8 @@ class ResultsDisplay {
         // Display overall score with animation
         this.animateScore(this.results.overallScore);
         
-        // Display grade
-        this.displayGrade(this.results.grade);
+        // Display percentage score
+        this.displayPercentageScore(this.results.overallScore);
         
         // Display component scores
         this.displayComponentScores();
@@ -116,12 +115,17 @@ class ResultsDisplay {
         
         mainContainer.innerHTML = `
             <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
-                <div class="mb-6">
-                    <i class="fas fa-file-slash text-6xl text-red-500 mb-4"></i>
+                <div class="mb-6 relative">
+                    <div class="inline-block relative">
+                        <i class="fas fa-file-slash text-6xl text-red-500"></i>
+                        <div class="absolute -bottom-2 -right-2 bg-red-500 text-white rounded-full w-20 h-20 flex items-center justify-center font-bold text-2xl">
+                            0%
+                        </div>
+                    </div>
                 </div>
                 <h1 class="text-3xl font-bold mb-4">No llms.txt File Found</h1>
                 <p class="text-xl text-gray-600 mb-8">
-                    This site needs an AI discovery file to be accessible to AI agents.
+                    This site scores 0% for AI readiness because it lacks an llms.txt file.
                 </p>
                 
                 <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
@@ -138,11 +142,11 @@ class ResultsDisplay {
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/llms.html" class="gradient-bg text-white font-semibold py-3 px-8 rounded-lg hover:opacity-90 transition">
+                    <a href="/llms-generator.html" class="gradient-bg text-white font-semibold py-3 px-8 rounded-lg hover:opacity-90 transition">
                         <i class="fas fa-wand-magic-sparkles mr-2"></i>
                         Generate llms.txt
                     </a>
-                    <a href="/" class="border border-purple-600 text-purple-600 font-semibold py-3 px-8 rounded-lg hover:bg-purple-50 transition">
+                    <a href="/blog/llms-txt-your-ai-discovery-file.html" class="border border-purple-600 text-purple-600 font-semibold py-3 px-8 rounded-lg hover:bg-purple-50 transition">
                         <i class="fas fa-book mr-2"></i>
                         Learn More
                     </a>
@@ -179,18 +183,20 @@ class ResultsDisplay {
         requestAnimationFrame(animate);
     }
 
-    displayGrade(grade) {
-        const gradeElement = document.getElementById('gradeText');
-        const gradeBadge = document.getElementById('gradeBadge');
+    displayPercentageScore(score) {
+        const scoreElement = document.getElementById('scorePercentText');
+        const scoreBadge = document.getElementById('scoreBadge');
         
-        gradeElement.textContent = grade;
+        scoreElement.textContent = `${score}%`;
         
-        // Set grade color
-        const gradeClass = grade.startsWith('A') ? 'grade-a' : 
-                          grade.startsWith('B') ? 'grade-b' : 
-                          grade.startsWith('C') ? 'grade-c' : 'grade-d';
+        // Set score color based on percentage
+        let scoreClass = '';
+        if (score >= 80) scoreClass = 'excellent';
+        else if (score >= 60) scoreClass = 'good';
+        else if (score >= 40) scoreClass = 'fair';
+        else scoreClass = 'poor';
         
-        gradeBadge.className = `grade-badge ${gradeClass} text-white px-6 py-4 rounded-2xl text-center`;
+        scoreBadge.className = `score-badge ${scoreClass} text-white px-6 py-4 rounded-2xl text-center`;
     }
 
     displayComponentScores() {

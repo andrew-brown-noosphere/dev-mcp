@@ -51,8 +51,7 @@ async function handleEvaluatorAPI(request) {
                     general: 0.6 + Math.random() * 0.35
                 }
             },
-            recommendations: generateRecommendations(),
-            grade: 'B+'
+            recommendations: generateRecommendations()
         };
     } else {
         // Return "not found" for unknown domains
@@ -97,8 +96,7 @@ async function handleEvaluatorAPI(request) {
                     title: 'Define API instructions for AI',
                     description: 'Include clear instructions on how AI agents should use your API, including authentication, endpoints, and examples'
                 }
-            ],
-            grade: 'F'
+            ]
         };
     }
 }

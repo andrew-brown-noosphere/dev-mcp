@@ -454,6 +454,29 @@
                         <h3 class="score-value" id="scoreValue">0%</h3>
                         <p class="score-label" id="scoreMessage">Analyzing...</p>
                     </div>
+                    
+                    <!-- MCP Configuration (optional) -->
+                    <div id="mcpConfig" class="hidden" style="margin-top: 2rem; padding: 1.5rem; background: rgba(120, 80, 255, 0.1); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 12px;">
+                        <h4 style="font-size: 1.125rem; margin-bottom: 1rem; color: #7850ff;">
+                            <i class="fas fa-plug"></i> MCP Server Configuration (Optional)
+                        </h4>
+                        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">
+                            Add MCP server details to enable direct AI integration 
+                            <a href="/mcp-flow-demo.html" target="_blank" style="color: #7850ff; text-decoration: underline;">
+                                See how it works →
+                            </a>
+                        </p>
+                        <div style="display: grid; gap: 1rem;">
+                            <input type="text" 
+                                   id="mcpServerUrl" 
+                                   placeholder="wss://mcp.your-domain.com"
+                                   style="padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
+                            <input type="text" 
+                                   id="mcpAuthType" 
+                                   placeholder="Authentication type (e.g., api-key, oauth)"
+                                   style="padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Output Section -->

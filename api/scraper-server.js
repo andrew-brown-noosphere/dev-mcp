@@ -48,8 +48,10 @@ Create a comprehensive llms.txt file that:
 3. Provides technical integration details
 4. Includes performance metrics and differentiators
 5. Makes it easy for AI agents to understand how to use the API
+6. If applicable, includes MCP (Model Context Protocol) server configuration for direct AI integration
 
-Format the output as a valid llms.txt file with proper sections and YAML-like syntax.`;
+Format the output as a valid llms.txt file with proper sections and YAML-like syntax.
+Include an MCP section if the service would benefit from direct AI tool integration.`;
 
     const userPrompt = `Based on the following information scraped from ${scrapedData.domain}, create a comprehensive llms.txt file:
 

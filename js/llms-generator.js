@@ -378,6 +378,13 @@ class LLMsGenerator {
     generateContent() {
         // If we have AI-generated content, use it directly
         if (this.analysisData.aiGeneratedContent) {
+            // Check if we need to append MCP config
+            const mcpServerUrl = document.getElementById('mcpServerUrl')?.value;
+            const mcpAuthType = document.getElementById('mcpAuthType')?.value;
+            
+            if (mcpServerUrl) {
+                return this.appendMCPConfig(this.analysisData.aiGeneratedContent, mcpServerUrl, mcpAuthType);
+            }
             return this.analysisData.aiGeneratedContent;
         }
         
@@ -522,7 +529,61 @@ keywords: [${this.generateKeywords().join(', ')}]
 support: support@${new URL('https://' + this.websiteUrl).hostname}
 `;
 
+        // Check for MCP config in template mode too
+        const mcpServerUrl = document.getElementById('mcpServerUrl')?.value;
+        const mcpAuthType = document.getElementById('mcpAuthType')?.value;
+        
+        if (mcpServerUrl) {
+            content = this.appendMCPConfig(content, mcpServerUrl, mcpAuthType);
+        }
+
         return content;
+    }
+    
+    appendMCPConfig(content, serverUrl, authType = 'api-key') {
+        const mcpSection = `
+
+# MCP (Model Context Protocol) Integration
+# This enables AI agents to directly connect and use our tools
+mcp:
+  server: ${serverUrl}
+  protocol: model-context-protocol
+  version: 1.0
+  
+  authentication:
+    type: ${authType}
+    ${authType === 'api-key' ? 'header: X-API-Key' : ''}
+    ${authType === 'oauth' ? 'flow: client_credentials' : ''}
+  
+  # Available tools via MCP
+  tools:
+    - name: quick_start
+      description: Get started with our API in seconds
+      
+    - name: generate_code
+      description: Generate integration code for your use case
+      
+    - name: test_connection
+      description: Test your API connection and credentials
+      
+    - name: run_query
+      description: Execute queries against our service
+      
+    - name: get_schema
+      description: Get schema information for your data
+  
+  # Connection instructions for AI agents
+  connect_instructions: |
+    To connect via MCP:
+    1. Use the WebSocket endpoint: ${serverUrl}
+    2. Authenticate with your API key
+    3. Call listTools() to see all available operations
+    4. Use tools directly for instant integration
+    
+  # Auto-discovery beacon
+  discovery_beacon: ${serverUrl}/discover`;
+        
+        return content + mcpSection;
     }
 
     // Helper methods for generating content
@@ -726,9 +787,14 @@ support: support@${new URL('https://' + this.websiteUrl).hostname}
         document.getElementById('scoreDisplay').classList.remove('hidden');
         document.getElementById('scoreValue').textContent = score + '%';
         
+        // Show MCP config if high score
+        if (score >= 70) {
+            document.getElementById('mcpConfig').classList.remove('hidden');
+        }
+        
         let message = '';
         if (score >= 80) {
-            message = 'Excellent AI readiness! Minor optimizations possible.';
+            message = 'Excellent AI readiness! Consider adding MCP for direct integration.';
         } else if (score >= 60) {
             message = 'Good foundation. Add more examples and documentation.';
         } else if (score >= 40) {

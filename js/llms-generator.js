@@ -313,9 +313,9 @@ api_endpoints:
   - https://${domain}/api
 
 # To populate with real content:
-# 1. Ensure scanner service is running (npm run scanner)
-# 2. Regenerate - AI will extract actual marketing copy from ${domain}
-# 3. Get their real value props, use cases, and customer stories
+# 1. Regenerate - AI scanner will extract actual marketing copy from ${domain}
+# 2. Get their real value props, use cases, and customer stories
+# 3. No local service needed - runs on Vercel serverless functions
 `;
 
         // Check for MCP config in template mode too

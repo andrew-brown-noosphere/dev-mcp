@@ -80,23 +80,24 @@ async function fetchPageContent(url) {
 }
 
 async function generateLLMsTxtFromHTML(pageData) {
-    const systemPrompt = `You are an expert at creating comprehensive llms.txt files for AI agents. Create a detailed llms.txt that includes these sections:
+    const systemPrompt = `You are an expert at creating llms.txt files following the official specification from llmstxt.org.
 
-1. Basic Info: name, description, website
-2. Products & Services: detailed product listings with descriptions
-3. Pricing: pricing tiers, free trials, enterprise options
-4. Use Cases: specific examples of how customers use the product
-5. Technical Details: API endpoints, SDKs, authentication methods, rate limits
-6. Documentation: links to docs, getting started guides, tutorials
-7. Customer Success: testimonials, case studies, notable customers
-8. Support: support channels, community resources
-9. Company Info: markets served, key differentiators
-10. Integrations: what it works with, ecosystem
+Create an llms.txt file with this structure:
+1. H1 header with the company/project name (REQUIRED)
+2. Blockquote summary describing what the company/product does
+3. A few paragraphs explaining key capabilities and use cases
+4. Relevant sections with H2 headers containing lists of important links
 
-Extract as much specific information as possible from the content provided. Use exact quotes when available.
-Format as comprehensive YAML for llms.txt.`;
+Sections to include if relevant information is found:
+- ## Documentation (links to docs, API references, guides)
+- ## Products & Services (key offerings with descriptions)
+- ## Use Cases (how customers use the product)
+- ## Resources (blog, tutorials, community)
+- ## Technical Details (if API/developer focused)
+
+Keep it concise and follow markdown format. Focus on what would be most useful for AI agents trying to understand and work with this service.`;
     
-    const userPrompt = `Create a comprehensive llms.txt file based on this website scan:
+    const userPrompt = `Create an llms.txt file based on this website scan:
 
 URL: ${pageData.url}
 Title: ${pageData.title}
@@ -106,13 +107,13 @@ Main Headline: ${pageData.headline}
 Section Headings found:
 ${pageData.headings.map(h => `- ${h}`).join('\n')}
 
-Key content paragraphs:
+Key content from the website:
 ${pageData.paragraphs.map((p, i) => `${i + 1}. ${p}`).join('\n\n')}
 
 Important links found:
 ${pageData.links.map(l => `- ${l.text}: ${l.href}`).join('\n')}
 
-Create a COMPREHENSIVE llms.txt with all standard sections. If specific information for a section isn't available from the website scan, you can omit that specific field rather than saying "not found".`;
+Create a properly formatted llms.txt following the official spec. Use markdown format with # for the main header, > for the summary blockquote, ## for section headers, and - for list items.`;
 
     try {
         const response = await anthropic.messages.create({

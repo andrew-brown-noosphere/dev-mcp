@@ -49,12 +49,12 @@ class LLMsGenerator {
         }
         
         const steps = [
-            { id: 'homepage', label: 'Analyzing homepage', status: 'analyzing' },
-            { id: 'marketing', label: 'Extracting marketing content', status: 'pending' },
-            { id: 'technical', label: 'Finding API documentation', status: 'pending' },
-            { id: 'examples', label: 'Collecting code examples', status: 'pending' },
-            { id: 'performance', label: 'Checking performance metrics', status: 'pending' },
-            { id: 'ai-analysis', label: 'AI analyzing content & generating llms.txt', status: 'pending' }
+            { id: 'homepage', label: 'Scanning website', status: 'analyzing' },
+            { id: 'marketing', label: 'Extracting product information', status: 'pending' },
+            { id: 'technical', label: 'Finding technical documentation', status: 'pending' },
+            { id: 'examples', label: 'Looking for use cases & examples', status: 'pending' },
+            { id: 'performance', label: 'Analyzing capabilities', status: 'pending' },
+            { id: 'ai-analysis', label: 'AI generating comprehensive llms.txt', status: 'pending' }
         ];
         
         this.updateProgress(steps);

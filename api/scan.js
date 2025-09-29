@@ -1,55 +1,78 @@
-// Vercel serverless function for website scanning
-const { ComprehensiveScanner } = require('./scanner-playwright');
-const Anthropic = require('@anthropic-ai/sdk');
+// Simplified scanner for Vercel serverless - no Playwright needed
+const Anthropic = require('@anthropic-ai/sdk').default;
 
 // Initialize Anthropic
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY
 });
 
-// AI-powered llms.txt generation
-async function generateLLMsTxtWithAI(scannedData) {
-    const { marketing, technical, performance } = scannedData;
-    
-    const context = {
-        title: marketing.title || 'Unknown Company',
-        description: marketing.description || '',
-        useCases: marketing.useCases || [],
-        testimonials: marketing.testimonials || [],
-        workshops: marketing.workshops || [],
-        blogInsights: marketing.blog_insights || [],
-        documentation: technical.documentation || '',
-        endpoints: technical.api_endpoints || [],
-        authentication: technical.authentication || [],
-        sdks: technical.sdks || [],
-        performanceMetrics: performance.metrics || [],
-        differentiators: marketing.differentiators || []
-    };
-    
-    const systemPrompt = `You are an expert at creating llms.txt files that help AI agents discover and integrate with APIs. 
-Create a comprehensive llms.txt file that:
-1. Clearly explains what the company/API does
-2. Highlights key capabilities and use cases
-3. Provides technical integration details
-4. Includes performance metrics and differentiators
-5. Makes it easy for AI agents to understand how to use the API
+async function fetchPageContent(url) {
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; DevMCP.ai Scanner/1.0)'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const html = await response.text();
+        
+        // Extract basic info from HTML
+        const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+        const descMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
+        const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+        
+        // Extract more content
+        const paragraphs = [];
+        const paragraphMatches = html.matchAll(/<p[^>]*>([^<]+)<\/p>/gi);
+        for (const match of paragraphMatches) {
+            const text = match[1].trim();
+            if (text.length > 50 && text.length < 500) {
+                paragraphs.push(text);
+                if (paragraphs.length >= 5) break;
+            }
+        }
+        
+        return {
+            url,
+            title: titleMatch ? titleMatch[1].trim() : '',
+            description: descMatch ? descMatch[1].trim() : '',
+            headline: h1Match ? h1Match[1].trim() : '',
+            paragraphs,
+            htmlLength: html.length
+        };
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+    }
+}
 
-Use ONLY the information provided. Do not make up or assume any details.
-Format the output as a valid YAML-style llms.txt file.`;
+async function generateLLMsTxtFromHTML(pageData) {
+    const systemPrompt = `You are an expert at creating llms.txt files. Based on the website content provided, create a comprehensive and useful llms.txt file.
+
+Focus on:
+1. Using the actual company name and description from their website
+2. Extracting their real value propositions and services
+3. Identifying their API endpoints and technical capabilities
+4. Including their actual marketing messaging
+5. Being accurate to what they actually offer
+
+Format as valid YAML for llms.txt.`;
     
-    const userPrompt = `Create an llms.txt file for this company based on the following scraped data:
+    const userPrompt = `Create an llms.txt file based on this website scan:
 
-Title: ${context.title}
-Description: ${context.description}
+URL: ${pageData.url}
+Title: ${pageData.title}
+Description: ${pageData.description}
+Main Headline: ${pageData.headline}
 
-Use Cases: ${JSON.stringify(context.useCases, null, 2)}
-Testimonials: ${JSON.stringify(context.testimonials, null, 2)}
-Blog Insights: ${JSON.stringify(context.blogInsights, null, 2)}
-Documentation: ${context.documentation}
-API Endpoints: ${JSON.stringify(context.endpoints, null, 2)}
-SDKs: ${JSON.stringify(context.sdks, null, 2)}
-Performance: ${JSON.stringify(context.performanceMetrics, null, 2)}
-Differentiators: ${JSON.stringify(context.differentiators, null, 2)}`;
+Key content from their website:
+${pageData.paragraphs.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+
+Create a comprehensive llms.txt that accurately represents this company's actual offerings and capabilities.`;
 
     try {
         const response = await anthropic.messages.create({
@@ -70,7 +93,7 @@ Differentiators: ${JSON.stringify(context.differentiators, null, 2)}`;
     }
 }
 
-module.exports = async (req, res) => {
+module.exports = async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -84,7 +107,7 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
-    const { url, generateWithAI = true } = req.body;
+    const { url } = req.body;
     
     if (!url) {
         return res.status(400).json({ 
@@ -93,23 +116,57 @@ module.exports = async (req, res) => {
         });
     }
     
+    // Check for API key
+    if (!process.env.ANTHROPIC_API_KEY) {
+        return res.status(500).json({ 
+            success: false, 
+            error: 'Scanner API not configured. Please add ANTHROPIC_API_KEY to environment variables.' 
+        });
+    }
+    
     try {
-        const scanner = new ComprehensiveScanner();
-        const scannedData = await scanner.scanWebsite(url);
-        
-        if (!scannedData.success) {
-            return res.status(500).json({
-                success: false,
-                error: scannedData.error
-            });
+        // Normalize URL
+        let targetUrl = url;
+        if (!targetUrl.startsWith('http')) {
+            targetUrl = 'https://' + targetUrl;
         }
         
-        // Generate llms.txt with AI
-        const aiGeneratedContent = await generateLLMsTxtWithAI(scannedData.data);
+        // Fetch basic page content
+        const pageData = await fetchPageContent(targetUrl);
         
+        // Generate llms.txt with AI
+        const aiGeneratedContent = await generateLLMsTxtFromHTML(pageData);
+        
+        // Return data structure compatible with frontend
         res.status(200).json({
             success: true,
-            data: scannedData.data,
+            data: {
+                marketing: {
+                    found: true,
+                    title: pageData.title,
+                    description: pageData.description,
+                    value_propositions: [pageData.headline].filter(Boolean),
+                    useCases: pageData.paragraphs.slice(0, 3),
+                    differentiators: [],
+                    blog_insights: [],
+                    testimonials: [],
+                    workshops: [],
+                    case_studies: []
+                },
+                technical: {
+                    found: false,
+                    documentation: `https://docs.${new URL(targetUrl).hostname}`,
+                    api_endpoints: [],
+                    authentication: [],
+                    sdks: [],
+                    code_examples: [],
+                    getting_started: ''
+                },
+                performance: {
+                    metrics: [],
+                    benchmarks: []
+                }
+            },
             aiGeneratedLLMsTxt: aiGeneratedContent
         });
         

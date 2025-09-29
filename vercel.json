@@ -1,6 +1,6 @@
 {
   "outputDirectory": ".",
-  "buildCommand": "npm install && npx playwright install-deps",
+  "buildCommand": "echo 'Static site with API functions'",
   "functions": {
     "api/scan.js": {
       "maxDuration": 30

@@ -50,7 +50,7 @@ class LLMsGenerator {
         
         const steps = [
             { id: 'homepage', label: 'Scanning website', status: 'analyzing' },
-            { id: 'marketing', label: 'Extracting product information', status: 'pending' },
+            { id: 'marketing', label: 'Scanning content library', status: 'pending' },
             { id: 'technical', label: 'Finding technical documentation', status: 'pending' },
             { id: 'examples', label: 'Looking for use cases & examples', status: 'pending' },
             { id: 'performance', label: 'Analyzing capabilities', status: 'pending' },

@@ -76,7 +76,7 @@ Create a comprehensive llms.txt that accurately represents this company's actual
 
     try {
         const response = await anthropic.messages.create({
-            model: process.env.ANTHROPIC_MODEL || "claude-3-sonnet-20241022",
+            model: "claude-3-haiku-20240307", // Use stable model
             max_tokens: 2000,
             temperature: 0.3,
             system: systemPrompt,

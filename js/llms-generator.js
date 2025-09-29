@@ -81,7 +81,14 @@ class LLMsGenerator {
                     console.log('Using real scraped data');
                     await this.processRealData(result.data, steps);
                     return;
+                } else {
+                    console.error('Scanner API error:', result.error);
+                    throw new Error(result.error);
                 }
+            } else {
+                const error = await response.text();
+                console.error('Scanner API HTTP error:', response.status, error);
+                throw new Error(`Scanner API returned ${response.status}`);
             }
         } catch (error) {
             console.log('Scanner not available, using simulation');
@@ -312,10 +319,10 @@ api_endpoints:
   - https://api.${domain}/v1
   - https://${domain}/api
 
-# To populate with real content:
-# 1. Regenerate - AI scanner will extract actual marketing copy from ${domain}
-# 2. Get their real value props, use cases, and customer stories
-# 3. No local service needed - runs on Vercel serverless functions
+# Note: Scanner unavailable - showing basic template
+# To get AI-generated content with real marketing copy:
+# 1. Check scanner service status
+# 2. Try again in a few moments
 `;
 
         // Check for MCP config in template mode too

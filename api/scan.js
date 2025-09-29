@@ -90,10 +90,12 @@ Create an llms.txt file with this structure:
 
 Sections to include if relevant information is found:
 - ## Documentation (links to docs, API references, guides)
-- ## Products & Services (key offerings with descriptions)
-- ## Use Cases (how customers use the product)
+- ## Products & Services (key offerings with descriptions)  
+- ## Use Cases (specific examples of how customers use the product)
+- ## Customer Success (testimonials, case studies, notable customers)
+- ## Key Differentiators (what makes this unique/special)
 - ## Resources (blog, tutorials, community)
-- ## Technical Details (if API/developer focused)
+- ## Technical Details (APIs, SDKs, integrations)
 
 Keep it concise and follow markdown format. Focus on what would be most useful for AI agents trying to understand and work with this service.`;
     

@@ -29,10 +29,37 @@ async function fetchPageContent(url) {
         const paragraphs = [];
         const paragraphMatches = html.matchAll(/<p[^>]*>([^<]+)<\/p>/gi);
         for (const match of paragraphMatches) {
-            const text = match[1].trim();
+            const text = match[1].trim().replace(/<[^>]*>/g, ''); // Remove nested HTML
             if (text.length > 50 && text.length < 500) {
                 paragraphs.push(text);
-                if (paragraphs.length >= 5) break;
+                if (paragraphs.length >= 10) break; // Get more content
+            }
+        }
+        
+        // Extract headings for better content structure
+        const headings = [];
+        const headingMatches = html.matchAll(/<h[2-4][^>]*>([^<]+)<\/h[2-4]>/gi);
+        for (const match of headingMatches) {
+            const text = match[1].trim();
+            if (text.length > 5) {
+                headings.push(text);
+                if (headings.length >= 10) break;
+            }
+        }
+        
+        // Extract links for finding docs, pricing, etc.
+        const links = [];
+        const linkMatches = html.matchAll(/<a[^>]+href=["']([^"']+)["'][^>]*>([^<]+)<\/a>/gi);
+        for (const match of linkMatches) {
+            const href = match[1];
+            const text = match[2].trim();
+            if (text && (text.toLowerCase().includes('doc') || 
+                        text.toLowerCase().includes('api') || 
+                        text.toLowerCase().includes('pricing') || 
+                        text.toLowerCase().includes('testimonial') ||
+                        text.toLowerCase().includes('customer') ||
+                        text.toLowerCase().includes('case study'))) {
+                links.push({ href, text });
             }
         }
         
@@ -42,6 +69,8 @@ async function fetchPageContent(url) {
             description: descMatch ? descMatch[1].trim() : '',
             headline: h1Match ? h1Match[1].trim() : '',
             paragraphs,
+            headings,
+            links,
             htmlLength: html.length
         };
     } catch (error) {
@@ -51,33 +80,44 @@ async function fetchPageContent(url) {
 }
 
 async function generateLLMsTxtFromHTML(pageData) {
-    const systemPrompt = `You are an expert at creating llms.txt files. Based on the website content provided, create a comprehensive and useful llms.txt file.
+    const systemPrompt = `You are an expert at creating comprehensive llms.txt files for AI agents. Create a detailed llms.txt that includes ALL the following sections:
 
-Focus on:
-1. Using the actual company name and description from their website
-2. Extracting their real value propositions and services
-3. Identifying their API endpoints and technical capabilities
-4. Including their actual marketing messaging
-5. Being accurate to what they actually offer
+1. Basic Info: name, description, website
+2. Products & Services: detailed product listings with descriptions
+3. Pricing: pricing tiers, free trials, enterprise options
+4. Use Cases: specific examples of how customers use the product
+5. Technical Details: API endpoints, SDKs, authentication methods, rate limits
+6. Documentation: links to docs, getting started guides, tutorials
+7. Customer Success: testimonials, case studies, notable customers
+8. Support: support channels, SLAs, community resources
+9. Company Info: founded, team size, funding, locations
+10. Integrations: what it works with, ecosystem
 
-Format as valid YAML for llms.txt.`;
+Extract as much specific information as possible from the content provided. Use exact quotes when available.
+Format as comprehensive YAML for llms.txt.`;
     
-    const userPrompt = `Create an llms.txt file based on this website scan:
+    const userPrompt = `Create a comprehensive llms.txt file based on this website scan:
 
 URL: ${pageData.url}
 Title: ${pageData.title}
 Description: ${pageData.description}
 Main Headline: ${pageData.headline}
 
-Key content from their website:
-${pageData.paragraphs.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+Section Headings found:
+${pageData.headings.map(h => `- ${h}`).join('\n')}
 
-Create a comprehensive llms.txt that accurately represents this company's actual offerings and capabilities.`;
+Key content paragraphs:
+${pageData.paragraphs.map((p, i) => `${i + 1}. ${p}`).join('\n\n')}
+
+Important links found:
+${pageData.links.map(l => `- ${l.text}: ${l.href}`).join('\n')}
+
+Create a COMPREHENSIVE llms.txt with all standard sections. If information for a section isn't available, note it as "Information not found on homepage" but still include the section.`;
 
     try {
         const response = await anthropic.messages.create({
             model: "claude-3-haiku-20240307", // Use stable model
-            max_tokens: 2000,
+            max_tokens: 4000, // Increased for comprehensive output
             temperature: 0.3,
             system: systemPrompt,
             messages: [{

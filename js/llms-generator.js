@@ -79,7 +79,8 @@ class LLMsGenerator {
                 const result = await response.json();
                 if (result.success) {
                     console.log('Using real scraped data');
-                    await this.processRealData(result.data, steps);
+                    // Pass the full result to get aiGeneratedLLMsTxt
+                    await this.processRealData(result, steps);
                     return;
                 } else {
                     console.error('Scanner API error:', result.error);
@@ -98,8 +99,9 @@ class LLMsGenerator {
         await this.simulateAnalysis(domain, steps);
     }
 
-    async processRealData(data, steps) {
+    async processRealData(result, steps) {
         // Process real scraped data
+        const data = result.data;
         await this.updateStep(steps, 'homepage', 'complete');
         
         // Process marketing data
@@ -136,9 +138,14 @@ class LLMsGenerator {
         // Wait to simulate AI processing (actual processing happens on backend)
         await new Promise(r => setTimeout(r, 3000));
         
-        // Store AI-generated content if available
-        if (data.aiGeneratedLLMsTxt) {
-            this.analysisData.aiGeneratedContent = data.aiGeneratedLLMsTxt;
+        // Store AI-generated content if available (from top-level result)
+        if (result.aiGeneratedLLMsTxt) {
+            // Clean up the content - remove markdown code blocks if present
+            let content = result.aiGeneratedLLMsTxt;
+            if (content.startsWith('```yaml') || content.startsWith('```')) {
+                content = content.replace(/^```[^\n]*\n/, '').replace(/\n```$/, '');
+            }
+            this.analysisData.aiGeneratedContent = content;
             this.analysisData.generatedWithAI = true;
             await this.updateStep(steps, 'ai-analysis', 'complete');
             console.log('Using AI-generated llms.txt content');

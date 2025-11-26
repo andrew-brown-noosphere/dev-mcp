@@ -58,6 +58,41 @@
             top: 0;
             z-index: 100;
         }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
         
         /* Hero Section */
         .hero-section {
@@ -251,14 +286,15 @@
     <div class="page-wrapper">
         <nav class="main-nav">
             <div class="container">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/" style="font-size: 1.75rem; font-weight: 700; color: #ffffff; text-decoration: none; font-family: 'Space Grotesk', sans-serif;">
-                        DevMCP.ai
-                    </a>
-                    <div style="display: flex; gap: 2rem;">
-                        <a href="/llms-generator.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Generator</a>
-                        <a href="/llms-txt-evaluator" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Evaluator</a>
-                        <a href="/llms-metrics.html" style="color: #ffffff; text-decoration: none;">Metrics</a>
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevMCP.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/llms-generator.html">Generator</a>
+                        <a href="/llms-txt-evaluator">Evaluator</a>
+                        <a href="/llms-metrics.html">Metrics</a>
+                        <a href="/#demo">Get Demo</a>
                     </div>
                 </div>
             </div>

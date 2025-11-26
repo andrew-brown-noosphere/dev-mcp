@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enterprise MCP Hosting - DevMCP.ai</title>
-    <meta name="description" content="Host custom MCP servers for your developer tools. Enable AI agents to discover, evaluate, and integrate your APIs instantly.">
+    <meta name="description" content="We build MCP tools that provide AI-friendly developer journeys so every AI agent can discover, test, and integrate your platform.">
     
     <!-- Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
@@ -74,6 +74,52 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 var(--spacing-unit);
+        }
+
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(15, 18, 25, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem var(--spacing-unit);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-black);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--color-gray-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
         }
 
         /* Typography Scale - matching Noosphere */
@@ -522,6 +568,18 @@
                 font-size: var(--font-size-mobile);
             }
 
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
             h1 {
                 font-size: 2.5em;
             }
@@ -576,6 +634,19 @@
     </style>
 </head>
 <body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">DevMCP.ai</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/llms-generator.html">Generator</a>
+                <a href="/llms-txt-evaluator">Evaluator</a>
+                <a href="/llms-metrics.html">Metrics</a>
+                <a href="/#demo">Get Demo</a>
+            </div>
+        </div>
+    </nav>
     <main>
         <!-- Hero Section -->
         <section class="hero">
@@ -587,9 +658,8 @@
                 <h1 class="fade-in delay-1">Your APIs. AI-Native. Instantly.</h1>
                 
                 <p class="hero-subtitle fade-in delay-2">
-                    Host custom MCP servers that make your developer tools discoverable, 
-                    testable, and integratable by every AI agent. Transform your DevEx 
-                    with protocol-native distribution.
+                    We build MCP tools that provide AI-friendly developer journeys for your APIs and platforms. 
+                    Give every AI agent a guided path to discover, test, and integrate your capabilities.
                 </p>
             </div>
         </section>
@@ -705,61 +775,7 @@
             </div>
         </section>
 
-        <!-- Pricing -->
-        <section class="section-alt">
-            <div class="wide-container">
-                <div class="section-header">
-                    <h2>Simple, Transparent Pricing</h2>
-                    <p>Start free, scale as you grow. No hidden fees.</p>
-                </div>
-
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <h3>Starter</h3>
-                        <div class="price">$0<span>/month</span></div>
-                        <p>Perfect for trying out MCP</p>
-                        <ul class="features">
-                            <li>1 MCP server</li>
-                            <li>10k requests/month</li>
-                            <li>Basic analytics</li>
-                            <li>Community support</li>
-                        </ul>
-                        <a href="#" class="button button-primary" style="width: 100%;">Get Started</a>
-                    </div>
-
-                    <div class="pricing-card featured">
-                        <div class="pricing-badge">Most Popular</div>
-                        <h3>Professional</h3>
-                        <div class="price">$499<span>/month</span></div>
-                        <p>For growing DevRel teams</p>
-                        <ul class="features">
-                            <li>10 MCP servers</li>
-                            <li>1M requests/month</li>
-                            <li>Advanced analytics</li>
-                            <li>SSO & team management</li>
-                            <li>Priority support</li>
-                            <li>Custom domains</li>
-                        </ul>
-                        <a href="#" class="button button-primary" style="width: 100%;">Start Free Trial</a>
-                    </div>
-
-                    <div class="pricing-card">
-                        <h3>Enterprise</h3>
-                        <div class="price">Custom</div>
-                        <p>For large organizations</p>
-                        <ul class="features">
-                            <li>Unlimited MCP servers</li>
-                            <li>Unlimited requests</li>
-                            <li>White-label options</li>
-                            <li>On-premise deployment</li>
-                            <li>SLA & dedicated support</li>
-                            <li>Custom integrations</li>
-                        </ul>
-                        <a href="#" class="button button-primary" style="width: 100%;">Contact Sales</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
 
         <!-- CTA -->
         <section class="section">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enterprise MCP Hosting - Unlock AI-Driven Developer Experience | DevMCP.ai</title>
-    <meta name="description" content="Host custom MCP servers for your developer tools. Enable AI agents to discover, evaluate, and integrate your APIs instantly. Enterprise-grade infrastructure for the AI era.">
+    <meta name="description" content="We build MCP tools that provide AI-friendly developer journeys so every AI agent can discover, test, and integrate your platform.">
     
     <!-- Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
@@ -52,6 +52,52 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+        }
+
+        .main-nav {
+            background: rgba(2, 2, 6, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
         }
 
         .hero {
@@ -412,6 +458,17 @@
             .container {
                 padding: 0 1.5rem;
             }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+                gap: 1rem;
+            }
             
             .flow-diagram {
                 flex-direction: column;
@@ -433,6 +490,19 @@
     </style>
 </head>
 <body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">DevMCP.ai</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/llms-generator.html">Generator</a>
+                <a href="/llms-txt-evaluator">Evaluator</a>
+                <a href="/llms-metrics.html">Metrics</a>
+                <a href="/#demo">Get Demo</a>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <section class="hero">
             <div class="enterprise-badge fade-in">
@@ -442,9 +512,8 @@
             <h1 class="fade-in">Your APIs. AI-Native. Instantly.</h1>
             
             <p class="subtitle fade-in">
-                Host custom MCP servers that make your developer tools discoverable, 
-                testable, and integratable by every AI agent. Transform your DevEx 
-                with protocol-native distribution.
+                We build MCP tools that provide AI-friendly developer journeys for your APIs and platforms. 
+                Give every AI agent a guided path to discover, test, and integrate your capabilities.
             </p>
 
             <div class="value-props">
@@ -546,57 +615,7 @@
             </div>
         </section>
 
-        <section class="pricing-section">
-            <h2>Simple, Transparent Pricing</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 3rem;">
-                Start free, scale as you grow. No hidden fees.
-            </p>
-
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <h3>Starter</h3>
-                    <div class="price">$0<span>/month</span></div>
-                    <p style="color: var(--text-secondary);">Perfect for trying out MCP</p>
-                    <ul class="features">
-                        <li>1 MCP server</li>
-                        <li>10k requests/month</li>
-                        <li>Basic analytics</li>
-                        <li>Community support</li>
-                    </ul>
-                    <button class="cta-button" style="width: 100%;">Get Started</button>
-                </div>
-
-                <div class="pricing-card featured">
-                    <h3>Professional</h3>
-                    <div class="price">$499<span>/month</span></div>
-                    <p style="color: var(--text-secondary);">For growing DevRel teams</p>
-                    <ul class="features">
-                        <li>10 MCP servers</li>
-                        <li>1M requests/month</li>
-                        <li>Advanced analytics & insights</li>
-                        <li>SSO & team management</li>
-                        <li>Priority support</li>
-                        <li>Custom domains</li>
-                    </ul>
-                    <button class="cta-button" style="width: 100%;">Start Free Trial</button>
-                </div>
-
-                <div class="pricing-card">
-                    <h3>Enterprise</h3>
-                    <div class="price">Custom</div>
-                    <p style="color: var(--text-secondary);">For large organizations</p>
-                    <ul class="features">
-                        <li>Unlimited MCP servers</li>
-                        <li>Unlimited requests</li>
-                        <li>White-label options</li>
-                        <li>On-premise deployment</li>
-                        <li>SLA & dedicated support</li>
-                        <li>Custom integrations</li>
-                    </ul>
-                    <button class="cta-button secondary" style="width: 100%;">Contact Sales</button>
-                </div>
-            </div>
-        </section>
+        
 
         <section class="cta-section">
             <h2>Ready to Transform Your DevEx?</h2>

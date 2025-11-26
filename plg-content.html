@@ -184,6 +184,13 @@
             text-decoration: none;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
@@ -204,6 +211,16 @@
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
             }
             
             .hero {
@@ -229,7 +246,14 @@
     <nav class="nav">
         <div class="nav-content">
             <a href="/" class="nav-logo">DevMCP.ai</a>
-            <a href="#contact" class="nav-link">Contact</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/blog.html" class="nav-link">Blog</a>
+                <a href="/llms-generator.html" class="nav-link">Generator</a>
+                <a href="/llms-txt-evaluator" class="nav-link">Evaluator</a>
+                <a href="/llms-metrics.html" class="nav-link">Metrics</a>
+                <a href="/#demo" class="nav-link">Get Demo</a>
+            </div>
         </div>
     </nav>
 

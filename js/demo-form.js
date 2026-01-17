@@ -4,13 +4,27 @@
   const init = () => {
     const style = document.createElement('style');
     style.textContent = `
+      /* Gypsum Design System Variables */
+      .demo-modal, .demo-success-overlay {
+        --gypsum-primary: hsl(24, 80%, 45%);
+        --gypsum-primary-hover: hsl(24, 80%, 40%);
+        --gypsum-accent: hsl(170, 85%, 42%);
+        --gypsum-bg: #030712;
+        --gypsum-surface: rgba(255, 255, 255, 0.03);
+        --gypsum-border: rgba(255, 255, 255, 0.1);
+        --gypsum-border-accent: rgba(247, 127, 0, 0.4);
+        --gypsum-text: #ffffff;
+        --gypsum-text-muted: rgba(255, 255, 255, 0.7);
+        --gypsum-radius: 0.5rem;
+      }
+
       .demo-modal {
         position: fixed;
         inset: 0;
         display: none;
         align-items: center;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(3, 7, 18, 0.9);
         backdrop-filter: blur(12px);
         z-index: 2000;
         padding: 1.5rem;
@@ -22,35 +36,36 @@
 
       .demo-modal__card {
         position: relative;
-        width: min(720px, 100%);
-        background: rgba(10, 10, 10, 0.96);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 2.5rem;
-        box-shadow: 0 30px 120px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+        width: min(600px, 100%);
+        background: var(--gypsum-bg);
+        border: 1px solid var(--gypsum-border);
+        border-radius: var(--gypsum-radius);
+        padding: 2rem;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
       }
 
       .demo-modal__close {
         position: absolute;
-        right: 1.25rem;
-        top: 1.25rem;
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
+        right: 1rem;
+        top: 1rem;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--gypsum-radius);
+        border: 1px solid var(--gypsum-border);
+        background: var(--gypsum-surface);
+        color: var(--gypsum-text-muted);
         cursor: pointer;
         font-size: 1.1rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.25s ease;
+        transition: all 0.2s ease;
       }
 
       .demo-modal__close:hover {
-        background: rgba(255, 255, 255, 0.12);
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--gypsum-text);
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
       .demo-modal__header {
@@ -58,16 +73,18 @@
       }
 
       .demo-modal__title {
-        margin: 0 0 0.35rem 0;
-        font-size: 2rem;
-        font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
-        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+        font-family: 'Source Serif 4', ui-serif, Georgia, serif;
+        letter-spacing: -0.01em;
+        color: var(--gypsum-text);
       }
 
       .demo-modal__subtitle {
         margin: 0;
-        color: rgba(255, 255, 255, 0.72);
+        color: var(--gypsum-text-muted);
         line-height: 1.6;
+        font-size: 0.95rem;
       }
 
       .demo-grid {
@@ -80,62 +97,59 @@
       .demo-form-group {
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.35rem;
       }
 
       .demo-form-group label {
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
-        letter-spacing: 0.04em;
-        font-family: 'JetBrains Mono', 'Inter', monospace;
+        color: var(--gypsum-text-muted);
+        font-family: 'Source Serif 4', serif;
+        font-weight: 500;
       }
 
       .demo-form-group input,
       .demo-form-group textarea {
         width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        padding: 0.95rem 1rem;
-        font-size: 1rem;
-        font-family: 'Inter', system-ui, sans-serif;
+        border-radius: calc(var(--gypsum-radius) - 2px);
+        border: 1px solid var(--gypsum-border);
+        background: var(--gypsum-surface);
+        color: var(--gypsum-text);
+        padding: 0.75rem 0.875rem;
+        font-size: 0.95rem;
+        font-family: 'Source Serif 4', serif;
         transition: all 0.2s ease;
       }
 
       .demo-form-group input:focus,
       .demo-form-group textarea:focus {
         outline: none;
-        border-color: #7850ff;
-        box-shadow: 0 0 0 1px rgba(120, 80, 255, 0.25);
+        border-color: var(--gypsum-accent);
+        box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.15);
       }
 
       .demo-form-group textarea {
         resize: vertical;
-        min-height: 120px;
+        min-height: 100px;
       }
 
       .demo-submit {
         width: 100%;
-        margin-top: 0.5rem;
-        padding: 1rem 1.25rem;
-        border-radius: 999px;
+        margin-top: 0.75rem;
+        padding: 0.875rem 1.25rem;
+        border-radius: calc(var(--gypsum-radius) - 2px);
         border: none;
         cursor: pointer;
-        font-family: 'JetBrains Mono', 'Inter', monospace;
+        font-family: 'Source Serif 4', serif;
         font-size: 0.95rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-weight: 500;
         color: #fff;
-        background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
-        background-size: 200% auto;
-        transition: all 0.25s ease;
+        background: var(--gypsum-primary);
+        transition: all 0.2s ease;
       }
 
       .demo-submit:hover:not(:disabled) {
-        background-position: right center;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 45px rgba(120, 80, 255, 0.4);
+        background: var(--gypsum-primary-hover);
+        transform: translateY(-1px);
       }
 
       .demo-submit:disabled {
@@ -145,36 +159,38 @@
       }
 
       .demo-status {
-        margin-top: 0.85rem;
-        font-size: 0.95rem;
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
         display: none;
       }
 
       .demo-status.success {
-        color: #67ffb3;
+        color: var(--gypsum-accent);
       }
 
       .demo-status.error {
-        color: #ff5078;
+        color: hsl(0, 84%, 60%);
       }
 
       .demo-ai {
         display: none;
-        margin-top: 1.25rem;
+        margin-top: 1rem;
         padding: 1rem;
-        border-radius: 12px;
-        border: 1px solid rgba(120, 80, 255, 0.4);
-        background: linear-gradient(135deg, rgba(120, 80, 255, 0.1) 0%, rgba(80, 64, 255, 0.1) 100%);
+        border-radius: var(--gypsum-radius);
+        border: 1px solid var(--gypsum-border-accent);
+        background: rgba(247, 127, 0, 0.05);
       }
 
       .demo-ai h4 {
         margin: 0 0 0.35rem 0;
+        color: var(--gypsum-primary);
+        font-size: 0.85rem;
       }
 
       .demo-ai p {
         margin: 0;
         line-height: 1.6;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--gypsum-text-muted);
       }
 
       .demo-success-overlay {
@@ -183,7 +199,7 @@
         display: none;
         align-items: center;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(3, 7, 18, 0.92);
         backdrop-filter: blur(16px);
         z-index: 2100;
         padding: 1.5rem;
@@ -195,87 +211,81 @@
 
       .demo-success-card {
         position: relative;
-        width: min(560px, 100%);
-        background: rgba(10, 10, 10, 0.98);
-        border: 1px solid rgba(120, 80, 255, 0.3);
-        border-radius: 24px;
-        padding: 2.5rem;
+        width: min(480px, 100%);
+        background: var(--gypsum-bg);
+        border: 1px solid var(--gypsum-border-accent);
+        border-radius: var(--gypsum-radius);
+        padding: 2rem;
         text-align: center;
-        box-shadow: 0 40px 140px rgba(120, 80, 255, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.04);
+        box-shadow: 0 30px 100px rgba(247, 127, 0, 0.1);
       }
 
       .demo-success-icon {
-        width: 72px;
-        height: 72px;
-        margin: 0 auto 1.5rem;
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1.25rem;
         border-radius: 50%;
-        background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+        background: var(--gypsum-primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        animation: successPulse 2s ease-in-out infinite;
-      }
-
-      @keyframes successPulse {
-        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 80, 255, 0.4); }
-        50% { transform: scale(1.05); box-shadow: 0 0 30px 10px rgba(120, 80, 255, 0.2); }
+        font-size: 1.5rem;
+        color: white;
       }
 
       .demo-success-title {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.75rem;
-        font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-        background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        margin: 0 0 0.35rem 0;
+        font-size: 1.375rem;
+        font-family: 'Source Serif 4', serif;
+        color: var(--gypsum-text);
       }
 
       .demo-success-subtitle {
-        margin: 0 0 1.5rem 0;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 1rem;
+        margin: 0 0 1.25rem 0;
+        color: var(--gypsum-text-muted);
+        font-size: 0.95rem;
       }
 
       .demo-ai-response {
         text-align: left;
-        padding: 1.25rem;
-        border-radius: 16px;
-        border: 1px solid rgba(120, 80, 255, 0.25);
-        background: linear-gradient(135deg, rgba(120, 80, 255, 0.08) 0%, rgba(80, 64, 255, 0.08) 100%);
-        margin-bottom: 1.5rem;
-        min-height: 80px;
+        padding: 1rem;
+        border-radius: var(--gypsum-radius);
+        border: 1px solid var(--gypsum-border-accent);
+        background: rgba(247, 127, 0, 0.05);
+        margin-bottom: 1.25rem;
+        min-height: 70px;
       }
 
       .demo-ai-response-label {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.75rem;
-        font-size: 0.8rem;
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #7850ff;
-        font-family: 'JetBrains Mono', 'Inter', monospace;
+        letter-spacing: 0.08em;
+        color: var(--gypsum-primary);
+        font-family: 'Source Serif 4', serif;
+        font-weight: 600;
       }
 
       .demo-ai-response-label::before {
         content: '✦';
-        font-size: 0.9rem;
+        font-size: 0.8rem;
       }
 
       .demo-ai-response-text {
-        color: rgba(255, 255, 255, 0.9);
-        line-height: 1.7;
-        font-size: 1rem;
+        color: var(--gypsum-text-muted);
+        line-height: 1.65;
+        font-size: 0.95rem;
+        font-family: 'Source Serif 4', serif;
       }
 
       .demo-ai-cursor {
         display: inline-block;
         width: 2px;
-        height: 1.1em;
-        background: #7850ff;
+        height: 1em;
+        background: var(--gypsum-primary);
         margin-left: 2px;
         animation: cursorBlink 0.8s ease-in-out infinite;
         vertical-align: text-bottom;
@@ -291,14 +301,14 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 1rem 0;
+        padding: 0.75rem 0;
       }
 
       .demo-ai-loading span {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: #7850ff;
+        background: var(--gypsum-primary);
         animation: loadingDot 1.4s ease-in-out infinite;
       }
 
@@ -311,22 +321,20 @@
       }
 
       .demo-success-close {
-        padding: 0.9rem 2rem;
-        border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: calc(var(--gypsum-radius) - 2px);
+        border: 1px solid var(--gypsum-border);
+        background: var(--gypsum-surface);
+        color: var(--gypsum-text);
         cursor: pointer;
-        font-family: 'JetBrains Mono', 'Inter', monospace;
+        font-family: 'Source Serif 4', serif;
         font-size: 0.9rem;
-        letter-spacing: 0.05em;
-        transition: all 0.25s ease;
+        transition: all 0.2s ease;
       }
 
       .demo-success-close:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
       @media (max-width: 640px) {
@@ -339,7 +347,7 @@
         }
 
         .demo-modal__title {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
         }
       }
     `;
@@ -350,9 +358,8 @@
         <div class="demo-modal__card" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
           <button class="demo-modal__close" type="button" data-demo-close aria-label="Close demo form">×</button>
           <div class="demo-modal__header">
-            <p class="demo-modal__eyebrow" style="text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.6); font-family: 'JetBrains Mono','Inter',monospace; margin: 0 0 0.4rem 0;">Talk with the team</p>
-            <h2 class="demo-modal__title" id="demo-modal-title">Schedule a demo</h2>
-            <p class="demo-modal__subtitle">Share a little context about your platform and we will set up a tailored walkthrough of the DevMCP workflow.</p>
+            <h2 class="demo-modal__title" id="demo-modal-title">Schedule a Demo</h2>
+            <p class="demo-modal__subtitle">Share context about your platform and we'll set up a tailored walkthrough.</p>
           </div>
           <form id="demo-form" novalidate>
             <div class="demo-grid">

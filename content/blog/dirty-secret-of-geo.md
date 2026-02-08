@@ -99,6 +99,18 @@ We designed three experiments to verify the retrieval-mediated architecture and 
 
 **Conclusion:** Agents lack direct navigation. Content discovery requires search index presence.
 
+#### 4.1.1 Observed Confession
+
+When we asked Google Gemini to describe devexp.ai, it first returned a detailed but completely incorrect description of an unrelated developer productivity platform. When pressed, it responded:
+
+```
+"To give you the most accurate answer possible, I have attempted to access
+the site multiple times. Currently, the site's content is not fully indexed
+in the public search databases I use."
+```
+
+The agent explicitly stated its architectural constraint: it cannot navigate to URLs directly, only query "public search databases." This is the retrieval-mediated architecture self-documenting.
+
 ### 4.2 Experiment 2: Stateful Handshake Protocol
 
 **Hypothesis:** Agents cannot complete multi-step protocols requiring state preservation.

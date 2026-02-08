@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Demo - MCP Analytics Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold gradient-text">MCP Analytics Platform</h1>
+                <a href="/" class="text-purple-600 hover:text-purple-800">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-4">Request Demo Access</h2>
+                <p class="text-gray-600">
+                    Get early access to our MCP analytics platform and track your AI adoption journey
+                </p>
+            </div>
+
+            <form id="demoSignupForm">
+                <!-- Personal Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            First Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="firstName"
+                            name="firstName"
+                            placeholder="John"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Last Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="lastName"
+                            name="lastName"
+                            placeholder="Doe"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Work Email *
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email"
+                        placeholder="john@company.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        required
+                    >
+                </div>
+
+                <!-- Company Information -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Company Name *
+                    </label>
+                    <input 
+                        type="text" 
+                        id="companyName"
+                        name="companyName"
+                        placeholder="Acme Corp"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        required
+                    >
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Job Title *
+                        </label>
+                        <select 
+                            id="jobTitle"
+                            name="jobTitle"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            required
+                        >
+                            <option value="">Select your role</option>
+                            <option value="cto">CTO</option>
+                            <option value="vp-engineering">VP Engineering</option>
+                            <option value="engineering-manager">Engineering Manager</option>
+                            <option value="senior-engineer">Senior Engineer</option>
+                            <option value="developer">Developer</option>
+                            <option value="product-manager">Product Manager</option>
+                            <option value="ai-engineer">AI Engineer</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Company Size
+                        </label>
+                        <select 
+                            id="companySize"
+                            name="companySize"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        >
+                            <option value="">Select size</option>
+                            <option value="1-10">1-10 employees</option>
+                            <option value="11-50">11-50 employees</option>
+                            <option value="51-200">51-200 employees</option>
+                            <option value="201-1000">201-1,000 employees</option>
+                            <option value="1000+">1,000+ employees</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Technical Information -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Do you currently have APIs? *
+                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="radio" name="hasAPIs" value="yes-public" class="mr-2" required>
+                            <span>Yes, we have public APIs</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="hasAPIs" value="yes-internal" class="mr-2">
+                            <span>Yes, we have internal APIs only</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="hasAPIs" value="planning" class="mr-2">
+                            <span>We're planning to build APIs</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="hasAPIs" value="no" class="mr-2">
+                            <span>No APIs currently</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Primary Use Case *
+                    </label>
+                    <select 
+                        id="useCase"
+                        name="useCase"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        required
+                    >
+                        <option value="">Select primary use case</option>
+                        <option value="track-ai-adoption">Track AI adoption of our APIs</option>
+                        <option value="improve-api-docs">Improve API documentation for AI</option>
+                        <option value="understand-usage">Understand how developers use our APIs</option>
+                        <option value="developer-experience">Improve developer experience</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Tell us about your needs (optional)
+                    </label>
+                    <textarea 
+                        id="message"
+                        name="message"
+                        rows="3"
+                        placeholder="What are you hoping to accomplish?"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    ></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit"
+                    class="w-full gradient-bg text-white font-semibold py-4 px-8 rounded-lg hover:opacity-90 transition"
+                >
+                    <i class="fas fa-rocket mr-2"></i>
+                    Request Demo Access
+                </button>
+            </form>
+        </div>
+
+        <!-- Trust Signals -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p class="mb-4">Join innovative companies already tracking their AI adoption</p>
+            <div class="flex items-center justify-center space-x-8">
+                <span><i class="fas fa-shield-alt"></i> Secure & Private</span>
+                <span><i class="fas fa-clock"></i> Quick Setup</span>
+                <span><i class="fas fa-chart-line"></i> Actionable Insights</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('demoSignupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Build message from form data
+                const message = `
+Technical Details:
+- Has APIs: ${data.hasAPIs}
+- Use Case: ${data.useCase}
+- Company Size: ${data.companySize}
+- Job Title: ${data.jobTitle}
+
+Additional Notes: ${data.message || 'None provided'}
+                `.trim();
+
+                // Send to demo-contact API
+                const response = await fetch('/api/demo-contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: `${data.firstName} ${data.lastName}`,
+                        email: data.email,
+                        company: data.companyName,
+                        subject: data.useCase || 'Demo Request',
+                        message: message
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Failed to submit');
+                }
+
+                // Show success message
+                showThankYou(result.aiResponse);
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('There was an error submitting your form. Please try again.');
+                
+                // Restore button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showThankYou(aiResponse) {
+            // Replace form with thank you message
+            const formContainer = document.querySelector('.bg-white.rounded-2xl');
+
+            const aiMessage = aiResponse
+                ? `<div class="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6 text-left">
+                       <p class="text-gray-700">${aiResponse}</p>
+                   </div>`
+                : '';
+
+            formContainer.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check text-4xl text-green-600"></i>
+                    </div>
+
+                    <h2 class="text-3xl font-bold mb-4">Thank You!</h2>
+                    ${aiMessage}
+                    <p class="text-lg text-gray-600 mb-6">
+                        We've received your demo request and will be in touch soon.
+                    </p>
+                    
+                    <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                        <h3 class="font-semibold mb-3">What happens next?</h3>
+                        <div class="text-left space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-clock mr-2 text-purple-600"></i>
+                                <span>We'll review your request within 24 hours</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar mr-2 text-purple-600"></i>
+                                <span>Schedule a personalized demo call</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-rocket mr-2 text-purple-600"></i>
+                                <span>Get early access to the platform</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <button onclick="window.location.href='/public/llms-txt-evaluator'" 
+                                class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg">
+                            Try Our LLMs.txt Evaluator
+                        </button>
+                        <button onclick="window.location.href='/'" 
+                                class="w-full border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg">
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+<script src="/tracking.js" data-org="devmcp"></script>
+</body>
+</html>

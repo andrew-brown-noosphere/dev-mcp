@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Won't Read Your Docs (But They'll Execute Your Code) - DevExp.ai</title>
+    <meta name="description" content="Developer evangelism is entering its agent-first era. Learn how MCP augments the classic developer journey with AI-ready capabilities that move adoption faster.">
+
+    <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Gypsum Color System */
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --radius: 0.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.125rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .post-header {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--color-text-subtle);
+        }
+
+        .post-category {
+            color: var(--color-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 600;
+            line-height: 1.15;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        article {
+            padding: 0 0 100px;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin: 3rem 0 1.5rem 0;
+            color: var(--color-text);
+            font-family: 'Source Serif 4', serif;
+        }
+
+        h3 {
+            font-size: 1.375rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--color-text);
+            font-family: 'Source Serif 4', serif;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--color-text-muted);
+        }
+
+        ol, ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: var(--color-text-muted);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        li strong {
+            color: var(--color-text);
+        }
+
+        blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid var(--color-primary);
+            background: var(--color-surface);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-box h3 {
+            color: var(--color-text);
+            margin: 0 0 1rem 0;
+        }
+
+        .cta-box p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .button {
+            display: inline-block;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        .footer-text {
+            color: var(--color-text-subtle);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                padding: 0 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/#demo">Get Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="post-header">
+            <div class="content-container">
+                <div class="post-meta">
+                    <span class="post-category">Future</span>
+                    <span>•</span>
+                    <time>November 18, 2025</time>
+                    <span>•</span>
+                    <span>8 min read</span>
+                </div>
+                <h1>AI Agents Won't Read Your Docs (But They'll Execute Your Code)</h1>
+                <p class="lead">
+                    Developer evangelism used to be an exercise in documentation, persuasion,
+                    and patience. Now the job is designing an AI-first journey where MCP guides
+                    developers through your product faster than any tutorial ever could.
+                </p>
+            </div>
+        </header>
+
+        <article>
+            <div class="content-container">
+                <p>
+                    My first job after working as a technical writer was something that didn't yet have a stable definition: developer evangelist. This was around 2001, in the long shadow of JavaSoft. I was responsible for explaining an absurdly complex set of public-key infrastructure and cryptography APIs to developers who had every reason to avoid them. The work was equal parts translation and persuasion. If the docs were too obtuse, developers gave up. If the examples were too thin, they got lost.
+                </p>
+
+                <p>
+                    Luckily, I was also managing the team of engineers building the client SDKs and toolkits. We broke our heads refactoring very complicated PKI services into high-level, simple-to-use APIs that helped developers adopt a very complex technology. Good documentation was essential, but it was never enough on its own. The real unlock was combining clear explanations with opinionated, well-designed interfaces that made the "first successful call" feel achievable.
+                </p>
+
+                <h2>The Journey Never Went Away</h2>
+
+                <p>
+                    Years later, when Caroline Lewko put formal language around the developer journey, it clicked instantly for me. She mapped out what many of us had been doing intuitively: a series of stages from awareness to evaluation, onboarding, building, and advocacy. Documentation, SDKs, sample apps, community content—each piece played a role in helping developers move from one stage to the next.
+                </p>
+
+                <p>
+                    That model is still right. What's changing is who (or what) is actually walking that path.
+                </p>
+
+                <h2>AI Steps In</h2>
+
+                <p>
+                    Today, developers are increasingly offloading the "figuring it out" part of the journey to AI. Instead of reading three comparison blog posts, they ask their assistant which options fit their constraints. Instead of slogging through an OAuth guide, they paste a couple of keys and say, "Generate the minimal example that works with our stack." Instead of scanning pricing tables, they ask, "What will this cost at our current scale versus these two alternatives?"
+                </p>
+
+                <p>
+                    And that's where MCP gets interesting.
+                </p>
+
+                <p>
+                    With this background, I noticed that MCP could play a role on top of APIs, to help developers adopt APIs and tech stacks more quickly, with great awareness and context of how to use them appropriately. All of this impacts the traditional dev journey, which has been given its canonical form by Caroline Lewko.
+                </p>
+
+                <p>
+                    Model Context Protocol (MCP) gives you a structured way to expose your product's capabilities directly to AI agents—securely, predictably, and with context. Instead of hoping a model has scraped, understood, and remembered your docs, you define tools and resources that the AI can call in real time: list capabilities, fetch schemas, hit test endpoints, and get structured feedback.
+                </p>
+
+                <p>
+                    What's cool about MCP is that it enables you to build in use cases, pricing comparisons and estimates, performance benchmarks, and the voice of your CTO and your SEs, with guidance on how best to adopt a particular technology for your specific use case. This helps developers make better decisions more quickly, and it enables tech companies to hit their product-led growth targets with more accuracy and overall developer satisfaction.
+                </p>
+
+                <p>
+                    In other words, the developer journey doesn't disappear—it gains a second track. One is still human: blog posts, conceptual docs, architecture guides, migration stories, conference talks. The other is agent-first: a set of machine-readable capabilities and guardrails that let AI assistants explore, test, and implement your product on the developer's behalf.
+                </p>
+
+                <h2>Docs Still Matter, But Differently</h2>
+
+                <p>
+                    This doesn't mean documentation is dead. Writing for developers is hard, and AI is nowhere near replacing good content strategists or great technical writers. Humans still need context, narrative, and judgment. They still need to understand tradeoffs, patterns, and failure modes. They still look for honest explanations of what your product is good at, what it isn't, and how it fits into a messy real-world stack.
+                </p>
+
+                <p>
+                    But the role of docs is shifting.
+                </p>
+
+                <p>
+                    If an AI assistant can already generate the correct "hello world" and handle the basic API flows, you don't need five slightly different onboarding tutorials. You need strong, opinionated content about architecture, performance, reliability, security, and real-world use cases. You need the story behind the API, not page after page explaining how to make the first request.
+                </p>
+
+                <p>
+                    MCP lets you move the repetitive, mechanical parts of the journey—the comparison, the wiring, the basic error handling—into a form that AI agents can work with directly. That frees your humans to do what only humans can: frame the problem space, speak to strategy, and connect your product to the real constraints and pressures your buyers are living with.
+                </p>
+
+                <h2>Product-Led Growth Needs A Second Track</h2>
+
+                <p>
+                    If you care about product-led growth, this matters. Your future "first impression" won't just be your landing page or your docs. It will be the experience a developer has when they ask their AI assistant, "What should I use for this?" and your product either shows up ready to help—or doesn't appear at all.
+                </p>
+
+                <p>
+                    At DevExp.ai, I'm exploring this second track of the developer journey: how to design MCP servers and AI-first interfaces that make your product discoverable, testable, and adoptable by both humans and their agents. Not as a replacement for documentation, but as the missing execution layer that documentation has never been able to provide on its own.
+                </p>
+
+                <p>
+                    The developers are still there. The journey is still there. What's changing is who they bring along for the ride—and whether your product knows how to talk to it.
+                </p>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

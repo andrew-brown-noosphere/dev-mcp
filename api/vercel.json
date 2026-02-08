@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "api/scan.js": {
+      "runtime": "@vercel/node@18",
+      "maxDuration": 30,
+      "environment": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/scan",
+      "destination": "/api/scan.js"
+    }
+  ]
+}

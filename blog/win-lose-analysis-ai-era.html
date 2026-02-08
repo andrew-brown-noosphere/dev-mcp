@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win/Loss Analysis in the AI Era: What Happens When Robots Choose Your Competitor - DevExp.ai</title>
+    <meta name="description" content="Your sales team can't call an AI agent to understand why it chose MongoDB over your database. New strategies for competitive intelligence when machines make the decisions.">
+
+    <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --radius: 0.5rem;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.125rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper { position: relative; z-index: 10; min-height: 100vh; width: 100%; }
+
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .content-container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--color-text); }
+
+        .post-header { padding: 80px 0 60px; text-align: center; }
+
+        .post-meta { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-subtle); }
+        .post-category { color: var(--color-primary); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+        h1 { font-size: 2.75rem; font-weight: 600; line-height: 1.15; margin: 0 0 1.5rem 0; font-family: 'Source Serif 4', serif; letter-spacing: -0.02em; color: var(--color-text); }
+        .lead { font-size: 1.25rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+        article { padding: 0 0 100px; }
+
+        h2 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin: 3rem 0 1.5rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+        h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.4; margin: 2.5rem 0 1rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+
+        p { margin-bottom: 1.5rem; color: var(--color-text-muted); }
+
+        ol, ul { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--color-text-muted); }
+        li { margin-bottom: 0.5rem; }
+        li strong { color: var(--color-text); }
+
+        blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid var(--color-primary);
+            background: var(--color-surface);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .battle-visualization {
+            background: #1e293b;
+            color: var(--color-text);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .battle-visualization h3 { margin-top: 0; }
+
+        .competitors {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .competitor { text-align: center; }
+
+        .competitor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .competitor-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .competitor.winner .competitor-score { color: var(--color-success); }
+        .competitor.loser .competitor-score { color: var(--color-error); }
+
+        .vs { font-size: 2rem; opacity: 0.5; }
+
+        .decision-factors {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .factor-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-border);
+            align-items: center;
+        }
+
+        .factor-row:last-child { border-bottom: none; }
+
+        .factor-name { font-weight: 500; color: var(--color-text-muted); }
+
+        .factor-score {
+            width: 80px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .factor-score.winner { color: var(--color-success); }
+        .factor-score.loser { color: var(--color-error); }
+
+        .loss-anatomy {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .loss-anatomy h3 { color: var(--color-error); margin-top: 0; margin-bottom: 1rem; }
+
+        .reason-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .reason-number {
+            display: inline-block;
+            background: var(--color-error);
+            color: var(--color-text);
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .reason-card strong { color: var(--color-text); }
+        .reason-card p { margin: 0.5rem 0 0 0; }
+
+        .new-intel-sources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .intel-source {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .intel-source:hover { border-color: var(--color-border-accent); }
+
+        .intel-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+        .intel-source h4 { color: var(--color-primary); margin-bottom: 0.5rem; }
+        .intel-source p { margin-bottom: 0; }
+
+        .strategy-framework {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-accent);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .strategy-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .strategy-step:last-child { margin-bottom: 0; }
+
+        .strategy-number {
+            background: var(--color-primary);
+            color: var(--color-text);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .strategy-step strong { color: var(--color-text); display: block; margin-bottom: 0.25rem; }
+        .strategy-step p { margin: 0; }
+
+        .ai-telemetry {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box strong { color: #f59e0b; }
+
+        .action-plan {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .action-plan h3 { margin-top: 0; }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .action-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-text-subtle);
+            border-radius: 4px;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .action-item strong { color: var(--color-text); }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-box h3 { color: var(--color-text); margin: 0 0 1rem 0; }
+        .cta-box p { color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+        .button {
+            display: inline-block;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .button:hover { transform: translateY(-2px); }
+
+        .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
+        .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; }
+        .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
+        .footer-links a:hover { color: var(--color-text); }
+        .footer-text { color: var(--color-text-subtle); font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            .content-container { padding: 0 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/#demo">Get Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="post-header">
+            <div class="content-container">
+                <div class="post-meta">
+                    <span class="post-category">Competition</span>
+                    <span>•</span>
+                    <time>November 10, 2025</time>
+                    <span>•</span>
+                    <span>11 min read</span>
+                </div>
+                <h1>Win/Loss Analysis in the AI Era: What Happens When Robots Choose Your Competitor</h1>
+                <p class="lead">
+                    Traditional win/loss analysis relied on customer interviews and sales debriefs.
+                    But when AI agents make the decision in milliseconds based on objective performance,
+                    everything changes. Here's how to compete when machines are the judges.
+                </p>
+            </div>
+        </header>
+
+        <article>
+            <div class="content-container">
+                <p>
+                    Last week, a database company lost a $2M deal. They never got a chance to demo.
+                    No proof of concept. No pricing negotiation. An AI agent evaluated them against
+                    competitors in 12 seconds and chose someone else. Game over.
+                </p>
+
+                <div class="battle-visualization">
+                    <h3>AI Evaluation Complete</h3>
+                    <div class="competitors">
+                        <div class="competitor loser">
+                            <div class="competitor-name">Your Database</div>
+                            <div class="competitor-score">72/100</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="competitor winner">
+                            <div class="competitor-name">Competitor</div>
+                            <div class="competitor-score">91/100</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 0; opacity: 0.8;">Decision Time: 12.3 seconds</p>
+                </div>
+
+                <h2>The New Reality of Competitive Loss</h2>
+
+                <p>
+                    In the AI era, you don't lose deals in boardrooms. You lose them in microseconds,
+                    during automated evaluations you never see. The customer's first human interaction
+                    might be signing a contract with your competitor.
+                </p>
+
+                <blockquote>
+                    "We used to do quarterly win/loss interviews. Now we analyze AI decision logs.
+                    The insights are 100x more actionable because they show exactly why we lost—down
+                    to the millisecond response time difference." - Head of Competitive Intelligence
+                </blockquote>
+
+                <h2>Why Traditional Win/Loss Analysis Fails</h2>
+
+                <h3>1. No Human to Interview</h3>
+                <p>
+                    You can't call Claude for a debrief. AI agents don't return your emails asking
+                    why they chose PostgreSQL over your database. The decision maker literally doesn't
+                    exist after the evaluation.
+                </p>
+
+                <h3>2. Decisions Are Binary</h3>
+                <p>
+                    Humans have preferences, biases, relationships. AI has benchmarks. You either
+                    win the performance test or you don't. There's no "almost won" with machines.
+                </p>
+
+                <h3>3. Speed Eliminates Intervention</h3>
+                <p>
+                    By the time you know there was an evaluation, the code is already in production
+                    using your competitor's solution.
+                </p>
+
+                <div class="loss-anatomy">
+                    <h3>Anatomy of an AI Loss</h3>
+
+                    <div class="reason-card">
+                        <span class="reason-number">1</span>
+                        <strong>Discovery Failure</strong>
+                        <p>AI couldn't find your MCP endpoint when searching for "distributed cache solutions"</p>
+                    </div>
+
+                    <div class="reason-card">
+                        <span class="reason-number">2</span>
+                        <strong>Connection Timeout</strong>
+                        <p>Your API took 847ms to respond. Competitor responded in 93ms. AI moved on.</p>
+                    </div>
+
+                    <div class="reason-card">
+                        <span class="reason-number">3</span>
+                        <strong>Incomplete Capabilities</strong>
+                        <p>AI needed pub/sub features. Yours weren't exposed via MCP. Competitor's were.</p>
+                    </div>
+
+                    <div class="reason-card">
+                        <span class="reason-number">4</span>
+                        <strong>Benchmark Loss</strong>
+                        <p>Head-to-head performance test showed 23% slower throughput. Case closed.</p>
+                    </div>
+                </div>
+
+                <h2>The New Intelligence Sources</h2>
+
+                <p>
+                    Without human buyers to interview, competitive intelligence comes from new sources:
+                </p>
+
+                <div class="new-intel-sources">
+                    <div class="intel-source">
+                        <div class="intel-icon">📊</div>
+                        <h4>AI Telemetry Data</h4>
+                        <p>Every AI interaction leaves traces. Track patterns in queries, failures, and comparisons.</p>
+                    </div>
+
+                    <div class="intel-source">
+                        <div class="intel-icon">🏃</div>
+                        <h4>Benchmark Racing</h4>
+                        <p>Continuously run your product against competitors through AI agents. See what they see.</p>
+                    </div>
+
+                    <div class="intel-source">
+                        <div class="intel-icon">🔍</div>
+                        <h4>Protocol Analysis</h4>
+                        <p>Study competitor MCP implementations. What capabilities do they expose that you don't?</p>
+                    </div>
+
+                    <div class="intel-source">
+                        <div class="intel-icon">💬</div>
+                        <h4>Developer Proxies</h4>
+                        <p>Developers may not choose, but they observe. Track their feedback on AI recommendations.</p>
+                    </div>
+                </div>
+
+                <h2>Real AI Decision Logs</h2>
+
+                <p>
+                    Here's what actual AI evaluation data looks like:
+                </p>
+
+                <div class="ai-telemetry">
+{
+  "evaluation_id": "eval_2024_42738",
+  "query": "need scalable message queue for microservices",
+  "candidates_discovered": 4,
+  "evaluation_results": {
+    "rabbitmq": {
+      "discovery_time": 234,
+      "capabilities_score": 89,
+      "performance_score": 76,
+      "implementation_success": true,
+      "total_score": 83
+    },
+    "your_product": {
+      "discovery_time": 1893,
+      "capabilities_score": 92,
+      "performance_score": 0,
+      "implementation_success": false,
+      "total_score": 31,
+      "failure_reason": "timeout_during_capability_fetch"
+    },
+    "kafka": {
+      "discovery_time": 123,
+      "capabilities_score": 95,
+      "performance_score": 94,
+      "implementation_success": true,
+      "total_score": 94
+    }
+  },
+  "winner": "kafka",
+  "decision_factors": [
+    "fastest_discovery",
+    "highest_performance",
+    "proven_scale"
+  ]
+}</div>
+
+                <p>
+                    Notice: You had better capabilities, but slow discovery killed you.
+                    Kafka won before you finished loading.
+                </p>
+
+                <h2>The New Win/Loss Framework</h2>
+
+                <div class="strategy-framework">
+                    <h3>AI-Era Competitive Analysis Process</h3>
+
+                    <div class="strategy-step">
+                        <div class="strategy-number">1</div>
+                        <div>
+                            <strong>Monitor AI Queries</strong>
+                            <p>Track what problems AI agents are trying to solve in your category. These are your real competition scenarios.</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-step">
+                        <div class="strategy-number">2</div>
+                        <div>
+                            <strong>Benchmark Continuously</strong>
+                            <p>Run automated comparisons against competitors daily. Track performance gaps in real-time.</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-step">
+                        <div class="strategy-number">3</div>
+                        <div>
+                            <strong>Analyze Failure Patterns</strong>
+                            <p>Every failed AI evaluation is a loss. Study patterns: timeout? missing features? poor performance?</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-step">
+                        <div class="strategy-number">4</div>
+                        <div>
+                            <strong>Optimize Relentlessly</strong>
+                            <p>Fix the specific issues that cause AI to choose competitors. Speed, capabilities, reliability.</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-step">
+                        <div class="strategy-number">5</div>
+                        <div>
+                            <strong>Track Win Rates</strong>
+                            <p>Measure percentage of AI evaluations where you're chosen. This is your new market share metric.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Competitive Response Strategies</h2>
+
+                <h3>When You're Losing on Performance</h3>
+                <ul>
+                    <li>Create specialized endpoints optimized for AI benchmarks</li>
+                    <li>Pre-cache common test scenarios</li>
+                    <li>Implement progressive disclosure (basic features fast, advanced features later)</li>
+                    <li>Optimize for the specific workloads AI agents test</li>
+                </ul>
+
+                <h3>When You're Losing on Discovery</h3>
+                <ul>
+                    <li>Improve semantic matching in your capability descriptions</li>
+                    <li>Reduce response latency to under 100ms</li>
+                    <li>Implement fallback discovery mechanisms</li>
+                    <li>Create multiple entry points for different query patterns</li>
+                </ul>
+
+                <h3>When You're Losing on Features</h3>
+                <ul>
+                    <li>Expose ALL capabilities via MCP, not just core ones</li>
+                    <li>Build compatibility layers for competitor APIs</li>
+                    <li>Focus on the features AI agents actually test</li>
+                    <li>Provide clear feature availability signals</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>Ethical Warning:</strong> Gaming AI evaluations with fake performance
+                    is like lying on your resume. AI agents will eventually test in production and
+                    abandon solutions that don't deliver. Build real performance, not benchmarketing.
+                </div>
+
+                <h2>Case Study: Redis vs. DragonflyDB</h2>
+
+                <p>
+                    DragonflyDB entered a market dominated by Redis. Traditional competitive strategy
+                    would have been impossible. Instead, they optimized entirely for AI evaluation:
+                </p>
+
+                <ol>
+                    <li>Built Redis-compatible API (AI could test without code changes)</li>
+                    <li>Optimized for benchmark workloads AI agents commonly run</li>
+                    <li>Achieved 25x performance improvement on standard tests</li>
+                    <li>Made performance claims instantly verifiable</li>
+                </ol>
+
+                <p>
+                    Result: 43% of AI evaluations now choose DragonflyDB over Redis for new projects.
+                    They won by being undeniably better in AI tests.
+                </p>
+
+                <h2>Building Your AI Competitive Intelligence System</h2>
+
+                <div class="action-plan">
+                    <h3>90-Day Competitive Intelligence Transformation</h3>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 1-2:</strong> Implement AI evaluation tracking in your MCP server
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 3-4:</strong> Build automated competitive benchmark suite
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 5-6:</strong> Analyze loss patterns and identify quick wins
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 7-8:</strong> Optimize for discovered weaknesses
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 9-10:</strong> Launch continuous monitoring system
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-checkbox"></div>
+                        <div>
+                            <strong>Week 11-12:</strong> Measure win rate improvements
+                        </div>
+                    </div>
+                </div>
+
+                <h2>The Truth About AI Competition</h2>
+
+                <p>
+                    AI competition is brutally honest. There's no relationship selling, no brand
+                    loyalty, no "nobody gets fired for buying IBM." There's only objective performance.
+                </p>
+
+                <p>
+                    This is terrifying if you've been winning on marketing. It's liberating if you
+                    have genuinely superior technology. For the first time in software history, the
+                    best product actually wins.
+                </p>
+
+                <div class="cta-box">
+                    <h3>Ready to Win the AI Competition?</h3>
+                    <p>
+                        Get our AI Competitive Intelligence Toolkit with automated benchmarking,
+                        loss analysis templates, and response strategies.
+                    </p>
+                    <a href="/#demo" class="button">Get Competitive Toolkit</a>
+                </div>
+
+                <h2>The Future of Competition</h2>
+
+                <p>
+                    In five years, "competitive strategy" will mean something completely different.
+                    Instead of sales battlecards and feature matrices, we'll have real-time performance
+                    races judged by impartial machines.
+                </p>
+
+                <p>
+                    The winners will be those who embrace this new reality: Competition isn't about
+                    perception anymore. It's about performance. And in the age of AI, performance
+                    is measured in milliseconds and proven in code.
+                </p>
+
+                <p>
+                    Stop trying to interview buyers who don't exist. Start optimizing for the judges
+                    who actually matter: the AI agents making decisions faster than humans can blink.
+                </p>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

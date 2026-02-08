@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>llms.txt Generator - DevMCP.ai</title>
+    <meta name="description" content="Generate an AI-ready llms.txt file for your website. Make your APIs and services discoverable by AI agents.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(50, 120, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Noise texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* Main content */
+        .main-content {
+            padding: 60px 0;
+            min-height: 80vh;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 8s ease infinite;
+            background-size: 200% auto;
+            text-align: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 3rem 0;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Generator Interface */
+        .generator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .input-section, .output-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #7850ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 400;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            background-size: 200% auto;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* AI Readiness Score */
+        .score-display {
+            background: rgba(120, 80, 255, 0.1);
+            border: 1px solid rgba(120, 80, 255, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #7850ff 0%, #ff5078 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .score-label {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Progress indicators */
+        .progress-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .progress-item.complete {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .progress-item.partial {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .progress-item.missing {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .progress-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Output editor */
+        .editor-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .editor-content {
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #7850ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .generator-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevMCP.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/llms-generator.html">Generator</a>
+                        <a href="/llms-txt-evaluator">Evaluator</a>
+                        <a href="/#demo">Get Demo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container main-content">
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+                <h1 class="hero-title">Generate Your llms.txt</h1>
+                <p class="hero-subtitle">
+                </p>
+            </div>
+
+            <!-- Generator Interface -->
+            <div class="generator-container">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-globe"></i>
+                        Website to Analyze
+                    </h2>
+                    
+                    <form id="generatorForm">
+                        <div class="form-group">
+                            <label for="websiteUrl" class="form-label">
+                                Enter Your Domain
+                            </label>
+                            <input 
+                                type="text" 
+                                id="websiteUrl" 
+                                name="websiteUrl"
+                                placeholder="example.com"
+                                class="form-input"
+                                required
+                            >
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="generateBtn">
+                            <i class="fas fa-magic"></i>
+                            Generate llms.txt
+                        </button>
+                    </form>
+
+                    <!-- Progress/Status -->
+                    <div id="analysisProgress" class="hidden" style="margin-top: 2rem;">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">Analyzing Website...</h3>
+                        <div id="progressItems">
+                            <!-- Progress items will be added dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- AI Readiness Score -->
+                    <div id="scoreDisplay" class="score-display hidden">
+                        <p class="score-label">AI Readiness Score</p>
+                        <h3 class="score-value" id="scoreValue">0%</h3>
+                        <p class="score-label" id="scoreMessage">Analyzing...</p>
+                    </div>
+                    
+                    <!-- MCP Configuration (optional) -->
+                    <div id="mcpConfig" class="hidden" style="margin-top: 2rem; padding: 1.5rem; background: rgba(120, 80, 255, 0.1); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 12px;">
+                        <h4 style="font-size: 1.125rem; margin-bottom: 1rem; color: #7850ff;">
+                            <i class="fas fa-plug"></i> MCP Server Configuration (Optional)
+                        </h4>
+                        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">
+                            Add MCP server details to enable direct AI integration 
+                            <a href="/mcp-flow-demo.html" target="_blank" style="color: #7850ff; text-decoration: underline;">
+                                See how it works →
+                            </a>
+                        </p>
+                        <div style="display: grid; gap: 1rem;">
+                            <input type="text" 
+                                   id="mcpServerUrl" 
+                                   placeholder="wss://mcp.your-domain.com"
+                                   style="padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
+                            <input type="text" 
+                                   id="mcpAuthType" 
+                                   placeholder="Authentication type (e.g., api-key, oauth)"
+                                   style="padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-code"></i>
+                        Generated llms.txt
+                    </h2>
+
+                    <div id="loadingState" class="loading">
+                        <p style="color: rgba(255, 255, 255, 0.5);">
+                            Enter a domain to generate your llms.txt file
+                        </p>
+                    </div>
+
+                    <div id="outputContainer" class="hidden">
+                        <div class="editor-container">
+                            <div class="editor-header">
+                                <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.875rem;">
+                                    llms.txt
+                                </span>
+                                <button class="btn-secondary" style="padding: 0.5rem 1rem; width: auto;" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy"></i>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre class="editor-content" id="generatedContent"></pre>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="downloadFile()">
+                                <i class="fas fa-download"></i>
+                                Download llms.txt
+                            </button>
+                            <button class="btn btn-secondary" onclick="testWithEvaluator()">
+                                <i class="fas fa-check-circle"></i>
+                                Test with Evaluator
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div style="max-width: 800px; margin: 4rem auto 0; text-align: center;">
+                <h3 style="margin-bottom: 1rem;">How to Deploy Your llms.txt</h3>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">
+                    Once generated, place your llms.txt file at one of these locations:
+                </p>
+                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 12px; flex: 1; min-width: 250px;">
+                        <code style="color: #7850ff; font-family: 'JetBrains Mono', monospace;">
+                            /llms.txt
+                        </code>
+                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0.5rem 0 0; font-size: 0.875rem;">
+                            Root directory (preferred)
+                        </p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 12px; flex: 1; min-width: 250px;">
+                        <code style="color: #7850ff; font-family: 'JetBrains Mono', monospace;">
+                            /.well-known/llms.txt
+                        </code>
+                        <p style="color: rgba(255, 255, 255, 0.6); margin: 0.5rem 0 0; font-size: 0.875rem;">
+                            Well-known directory
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/llms-generator.js?v=5"></script>
+<script src="/tracking.js" data-org="devmcp"></script>
+</body>
+</html>

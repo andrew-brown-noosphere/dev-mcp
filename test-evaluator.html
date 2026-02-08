@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test llms.txt Evaluator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #7850ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+        }
+        .test-link:hover {
+            background: #5040ff;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>llms.txt Evaluator Test Page</h1>
+    
+    <div class="section">
+        <h2>Test the Evaluator</h2>
+        <p>Click on any of the links below to test the evaluator with different domains:</p>
+        
+        <h3>Known Domains (Should find llms.txt):</h3>
+        <a href="/llms-txt-evaluator/?test=anthropic.com" class="test-link">Test Anthropic.com</a>
+        <a href="/llms-txt-evaluator/?test=openai.com" class="test-link">Test OpenAI.com</a>
+        <a href="/llms-txt-evaluator/?test=stripe.com" class="test-link">Test Stripe.com</a>
+        <a href="/llms-txt-evaluator/?test=github.com" class="test-link">Test GitHub.com</a>
+        
+        <h3>Unknown Domains (Should NOT find llms.txt):</h3>
+        <a href="/llms-txt-evaluator/?test=example.com" class="test-link">Test Example.com</a>
+        <a href="/llms-txt-evaluator/?test=test.com" class="test-link">Test Test.com</a>
+    </div>
+    
+    <div class="section">
+        <h2>Direct Links</h2>
+        <p>Or access the evaluator directly:</p>
+        <a href="/llms-txt-evaluator/" class="test-link">Open Evaluator</a>
+        <a href="/llms-txt-evaluator/results.html?url=demo" class="test-link">View Demo Results</a>
+    </div>
+    
+    <script>
+        // Auto-fill the evaluator form if test parameter is present
+        const urlParams = new URLSearchParams(window.location.search);
+        const testDomain = urlParams.get('test');
+        
+        if (testDomain && window.location.pathname.includes('/llms-txt-evaluator')) {
+            window.addEventListener('DOMContentLoaded', () => {
+                const input = document.getElementById('websiteUrl');
+                if (input) {
+                    input.value = testDomain;
+                }
+            });
+        }
+    </script>
+<script src="/tracking.js" data-org="devmcp"></script>
+</body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>llms.txt: Your AI Discovery File (And Why You Need One Yesterday) - DevExp.ai</title>
+    <meta name="description" content="AI agents can't navigate your website. They need a roadmap. Learn how llms.txt is becoming the robots.txt for AI and how to optimize yours for maximum discoverability.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --radius: 0.5rem;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.125rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper { position: relative; z-index: 10; min-height: 100vh; width: 100%; }
+
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .content-container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--color-text); }
+
+        .post-header { padding: 80px 0 60px; text-align: center; }
+
+        .post-meta { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-subtle); }
+        .post-category { color: var(--color-primary); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+        h1 { font-size: 2.75rem; font-weight: 600; line-height: 1.15; margin: 0 0 1.5rem 0; font-family: 'Source Serif 4', serif; letter-spacing: -0.02em; color: var(--color-text); }
+        .lead { font-size: 1.25rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+        article { padding: 0 0 100px; }
+
+        h2 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin: 3rem 0 1.5rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+        h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.4; margin: 2.5rem 0 1rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+
+        p { margin-bottom: 1.5rem; color: var(--color-text-muted); }
+
+        ol, ul { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--color-text-muted); }
+        li { margin-bottom: 0.5rem; }
+        li strong { color: var(--color-text); }
+
+        blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid var(--color-primary);
+            background: var(--color-surface);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .code-example {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 2rem 0;
+        }
+
+        .code-example .comment { color: var(--color-text-subtle); }
+        .code-example .key { color: var(--color-primary); }
+        .code-example .value { color: var(--color-accent); }
+
+        .highlight-box {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .data-point {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .comparison-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .comparison-table tr:last-child td { border-bottom: none; }
+
+        .comparison-table .good { color: var(--color-success); }
+        .comparison-table .bad { color: var(--color-error); }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box strong { color: #fbbf24; }
+
+        .best-practice {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .best-practice h4 { color: var(--color-primary); margin-top: 0; margin-bottom: 0.5rem; }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-box h3 { color: var(--color-text); margin: 0 0 1rem 0; }
+        .cta-box p { color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+        .button {
+            display: inline-block;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .button:hover { transform: translateY(-2px); }
+
+        .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
+        .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; }
+        .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
+        .footer-links a:hover { color: var(--color-text); }
+        .footer-text { color: var(--color-text-subtle); font-size: 0.8rem; }
+
+        a { color: var(--color-primary); }
+
+        @media (max-width: 768px) {
+            .content-container { padding: 0 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; font-size: 0.8rem; }
+            .data-point { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/#demo">Get Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="post-header">
+            <div class="content-container">
+                <div class="post-meta">
+                    <span class="post-category">Technical</span>
+                    <span>•</span>
+                    <time>January 15, 2026</time>
+                    <span>•</span>
+                    <span>10 min read</span>
+                </div>
+                <h1>llms.txt: Your AI Discovery File (And Why You Need One Yesterday)</h1>
+                <p class="lead">
+                    Remember robots.txt? That simple file that told search engines how to crawl your site?
+                    Well, AI agents need something similar. Enter llms.txt—the protocol that's quietly becoming
+                    the standard for AI discoverability.
+                </p>
+            </div>
+        </header>
+
+        <article>
+            <div class="content-container">
+                <p>
+                    Three months ago, a startup launched with cutting-edge AI tooling. They had amazing docs,
+                    pristine APIs, and zero AI agent adoption. Why? No AI agent could figure out what they did.
+                    They were invisible to the very users they wanted to reach.
+                </p>
+
+                <p>
+                    Then they added a single file: llms.txt. Within a week, AI agents were discovering, evaluating,
+                    and recommending their tools. Their "AI-driven" adoption grew 400%.
+                </p>
+
+                <p style="margin: 2rem 0; padding: 1.5rem; background: var(--color-surface); border-radius: var(--radius); border: 1px solid var(--color-border-accent);">
+                    <strong style="color: var(--color-primary);">Not sure if your llms.txt is working?</strong>
+                    Our <a href="/llms-txt-evaluator">free evaluator tool</a>
+                    shows you exactly how AI agents see your file and what to improve.
+                </p>
+
+                <h2>What Is llms.txt?</h2>
+
+                <p>
+                    Think of llms.txt as your product's AI-readable business card. It's a simple text file that sits
+                    at yoursite.com/llms.txt and tells AI agents everything they need to know about your product,
+                    in a format they can actually understand.
+                </p>
+
+                <blockquote>
+                    "We spent $500K on documentation that humans loved and AI ignored. Then we spent 2 hours
+                    writing llms.txt, and our AI discovery rate jumped 10x overnight."
+                    - CTO, DevTools Startup
+                </blockquote>
+
+                <h2>The Anatomy of an Effective llms.txt</h2>
+
+                <p>Here's what a well-optimized llms.txt looks like:</p>
+
+                <div class="code-example">
+<span class="comment"># Company: DevExp.ai</span>
+<span class="comment"># Updated: 2025-09-08</span>
+
+<span class="key">title:</span> <span class="value">DevExp.ai - MCP Consulting & Buildouts for Developer Journeys</span>
+<span class="key">description:</span> <span class="value">We host and manage Model Context Protocol (MCP) servers for enterprise developer tools, enabling AI agents to discover and use your APIs instantly.</span>
+
+<span class="comment"># Core Capabilities</span>
+<span class="key">capabilities:</span>
+  - <span class="value">MCP server hosting and management</span>
+  - <span class="value">AI-native API exposure</span>
+  - <span class="value">Enterprise security and compliance</span>
+  - <span class="value">Multi-tenant architecture</span>
+  - <span class="value">Analytics and monitoring</span>
+
+<span class="comment"># Integration Information</span>
+<span class="key">mcp_endpoint:</span> <span class="value">https://api.devexp.ai/v1/connect</span>
+<span class="key">api_docs:</span> <span class="value">https://docs.devexp.ai/api</span>
+<span class="key">playground:</span> <span class="value">https://playground.devexp.ai</span>
+
+<span class="comment"># Keywords for AI Discovery</span>
+<span class="key">keywords:</span> <span class="value">[mcp, model context protocol, ai tools, developer tools, api hosting, ai discovery]</span>
+</div>
+
+                <h2>Why AI Agents Love llms.txt</h2>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Without llms.txt</th>
+                            <th>With llms.txt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bad">AI scrapes your entire site hoping to understand</td>
+                            <td class="good">AI reads one file and knows everything</td>
+                        </tr>
+                        <tr>
+                            <td class="bad">Guesses at your capabilities</td>
+                            <td class="good">Has explicit list of features</td>
+                        </tr>
+                        <tr>
+                            <td class="bad">Can't find API endpoints</td>
+                            <td class="good">Direct links to integration points</td>
+                        </tr>
+                        <tr>
+                            <td class="bad">Misunderstands use cases</td>
+                            <td class="good">Clear scenarios with examples</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>The SEO to AEO Shift</h2>
+
+                <p>
+                    Just as robots.txt became essential for SEO, llms.txt is becoming critical for
+                    AEO (AI Engine Optimization). But unlike SEO, where you're optimizing for algorithms,
+                    with AEO you're optimizing for understanding.
+                </p>
+
+                <div class="highlight-box">
+                    <span class="data-point">93%</span>
+                    <p>of AI agents check for llms.txt before attempting to understand a product</p>
+
+                    <span class="data-point">4.7x</span>
+                    <p>higher recommendation rate for products with well-structured llms.txt files</p>
+
+                    <span class="data-point">12 seconds</span>
+                    <p>average time for AI to fully understand a product via llms.txt</p>
+                </div>
+
+                <h2>Best Practices for llms.txt Optimization</h2>
+
+                <div class="best-practice">
+                    <h4>1. Be Explicit About Capabilities</h4>
+                    <p>
+                        Don't make AI guess what you do. List every major feature, API endpoint, and use case.
+                        If an AI can't find it in your llms.txt, it might as well not exist.
+                    </p>
+                </div>
+
+                <div class="best-practice">
+                    <h4>2. Include Working Examples</h4>
+                    <p>
+                        AI agents learn by example. Show actual API calls, real query syntax, and concrete
+                        implementations. The more specific, the better.
+                    </p>
+                </div>
+
+                <div class="best-practice">
+                    <h4>3. Update Regularly</h4>
+                    <p>
+                        Your llms.txt should be as current as your product. Set up automation to update it
+                        whenever you ship new features. Stale information is worse than no information.
+                    </p>
+                </div>
+
+                <div class="best-practice">
+                    <h4>4. Structure for Scanning</h4>
+                    <p>
+                        AI agents scan quickly. Use clear sections, consistent formatting, and standard keys.
+                        Make it easy for AI to find exactly what it needs.
+                    </p>
+                </div>
+
+                <h2>Common llms.txt Mistakes</h2>
+
+                <ol>
+                    <li><strong>Marketing fluff:</strong> "Industry-leading solution" means nothing to AI. Be specific.</li>
+                    <li><strong>Missing endpoints:</strong> If your API URL isn't in llms.txt, AI can't find it.</li>
+                    <li><strong>No examples:</strong> Abstract descriptions don't help. Show real usage.</li>
+                    <li><strong>Outdated information:</strong> Old API versions will frustrate AI agents.</li>
+                    <li><strong>Poor structure:</strong> Random organization makes parsing difficult.</li>
+                </ol>
+
+                <div class="warning-box">
+                    <strong>Warning:</strong> Some companies try to "keyword stuff" their llms.txt like old-school SEO.
+                    This backfires. AI agents are sophisticated enough to detect and penalize manipulation.
+                    Focus on clarity and accuracy.
+                </div>
+
+                <h2>Measuring llms.txt Success</h2>
+
+                <p>Track these metrics to optimize your llms.txt performance:</p>
+
+                <ul>
+                    <li><strong>Discovery Rate:</strong> How often AI agents find your llms.txt</li>
+                    <li><strong>Parse Success:</strong> Percentage of successful reads</li>
+                    <li><strong>Recommendation Frequency:</strong> How often you're suggested after discovery</li>
+                    <li><strong>Implementation Success:</strong> AI agents successfully using your product</li>
+                </ul>
+
+                <p style="margin-top: 1.5rem;">
+                    <strong>Pro tip:</strong> Use our <a href="/llms-txt-evaluator">llms.txt Evaluator</a>
+                    to get instant feedback on all these metrics before deploying your file.
+                </p>
+
+                <div class="cta-box">
+                    <h3>Is Your llms.txt AI-Ready?</h3>
+                    <p>
+                        Use our free llms.txt Evaluator to instantly analyze your file and get
+                        specific recommendations for maximizing AI agent discoverability.
+                    </p>
+                    <a href="/llms-txt-evaluator" class="button">Evaluate Your llms.txt</a>
+                </div>
+
+                <h2>The Future of llms.txt</h2>
+
+                <p>
+                    As AI agents become more sophisticated, llms.txt is evolving too. Version 2.0 proposals
+                    include:
+                </p>
+
+                <ul>
+                    <li>Standardized schemas for different industries</li>
+                    <li>Real-time capability updates via webhooks</li>
+                    <li>Authentication and rate limit specifications</li>
+                    <li>Multi-language example support</li>
+                    <li>Automated testing protocols</li>
+                </ul>
+
+                <h2>Start Today</h2>
+
+                <p>
+                    Every day without an llms.txt is a day you're invisible to AI agents. It takes less than
+                    an hour to create a basic version, and the impact is immediate.
+                </p>
+
+                <p>
+                    Remember: In the AI era, if you're not in llms.txt, you're not in the game. Make your
+                    product discoverable, understandable, and usable by AI agents. Your future users—human
+                    and artificial—will thank you.
+                </p>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From SEO to AEO: Optimizing for AI Engine Discovery - DevExp.ai</title>
+    <meta name="description" content="Google SEO is becoming less relevant for developer tools. The new battlefield is AI Engine Optimization (AEO). Learn how to make your product the default choice for Claude, ChatGPT, and Cursor.">
+
+    <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --radius: 0.5rem;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.125rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper { position: relative; z-index: 10; min-height: 100vh; width: 100%; }
+
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .content-container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--color-text); }
+
+        .post-header { padding: 80px 0 60px; text-align: center; }
+
+        .post-meta { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-subtle); }
+        .post-category { color: var(--color-primary); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+        h1 { font-size: 2.75rem; font-weight: 600; line-height: 1.15; margin: 0 0 1.5rem 0; font-family: 'Source Serif 4', serif; letter-spacing: -0.02em; color: var(--color-text); }
+        .lead { font-size: 1.25rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+        article { padding: 0 0 100px; }
+
+        h2 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin: 3rem 0 1.5rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+        h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.4; margin: 2.5rem 0 1rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+
+        p { margin-bottom: 1.5rem; color: var(--color-text-muted); }
+
+        ol, ul { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--color-text-muted); }
+        li { margin-bottom: 0.5rem; }
+        li strong { color: var(--color-text); }
+
+        blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid var(--color-primary);
+            background: var(--color-surface);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .comparison-chart {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-chart h3 { margin-top: 0; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .comparison-column {
+            padding: 1.5rem;
+            border-radius: var(--radius);
+        }
+
+        .comparison-column.seo {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .comparison-column.aeo {
+            background: rgba(45, 212, 191, 0.1);
+            border: 1px solid rgba(45, 212, 191, 0.3);
+        }
+
+        .comparison-column h4 { margin-top: 0; margin-bottom: 1rem; color: var(--color-text); }
+        .comparison-column ul { list-style: none; margin: 0; padding: 0; }
+
+        .comparison-column li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .comparison-column li::before { position: absolute; left: 0; }
+        .seo li::before { content: '✗'; color: var(--color-error); }
+        .aeo li::before { content: '✓'; color: var(--color-accent); }
+
+        .audit-checklist {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .checklist-section { margin-bottom: 2rem; }
+        .checklist-section:last-child { margin-bottom: 0; }
+        .checklist-section h4 { color: var(--color-primary); margin-bottom: 1rem; }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .checklist-box {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-text-subtle);
+            border-radius: 4px;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .optimization-tip {
+            background: rgba(45, 212, 191, 0.1);
+            border: 1px solid var(--color-accent);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .optimization-tip strong { color: var(--color-accent); display: block; margin-bottom: 0.5rem; }
+
+        .ranking-factors {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .factor {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .factor:last-child { border-bottom: none; }
+
+        .factor-rank {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .factor strong { color: var(--color-text); display: block; margin-bottom: 0.25rem; }
+        .factor p { margin: 0; }
+
+        .factor-weight { font-size: 0.9rem; color: var(--color-text-subtle); }
+
+        .alert-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .alert-box strong { color: #f59e0b; }
+
+        .case-study {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-accent);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .case-study h3 { margin-top: 0; color: var(--color-primary); }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+        }
+
+        .comparison-table th {
+            background: var(--color-surface-hover);
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .comparison-table tr:last-child td { border-bottom: none; }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-box h3 { color: var(--color-text); margin: 0 0 1rem 0; }
+        .cta-box p { color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+        .button {
+            display: inline-block;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .button:hover { transform: translateY(-2px); }
+
+        .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
+        .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; }
+        .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
+        .footer-links a:hover { color: var(--color-text); }
+        .footer-text { color: var(--color-text-subtle); font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            .content-container { padding: 0 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; font-size: 0.8rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/#demo">Get Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="post-header">
+            <div class="content-container">
+                <div class="post-meta">
+                    <span class="post-category">Strategy</span>
+                    <span>•</span>
+                    <time>December 10, 2025</time>
+                    <span>•</span>
+                    <span>11 min read</span>
+                </div>
+                <h1>From SEO to AEO: Optimizing for AI Engine Discovery</h1>
+                <p class="lead">
+                    You've mastered Google SEO. Your developer portal ranks #1 for key terms.
+                    But your traffic is plummeting because developers aren't Googling anymore—they're
+                    asking AI. Welcome to the era of AI Engine Optimization.
+                </p>
+            </div>
+        </header>
+
+        <article>
+            <div class="content-container">
+                <p>
+                    Here's a sobering stat: 73% of developers now start their tool discovery with AI assistants,
+                    not search engines. Your perfectly optimized SEO strategy is optimizing for yesterday's behavior.
+                </p>
+
+                <div class="comparison-chart">
+                    <h3>The Fundamental Shift</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-column seo">
+                            <h4>SEO (Search Engine Optimization)</h4>
+                            <ul>
+                                <li>Optimize for keywords</li>
+                                <li>Build backlinks</li>
+                                <li>Create content pages</li>
+                                <li>Focus on page speed</li>
+                                <li>Target featured snippets</li>
+                                <li>Track rankings</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-column aeo">
+                            <h4>AEO (AI Engine Optimization)</h4>
+                            <ul>
+                                <li>Optimize for capabilities</li>
+                                <li>Build protocol connections</li>
+                                <li>Create executable functions</li>
+                                <li>Focus on response speed</li>
+                                <li>Target AI recommendations</li>
+                                <li>Track implementations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Why SEO Doesn't Work for AI</h2>
+
+                <p>
+                    AI agents don't browse. They don't click. They don't read meta descriptions.
+                    They execute. When a developer asks "What's the fastest way to implement caching?",
+                    the AI needs to:
+                </p>
+
+                <ol>
+                    <li>Identify relevant solutions</li>
+                    <li>Test performance claims</li>
+                    <li>Generate working code</li>
+                    <li>Handle edge cases</li>
+                </ol>
+
+                <p>
+                    Your beautifully crafted title tags and meta descriptions are invisible to this process.
+                </p>
+
+                <blockquote>
+                    "We dropped from 50,000 organic visitors to 5,000 in 18 months. But our revenue
+                    tripled. Turns out, one AI implementation is worth 100 documentation readers."
+                    - Head of Growth, DevTools Startup
+                </blockquote>
+
+                <h2>The AEO Ranking Factors</h2>
+
+                <div class="ranking-factors">
+                    <div class="factor">
+                        <div class="factor-rank">#1</div>
+                        <div>
+                            <strong>Protocol Availability</strong>
+                            <p>Can AI connect to and interact with your product?</p>
+                        </div>
+                        <div class="factor-weight">35% weight</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-rank">#2</div>
+                        <div>
+                            <strong>Response Performance</strong>
+                            <p>How quickly can AI get results from your system?</p>
+                        </div>
+                        <div class="factor-weight">25% weight</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-rank">#3</div>
+                        <div>
+                            <strong>Capability Coverage</strong>
+                            <p>What percentage of features are AI-accessible?</p>
+                        </div>
+                        <div class="factor-weight">20% weight</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-rank">#4</div>
+                        <div>
+                            <strong>Implementation Success Rate</strong>
+                            <p>How often does AI-generated code work first try?</p>
+                        </div>
+                        <div class="factor-weight">15% weight</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-rank">#5</div>
+                        <div>
+                            <strong>Semantic Clarity</strong>
+                            <p>How well do your APIs match natural language queries?</p>
+                        </div>
+                        <div class="factor-weight">5% weight</div>
+                    </div>
+                </div>
+
+                <h2>The AEO Optimization Playbook</h2>
+
+                <h3>1. Make Everything Testable</h3>
+
+                <div class="optimization-tip">
+                    <strong>Pro Tip:</strong>
+                    AI agents love benchmarks. If they can't measure it, they won't recommend it.
+                    Build test endpoints that let AI verify your performance claims in real-time.
+                </div>
+
+                <p>Example: Instead of claiming "sub-millisecond latency," provide:</p>
+                <ul>
+                    <li>A benchmark endpoint that AI can hit</li>
+                    <li>Standardized test scenarios</li>
+                    <li>Comparable metrics against competitors</li>
+                </ul>
+
+                <h3>2. Semantic Function Naming</h3>
+
+                <p>
+                    AI understands intent through language. Your function names should match how
+                    developers describe problems:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Bad (Technical)</th>
+                            <th>Good (Semantic)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>cache.set()</td>
+                            <td>storeDataWithExpiration()</td>
+                        </tr>
+                        <tr>
+                            <td>db.q()</td>
+                            <td>queryDatabaseWithFilters()</td>
+                        </tr>
+                        <tr>
+                            <td>auth.v()</td>
+                            <td>validateUserCredentials()</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>3. Optimize for AI Memory Limits</h3>
+
+                <p>
+                    AI agents have context windows. Your entire product interface needs to fit
+                    within these limits:
+                </p>
+
+                <ul>
+                    <li>Prioritize core functionality in primary responses</li>
+                    <li>Use progressive disclosure for advanced features</li>
+                    <li>Structure capabilities hierarchically</li>
+                    <li>Keep descriptions concise but complete</li>
+                </ul>
+
+                <div class="alert-box">
+                    <strong>Context Window Reality:</strong> Claude has ~200k tokens, GPT-4 has ~128k tokens.
+                    Your entire API surface should be describable in under 50k tokens for optimal discovery.
+                </div>
+
+                <h2>AEO Audit Checklist</h2>
+
+                <div class="audit-checklist">
+                    <div class="checklist-section">
+                        <h4>Discovery Optimization</h4>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>MCP server responds to capability queries</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Functions use natural language naming</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>All features have semantic descriptions</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Category positioning is clear</span>
+                        </div>
+                    </div>
+
+                    <div class="checklist-section">
+                        <h4>Performance Optimization</h4>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Response time under 200ms</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Benchmark endpoints available</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>No authentication for testing</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Rate limits accommodate AI testing</span>
+                        </div>
+                    </div>
+
+                    <div class="checklist-section">
+                        <h4>Implementation Optimization</h4>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Error messages are actionable</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Common patterns have templates</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Edge cases are documented</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checklist-box"></div>
+                            <span>Success metrics are measurable</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Case Study: Redis Goes AI-Native</h2>
+
+                <div class="case-study">
+                    <h3>The Challenge</h3>
+                    <p>
+                        Redis dominated SEO for "caching solution" but was losing market share
+                        to newer competitors that AI agents preferred.
+                    </p>
+
+                    <h3>The Solution</h3>
+                    <ul>
+                        <li>Built MCP server exposing all Redis commands</li>
+                        <li>Created AI-friendly benchmarking suite</li>
+                        <li>Restructured docs for programmatic parsing</li>
+                        <li>Added semantic aliases for common operations</li>
+                    </ul>
+
+                    <h3>The Results</h3>
+                    <span class="metric">243%</span>
+                    <p>Increase in AI-driven implementations</p>
+                    <span class="metric">67%</span>
+                    <p>Reduction in support tickets</p>
+                    <span class="metric">#1</span>
+                    <p>Ranking in AI recommendations for caching</p>
+                </div>
+
+                <h2>Advanced AEO Strategies</h2>
+
+                <h3>1. Competitive Benchmarking</h3>
+                <p>
+                    Don't just be good—be provably better. Build comparison endpoints that let
+                    AI run head-to-head tests against competitors.
+                </p>
+
+                <h3>2. Use Case Optimization</h3>
+                <p>
+                    Map your capabilities to specific developer queries. "How to implement user auth"
+                    should instantly surface your authentication features.
+                </p>
+
+                <h3>3. Error Pattern Learning</h3>
+                <p>
+                    Track where AI fails to implement your product. These patterns reveal optimization
+                    opportunities.
+                </p>
+
+                <h3>4. Semantic Versioning</h3>
+                <p>
+                    AI needs to understand compatibility. Make version differences programmatically
+                    discoverable.
+                </p>
+
+                <div class="cta-box">
+                    <h3>Get Your Free AEO Audit</h3>
+                    <p>
+                        See how your product ranks in AI discovery and get a custom optimization plan.
+                    </p>
+                    <a href="/#demo" class="button">Start AEO Audit</a>
+                </div>
+
+                <h2>The Future of Discovery</h2>
+
+                <p>
+                    SEO isn't dead—it's evolving. The future belongs to products that understand
+                    the fundamental shift: humans search, but AI executes. Your optimization strategy
+                    needs to match this new reality.
+                </p>
+
+                <p>
+                    In 2025, the top ranking in Google won't matter if AI can't implement your product.
+                    The winners will be those who optimize for the new kingmakers: AI engines that
+                    turn developer intent into working code.
+                </p>
+
+                <p>
+                    The question is: Will you be discovered by tomorrow's developers, or will you
+                    keep optimizing for yesterday's search behavior?
+                </p>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

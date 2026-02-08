@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMs.txt Evaluator - DevMCP.ai</title>
+    <meta name="description" content="Evaluate your API's AI readiness with our comprehensive llms.txt analyzer.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(50, 120, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Noise texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0 4rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* Main content */
+        .main-content {
+            padding: 60px 0;
+            min-height: 80vh;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 8s ease infinite;
+            background-size: 200% auto;
+            text-align: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 3rem 0;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 400;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            background-size: 200% auto;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #7850ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Modal styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Step indicators */
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: rgba(120, 80, 255, 0.1);
+            border-color: rgba(120, 80, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            position: relative;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 100%);
+        }
+        
+        .step .step-circle span {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+        
+        .step.active .step-circle span {
+            color: #ffffff;
+        }
+        
+        .step .fa-spinner,
+        .step .fa-check {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .step-info h3 {
+            margin: 0 0 0.25rem 0;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .step-info p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 100%);
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+
+        .flex {
+            display: flex !important;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 2rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevMCP.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/llms-generator.html">Generator</a>
+                        <a href="/llms-txt-evaluator">Evaluator</a>
+                        <a href="/#demo">Get Demo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container main-content">
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+                <h1 class="hero-title">
+                    Is Your API <span style="background: linear-gradient(135deg, #7850ff 0%, #ff5078 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI-Ready</span>?
+                </h1>
+                <p class="hero-subtitle">
+                    Get an instant AI-powered evaluation of your website's llms.txt file and API documentation. 
+                    Discover how well your APIs work with AI agents like Claude, GPT-4, and others.
+                </p>
+            </div>
+
+            <!-- Evaluation Form -->
+            <div class="card">
+                <form id="evaluationForm">
+                    <div class="form-group">
+                        <label for="websiteUrl" class="form-label">
+                            Domain to Evaluate
+                        </label>
+                        <div style="position: relative;">
+                            <input 
+                                type="text" 
+                                id="websiteUrl" 
+                                name="websiteUrl"
+                                placeholder="example.com"
+                                class="form-input"
+                                required
+                                style="padding-right: 3rem;"
+                            >
+                            <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.4);">
+                                <i class="fas fa-link"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        Analyze AI Readiness
+                    </button>
+                </form>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Compatibility Check</h3>
+                    <p>Test how well your APIs work with Claude, GPT-4, and other AI agents</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Documentation Analysis</h3>
+                    <p>Comprehensive review of your llms.txt file and API documentation</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Actionable Insights</h3>
+                    <p>Get specific recommendations to improve your AI adoption rate</p>
+                </div>
+            </div>
+
+            <!-- What We Check -->
+            <div class="card">
+                <h3 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; text-align: center; font-family: 'Space Grotesk', sans-serif;">What We Analyze</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">LLMs.txt File Discovery</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Locate and validate your AI instruction file</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">Authentication Methods</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Check API key, OAuth, and bearer token support</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">Endpoint Documentation</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Evaluate clarity and completeness of API docs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">Example Usage</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Assess quality and relevance of code examples</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">Rate Limiting Info</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Verify rate limit documentation for AI agents</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start;">
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-top: 0.25rem; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h4 style="font-weight: 600; margin: 0 0 0.25rem 0;">AI-Specific Guidelines</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: 0.875rem;">Check for AI usage policies and best practices</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="modal hidden">
+        <div class="modal-content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Space Grotesk', sans-serif;">Analyzing Your Website</h2>
+                <p style="color: rgba(255, 255, 255, 0.6);">This will take about 30 seconds...</p>
+            </div>
+            
+            <!-- Progress Steps -->
+            <div>
+                <!-- Step 1 -->
+                <div id="step1" class="step">
+                    <div class="step-circle">
+                        <span style="font-weight: 600;">1</span>
+                        <i class="fas fa-spinner hidden" style="color: white;"></i>
+                        <i class="fas fa-check hidden" style="color: #10b981;"></i>
+                    </div>
+                    <div class="step-info">
+                        <h3>Getting your llms.txt file</h3>
+                        <p>Searching for AI instruction files...</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div id="step2" class="step">
+                    <div class="step-circle">
+                        <span style="font-weight: 600;">2</span>
+                        <i class="fas fa-spinner hidden" style="color: white;"></i>
+                        <i class="fas fa-check hidden" style="color: #10b981;"></i>
+                    </div>
+                    <div class="step-info">
+                        <h3>Analyzing content with AI</h3>
+                        <p>Evaluating AI compatibility and clarity...</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div id="step3" class="step">
+                    <div class="step-circle">
+                        <span style="font-weight: 600;">3</span>
+                        <i class="fas fa-spinner hidden" style="color: white;"></i>
+                        <i class="fas fa-check hidden" style="color: #10b981;"></i>
+                    </div>
+                    <div class="step-info">
+                        <h3>Scanning your website</h3>
+                        <p>Looking for API documentation and examples...</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div id="step4" class="step">
+                    <div class="step-circle">
+                        <span style="font-weight: 600;">4</span>
+                        <i class="fas fa-spinner hidden" style="color: white;"></i>
+                        <i class="fas fa-check hidden" style="color: #10b981;"></i>
+                    </div>
+                    <div class="step-info">
+                        <h3>Testing API endpoints</h3>
+                        <p>Checking accessibility and authentication...</p>
+                    </div>
+                </div>
+                
+                <!-- Step 5 -->
+                <div id="step5" class="step">
+                    <div class="step-circle">
+                        <span style="font-weight: 600;">5</span>
+                        <i class="fas fa-spinner hidden" style="color: white;"></i>
+                        <i class="fas fa-check hidden" style="color: #10b981;"></i>
+                    </div>
+                    <div class="step-info">
+                        <h3>Generating your report</h3>
+                        <p>Compiling insights and recommendations...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="overallProgress" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="emailModal" class="modal hidden">
+        <div class="modal-content">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #7850ff 0%, #ff5078 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fas fa-envelope" style="color: white; font-size: 1.5rem;"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Space Grotesk', sans-serif;">Get Your Detailed Report</h2>
+                <p style="color: rgba(255, 255, 255, 0.6);">
+                    Enter your email to receive a comprehensive AI-readiness analysis with actionable recommendations.
+                </p>
+            </div>
+            
+            <form id="emailForm">
+                <div class="form-group">
+                    <label for="userEmail" class="form-label">
+                        Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        name="userEmail"
+                        placeholder="you@company.com"
+                        class="form-input"
+                        required
+                    >
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button 
+                        type="button"
+                        onclick="document.getElementById('emailModal').classList.add('hidden')"
+                        style="flex: 1; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: rgba(255, 255, 255, 0.7); cursor: pointer;"
+                    >
+                        Skip for Now
+                    </button>
+                    <button 
+                        type="submit"
+                        class="btn btn-primary"
+                        style="flex: 1;"
+                    >
+                        Send Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="evaluator.js"></script>
+</body>
+</html>

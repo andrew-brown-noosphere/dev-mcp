@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevExp.ai - Enterprise MCP Infrastructure</title>
+    <meta name="description" content="We build MCP tools that provide AI-friendly developer journeys so every AI agent can discover, test, and integrate your platform.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="DevExp.ai - Enterprise MCP Infrastructure">
+    <meta property="og:description" content="Transform your DevEx with protocol-native AI distribution.">
+    <meta property="og:url" content="https://devexp.ai">
+    <meta property="og:type" content="website">
+    
+    <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Gypsum Color System */
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --radius: 0.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Subtle background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 100px 0 80px;
+            min-height: 85vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 600;
+            line-height: 1.15;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            margin: 0 0 2.5rem 0;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Buttons - Gypsum Style */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            text-decoration: none;
+            border-radius: calc(var(--radius) - 2px);
+            font-family: 'Source Serif 4', serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: hsl(24, 80%, 45%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: hsl(24, 80%, 40%);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Code Block */
+        .hero-code {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .code-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .code-dot.red { background: #ff5f57; }
+        .code-dot.yellow { background: #ffbd2e; }
+        .code-dot.green { background: #28ca42; }
+
+        .code-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            color: var(--color-text-muted);
+        }
+
+        .code-comment {
+            color: var(--color-text-subtle);
+        }
+
+        .code-keyword {
+            color: var(--color-primary);
+        }
+
+        .code-string {
+            color: var(--color-accent);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 0 0 3rem 0;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.01em;
+            color: var(--color-text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .feature-card:hover {
+            background: var(--color-surface-hover);
+            border-color: var(--color-border-accent);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+            font-family: 'Source Serif 4', serif;
+            color: var(--color-text);
+        }
+
+        .feature-description {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Use Cases Section */
+        .use-cases-section {
+            padding: 80px 0;
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .use-case-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .use-case-card:hover {
+            border-color: var(--color-border-accent);
+            background: var(--color-surface-hover);
+        }
+
+        .use-case-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .use-case-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+            font-family: 'Source Serif 4', serif;
+            color: var(--color-text);
+        }
+
+        .use-case-description {
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .metric {
+            padding: 0.75rem;
+            background: rgba(247, 127, 0, 0.08);
+            border: 1px solid rgba(247, 127, 0, 0.2);
+            border-radius: calc(var(--radius) - 2px);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 0;
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--color-border-accent);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--color-primary);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: calc(var(--radius) - 2px);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pricing-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            font-family: 'Source Serif 4', serif;
+            color: var(--color-text);
+        }
+
+        .price span {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--color-accent);
+            margin-right: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.25rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.01em;
+            color: var(--color-text);
+        }
+
+        .cta-description {
+            font-size: 1.05rem;
+            color: var(--color-text-muted);
+            margin: 0 0 2rem 0;
+            line-height: 1.7;
+        }
+
+        .cta-section .hero-buttons {
+            justify-content: center;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        .footer-text {
+            color: var(--color-text-subtle);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .use-cases-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 2.25rem;
+            }
+
+            .hero-section {
+                padding: 60px 0;
+                min-height: auto;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .features-grid,
+            .pricing-grid,
+            .use-cases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .cta-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/llms-generator.html">Generator</a>
+                        <a href="/llms-txt-evaluator">Evaluator</a>
+                        <a href="/#demo">Get Demo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">AI has changed how developers discover and adopt technology.</h1>
+                        <p class="hero-subtitle">
+                            Enterprises need a platform to enable agentic developer journeys.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#demo" class="btn btn-primary">Get Started →</a>
+                            <a href="/blog.html" class="btn btn-secondary">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="hero-code">
+                        <div class="code-header">
+                            <span class="code-dot red"></span>
+                            <span class="code-dot yellow"></span>
+                            <span class="code-dot green"></span>
+                        </div>
+                        <div class="code-content">
+                            <div><span class="code-comment">// Developer asks AI: "I need X"</span></div>
+                            <div><span class="code-keyword">const</span> match = <span class="code-keyword">await</span> DevExp.discover(requirements)</div>
+                            <div>&nbsp;</div>
+                            <div><span class="code-comment">// AI tests your product against their workload</span></div>
+                            <div>match.results</div>
+                            <div><span class="code-comment">// → Your product wins on merit</span></div>
+                            <div><span class="code-comment">// → Production config ready</span></div>
+                            <div>&nbsp;</div>
+                            <div><span class="code-comment">// Developer ships. You get distribution.</span></div>
+                            <div><span class="code-keyword">await</span> match.implement()</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">Built for Enterprise DevEx</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Instant AI Integration</h3>
+                        <p class="feature-description">
+                            Deploy MCP servers in minutes. Your APIs become instantly accessible 
+                            to Claude, ChatGPT, and every AI coding assistant.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Real Usage Intelligence</h3>
+                        <p class="feature-description">
+                            Track how developers actually use your tools through AI. Understand 
+                            intent, measure adoption, optimize experiences.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases Section -->
+        <section class="use-cases-section">
+            <div class="container">
+                <h2 class="section-title">Works for All Kinds of Developer Journeys</h2>
+                <div class="use-cases-grid">
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🗄️</div>
+                        <h3 class="use-case-title">Database & Data Platforms</h3>
+                        <p class="use-case-description">
+                            Let AI agents run performance benchmarks, generate optimal schemas, and
+                            create production-ready queries. Your database wins on merit, not marketing.
+                        </p>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-icon">🔧</div>
+                        <h3 class="use-case-title">API & Developer Tools</h3>
+                        <p class="use-case-description">
+                            Enable AI to generate integration code, test endpoints, and build entire
+                            applications. Time-to-first-API-call drops from days to minutes.
+                        </p>
+                    </div>
+                    <div class="use-case-card">
+                        <div class="use-case-icon">☁️</div>
+                        <h3 class="use-case-title">Cloud & Infrastructure</h3>
+                        <p class="use-case-description">
+                            AI agents provision resources, optimize configurations, and manage deployments.
+                            Complex infrastructure becomes as simple as describing what you need.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to Transform Your DevEx?</h2>
+                    <p class="cta-description">
+                        Join forward-thinking enterprises using MCP to reach developers through AI. 
+                        Get started in minutes, see results in days.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#demo" class="btn btn-primary">Schedule Demo →</a>
+                        <a href="/blog.html" class="btn btn-secondary">Read Our Blog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/blog.html">Blog</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="/js/demo-form.js"></script>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

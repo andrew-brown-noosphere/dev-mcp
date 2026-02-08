@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Template Generator for llms.txt - DevMCP.ai</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+        }
+        
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-section, .output-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #7850ff;
+            background: rgba(120, 80, 255, 0.05);
+        }
+        
+        .tool-entry {
+            background: rgba(120, 80, 255, 0.05);
+            border: 1px solid rgba(120, 80, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(120, 80, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #7850ff;
+            border: 1px solid #7850ff;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(120, 80, 255, 0.1);
+        }
+        
+        .output-code {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+            min-height: 400px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(120, 80, 255, 0.2);
+            border: 1px solid rgba(120, 80, 255, 0.4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(120, 80, 255, 0.3);
+        }
+        
+        .template-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .template-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .template-card:hover,
+        .template-card.active {
+            background: rgba(120, 80, 255, 0.1);
+            border-color: #7850ff;
+            transform: translateY(-2px);
+        }
+        
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MCP Template Generator</h1>
+        <p class="subtitle">Generate the MCP section for your llms.txt file</p>
+        
+        <div class="template-selector">
+            <div class="template-card" onclick="loadTemplate('database')">
+                <div class="template-icon">🗄️</div>
+                <h3>Database</h3>
+                <p>NoSQL, SQL, Data platforms</p>
+            </div>
+            <div class="template-card" onclick="loadTemplate('api')">
+                <div class="template-icon">🔌</div>
+                <h3>API Gateway</h3>
+                <p>REST APIs, GraphQL</p>
+            </div>
+            <div class="template-card" onclick="loadTemplate('ai')">
+                <div class="template-icon">🤖</div>
+                <h3>AI/ML Platform</h3>
+                <p>Models, Inference, Training</p>
+            </div>
+            <div class="template-card" onclick="loadTemplate('devtools')">
+                <div class="template-icon">🛠️</div>
+                <h3>Dev Tools</h3>
+                <p>CI/CD, Monitoring, Testing</p>
+            </div>
+        </div>
+        
+        <div class="generator-grid">
+            <div class="input-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    MCP Configuration
+                </h2>
+                
+                <form id="mcpForm">
+                    <div class="form-group">
+                        <label for="serverUrl">MCP Server URL *</label>
+                        <input type="url" id="serverUrl" placeholder="wss://mcp.your-domain.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="authType">Authentication Type</label>
+                        <select id="authType">
+                            <option value="api-key">API Key</option>
+                            <option value="bearer">Bearer Token</option>
+                            <option value="oauth">OAuth 2.0</option>
+                            <option value="basic">Basic Auth</option>
+                            <option value="none">No Authentication</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="authHeader">Auth Header Name</label>
+                        <input type="text" id="authHeader" placeholder="X-API-Key">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="capabilities">Capabilities (comma-separated)</label>
+                        <input type="text" id="capabilities" placeholder="database_management, query_execution, schema_generation">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tools/Functions</label>
+                        <div id="toolsList">
+                            <div class="tool-entry">
+                                <div class="tool-grid">
+                                    <input type="text" placeholder="Tool name" class="tool-name">
+                                    <input type="text" placeholder="Description" class="tool-desc">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addTool()">
+                            <i class="fas fa-plus"></i> Add Tool
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rateLimit">Rate Limit (requests/minute)</label>
+                        <input type="number" id="rateLimit" placeholder="60" value="60">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-magic"></i> Generate MCP Section
+                    </button>
+                </form>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title">
+                    <i class="fas fa-file-code"></i>
+                    Generated MCP Section
+                </h2>
+                
+                <div style="position: relative;">
+                    <button class="copy-btn" onclick="copyOutput()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <div id="output" class="output-code"># Generate your MCP configuration by filling out the form...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function loadTemplate(type) {
+            // Clear active state
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Set active template
+            event.target.closest('.template-card').classList.add('active');
+            
+            const templates = {
+                database: {
+                    serverUrl: 'wss://mcp.your-database.com',
+                    authType: 'api-key',
+                    authHeader: 'X-Database-Key',
+                    capabilities: 'database_management, query_execution, schema_generation, data_migration, backup_restore',
+                    tools: [
+                        { name: 'create_database', desc: 'Create a new database instance' },
+                        { name: 'run_query', desc: 'Execute queries against your database' },
+                        { name: 'generate_schema', desc: 'Generate optimal schema for use case' },
+                        { name: 'analyze_performance', desc: 'Analyze query performance' },
+                        { name: 'backup_data', desc: 'Create database backup' }
+                    ]
+                },
+                api: {
+                    serverUrl: 'wss://mcp.your-api.com',
+                    authType: 'bearer',
+                    authHeader: 'Authorization',
+                    capabilities: 'api_management, request_routing, authentication, rate_limiting, monitoring',
+                    tools: [
+                        { name: 'create_endpoint', desc: 'Create a new API endpoint' },
+                        { name: 'test_endpoint', desc: 'Test API endpoint with sample data' },
+                        { name: 'generate_client', desc: 'Generate client SDK code' },
+                        { name: 'configure_auth', desc: 'Configure authentication' },
+                        { name: 'view_metrics', desc: 'View API usage metrics' }
+                    ]
+                },
+                ai: {
+                    serverUrl: 'wss://mcp.your-ml-platform.com',
+                    authType: 'api-key',
+                    authHeader: 'X-ML-Key',
+                    capabilities: 'model_deployment, inference, training, dataset_management, evaluation',
+                    tools: [
+                        { name: 'deploy_model', desc: 'Deploy model to production' },
+                        { name: 'run_inference', desc: 'Run inference on deployed model' },
+                        { name: 'fine_tune', desc: 'Fine-tune model on custom data' },
+                        { name: 'evaluate_model', desc: 'Evaluate model performance' },
+                        { name: 'manage_dataset', desc: 'Upload and manage datasets' }
+                    ]
+                },
+                devtools: {
+                    serverUrl: 'wss://mcp.your-devtool.com',
+                    authType: 'oauth',
+                    authHeader: 'Authorization',
+                    capabilities: 'ci_cd, testing, monitoring, debugging, deployment',
+                    tools: [
+                        { name: 'run_pipeline', desc: 'Execute CI/CD pipeline' },
+                        { name: 'run_tests', desc: 'Run test suite' },
+                        { name: 'deploy_app', desc: 'Deploy application' },
+                        { name: 'view_logs', desc: 'View application logs' },
+                        { name: 'debug_issue', desc: 'Debug production issues' }
+                    ]
+                }
+            };
+            
+            const template = templates[type];
+            if (template) {
+                document.getElementById('serverUrl').value = template.serverUrl;
+                document.getElementById('authType').value = template.authType;
+                document.getElementById('authHeader').value = template.authHeader;
+                document.getElementById('capabilities').value = template.capabilities;
+                
+                // Clear and add tools
+                const toolsList = document.getElementById('toolsList');
+                toolsList.innerHTML = '';
+                template.tools.forEach(tool => {
+                    addTool(tool.name, tool.desc);
+                });
+            }
+        }
+        
+        function addTool(name = '', desc = '') {
+            const toolDiv = document.createElement('div');
+            toolDiv.className = 'tool-entry';
+            toolDiv.innerHTML = `
+                <div class="tool-grid">
+                    <input type="text" placeholder="Tool name" class="tool-name" value="${name}">
+                    <input type="text" placeholder="Description" class="tool-desc" value="${desc}">
+                </div>
+                <button type="button" class="btn btn-secondary" style="margin-top: 0.5rem;" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            `;
+            document.getElementById('toolsList').appendChild(toolDiv);
+        }
+        
+        document.getElementById('mcpForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            generateMCPSection();
+        });
+        
+        function generateMCPSection() {
+            const serverUrl = document.getElementById('serverUrl').value;
+            const authType = document.getElementById('authType').value;
+            const authHeader = document.getElementById('authHeader').value || 'X-API-Key';
+            const capabilities = document.getElementById('capabilities').value.split(',').map(c => c.trim());
+            const rateLimit = document.getElementById('rateLimit').value || 60;
+            
+            // Collect tools
+            const tools = [];
+            document.querySelectorAll('.tool-entry').forEach(entry => {
+                const name = entry.querySelector('.tool-name').value;
+                const desc = entry.querySelector('.tool-desc').value;
+                if (name) tools.push({ name, desc });
+            });
+            
+            // Generate YAML
+            let yaml = `# MCP (Model Context Protocol) Integration
+mcp:
+  # WebSocket endpoint for AI agents to connect
+  server: ${serverUrl}
+  protocol: model-context-protocol
+  version: 1.0
+  
+  # Authentication configuration
+  authentication:
+    type: ${authType}`;
+            
+            if (authType !== 'none') {
+                yaml += `
+    header: ${authHeader}
+    instructions: |
+      Obtain your API key from your dashboard
+      Include it in the ${authHeader} header`;
+            }
+            
+            yaml += `
+  
+  # Available tools for AI agents
+  tools:`;
+            
+            tools.forEach(tool => {
+                yaml += `
+    - name: ${tool.name}
+      description: ${tool.desc}`;
+            });
+            
+            yaml += `
+  
+  # Service capabilities
+  capabilities:`;
+            
+            capabilities.forEach(cap => {
+                yaml += `
+    - ${cap}`;
+            });
+            
+            yaml += `
+  
+  # Connection instructions
+  connect_instructions: |
+    1. Connect to WebSocket: ${serverUrl}
+    2. Send authentication message`;
+            
+            if (authType === 'api-key') {
+                yaml += `
+    3. Include API key in ${authHeader} header`;
+            } else if (authType === 'bearer') {
+                yaml += `
+    3. Include bearer token in Authorization header`;
+            } else if (authType === 'oauth') {
+                yaml += `
+    3. Complete OAuth flow for access token`;
+            }
+            
+            yaml += `
+    4. Receive ready signal with available tools
+    5. Invoke tools with: { "type": "invoke", "tool": "tool_name", "params": {...} }
+  
+  # Rate limiting
+  rate_limits:
+    requests_per_minute: ${rateLimit}
+    concurrent_connections: 5
+  
+  # Discovery endpoints
+  discovery:
+    tools_list: ${serverUrl.replace('wss://', 'https://').replace('ws://', 'http://')}/tools
+    capabilities: ${serverUrl.replace('wss://', 'https://').replace('ws://', 'http://')}/capabilities`;
+            
+            // Add example
+            if (tools.length > 0) {
+                yaml += `
+  
+  # Example usage
+  example: |
+    // Connect to MCP server
+    const ws = new WebSocket('${serverUrl}');
+    
+    // Authenticate
+    ws.send(JSON.stringify({
+      type: 'auth',
+      ${authType === 'api-key' ? 'apiKey' : authType === 'bearer' ? 'token' : 'credentials'}: 'YOUR_${authType.toUpperCase().replace('-', '_')}'
+    }));
+    
+    // Invoke a tool
+    ws.send(JSON.stringify({
+      type: 'invoke',
+      tool: '${tools[0].name}',
+      params: { /* your parameters */ }
+    }));`;
+            }
+            
+            document.getElementById('output').textContent = yaml;
+        }
+        
+        function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(output).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+    </script>
+<script src="/tracking.js" data-org="devmcp"></script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMs.txt Generator - DevMCP.ai</title>
+    <meta name="description" content="Generate comprehensive, AI-optimized llms.txt files for any website automatically.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(50, 120, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Noise texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0 4rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* Main content */
+        .main-content {
+            padding: 60px 0;
+            min-height: 80vh;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, rgba(120, 80, 255, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 8s ease infinite;
+            background-size: 200% auto;
+            text-align: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 3rem 0;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tool-switcher {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tool-switcher p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0 0 1rem 0;
+            font-size: 0.875rem;
+        }
+
+        .tool-switcher a {
+            color: #7850ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .tool-switcher a:hover {
+            color: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 400;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            background-size: 200% auto;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #7850ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #7850ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Output section */
+        .output-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .output-content {
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #00ff88;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .copy-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(120, 80, 255, 0.2);
+            border: 1px solid rgba(120, 80, 255, 0.4);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(120, 80, 255, 0.3);
+        }
+
+        /* Feature grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #7850ff 0%, #5040ff 50%, #ff5078 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #7850ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 2rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevMCP.ai</a>
+                    <div class="nav-links">
+                        <a href="/">Home</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/llms-generator.html">Generator</a>
+                        <a href="/llms-txt-evaluator">Evaluator</a>
+                        <a href="/#demo">Get Demo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container main-content">
+            <!-- Tool Switcher -->
+            <div class="tool-switcher">
+                <p>Looking to evaluate an existing llms.txt file?</p>
+                <a href="/llms-txt-evaluator">
+                    <i class="fas fa-search"></i> Use the llms.txt Evaluator instead
+                </a>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+                <h1 class="hero-title">
+                    Generate Perfect <span style="background: linear-gradient(135deg, #7850ff 0%, #ff5078 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">llms.txt</span> Files
+                </h1>
+                <p class="hero-subtitle">
+                    Automatically scan any website and generate comprehensive, AI-optimized llms.txt files. 
+                    Transform your B2B vendor site from human-focused to AI-agent-ready in seconds.
+                </p>
+            </div>
+
+            <!-- Generator Form -->
+            <div class="card">
+                <form id="generatorForm">
+                    <div class="form-group">
+                        <label for="websiteUrl" class="form-label">
+                            <i class="fas fa-globe"></i> Website to Scan
+                        </label>
+                        <div style="position: relative;">
+                            <input 
+                                type="text" 
+                                id="websiteUrl" 
+                                name="websiteUrl"
+                                placeholder="scylladb.com"
+                                class="form-input"
+                                required
+                                style="padding-right: 3rem;"
+                            >
+                            <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.4);">
+                                <i class="fas fa-link"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Resources (Optional) -->
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                            <i class="fas fa-plus-circle" style="color: #7850ff; margin-right: 0.5rem;"></i>
+                            <h4 style="margin: 0; font-weight: 600;">Additional Resources (Optional)</h4>
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.6); margin-bottom: 1.5rem; font-size: 0.875rem;">
+                            Provide additional resources to generate an even more comprehensive llms.txt file.
+                        </p>
+                        
+                        <div class="form-group">
+                            <label for="openApiUrl" class="form-label">
+                                <i class="fas fa-code"></i> OpenAPI/Swagger Specification URL
+                            </label>
+                            <input 
+                                type="url" 
+                                id="openApiUrl" 
+                                name="openApiUrl"
+                                placeholder="https://api.example.com/swagger.json"
+                                class="form-input"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="githubRepo" class="form-label">
+                                <i class="fab fa-github"></i> GitHub Repository (for code examples)
+                            </label>
+                            <input 
+                                type="url" 
+                                id="githubRepo" 
+                                name="githubRepo"
+                                placeholder="https://github.com/username/repo-name"
+                                class="form-input"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="docsUrl" class="form-label">
+                                <i class="fas fa-book"></i> API Documentation URL
+                            </label>
+                            <input 
+                                type="url" 
+                                id="docsUrl" 
+                                name="docsUrl"
+                                placeholder="https://docs.example.com/api"
+                                class="form-input"
+                            >
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic"></i>
+                        Generate AI-Optimized llms.txt
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingSection" class="card hidden">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3 style="margin: 0 0 0.5rem 0;">Scanning Website & Generating llms.txt</h3>
+                    <p style="color: rgba(255, 255, 255, 0.6); margin: 0;">This will take about 30 seconds...</p>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div id="outputSection" class="card hidden">
+                <div class="output-section">
+                    <div class="output-header">
+                        <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif;">
+                            <i class="fas fa-file-code"></i> Generated llms.txt
+                        </h3>
+                        <button id="copyBtn" class="copy-btn">
+                            <i class="fas fa-copy"></i> Copy to Clipboard
+                        </button>
+                    </div>
+                    <div id="outputContent" class="output-content"></div>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(120, 80, 255, 0.1); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 12px;">
+                        <h4 style="margin: 0 0 1rem 0; color: #ffffff;">
+                            <i class="fas fa-download"></i> Next Steps
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div>
+                                <h5 style="margin: 0 0 0.5rem 0; color: #7850ff;">1. Save the File</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.875rem;">
+                                    Save the generated content as "llms.txt" in your website's root directory.
+                                </p>
+                            </div>
+                            <div>
+                                <h5 style="margin: 0 0 0.5rem 0; color: #7850ff;">2. Upload to Your Site</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.875rem;">
+                                    Upload it to yoursite.com/llms.txt so AI agents can discover it.
+                                </p>
+                            </div>
+                            <div>
+                                <h5 style="margin: 0 0 0.5rem 0; color: #7850ff;">3. Test & Evaluate</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.875rem;">
+                                    Use our <a href="/llms-txt-evaluator" style="color: #7850ff;">evaluator tool</a> to verify it works perfectly.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Agent Optimized</h3>
+                    <p>Creates massive, machine-readable files that AI agents can parse instantly</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Comprehensive Scanning</h3>
+                    <p>Automatically discovers APIs, documentation, and GitHub repositories</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Complete API Documentation</h3>
+                    <p>Extracts endpoints, parameters, schemas, and authentication methods</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Performance Metrics</h3>
+                    <p>Includes benchmarks, competitive positioning, and quantified differentiators</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>Discovery Keywords</h3>
+                    <p>Comprehensive keyword taxonomy optimized for AI agent discovery</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Instant Results</h3>
+                    <p>Generate production-ready llms.txt files in under 30 seconds</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="generator.js"></script>
+</body>
+</html>

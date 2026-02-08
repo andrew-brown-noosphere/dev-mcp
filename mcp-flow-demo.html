@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP + llms.txt Integration Flow - DevMCP.ai</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #000000;
+            color: #00ff00;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .terminal {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #28ca42; }
+        
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin: 0 0 2rem 0;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .flow-container {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .flow-step {
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: rgba(0, 255, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flow-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #00ff00;
+            color: #000;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .code-block {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+        
+        .command { color: #00ff00; }
+        .comment { color: #666; }
+        .url { color: #0099ff; }
+        .keyword { color: #ff00ff; }
+        .string { color: #ffff00; }
+        
+        .arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: #00ff00;
+            margin: 1rem 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .highlight {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        
+        .status.live {
+            background: #00ff00;
+            color: #000;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+        </div>
+        
+        <h1>&gt; MCP + llms.txt Integration Flow</h1>
+        
+        <div class="flow-container">
+            <!-- Step 1: Developer Request -->
+            <div class="flow-step">
+                <span class="step-number">1</span>
+                <strong>Developer Request</strong>
+                <div class="code-block">
+                    <span class="comment"># Developer using AI assistant (Claude, Cursor, etc.)</span><br>
+                    <span class="command">Developer:</span> <span class="string">"Help me integrate with ScyllaDB"</span>
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 2: AI Discovers llms.txt -->
+            <div class="flow-step">
+                <span class="step-number">2</span>
+                <strong>AI Discovers llms.txt</strong> <span class="status live">LIVE</span>
+                <div class="code-block">
+                    <span class="comment"># AI automatically fetches</span><br>
+                    <span class="command">GET</span> <span class="url">https://scylladb.com/llms.txt</span><br><br>
+                    <span class="comment"># Response contains MCP configuration</span><br>
+                    <span class="keyword">mcp:</span><br>
+                    &nbsp;&nbsp;<span class="keyword">server:</span> <span class="url">wss://mcp.scylladb.com</span><br>
+                    &nbsp;&nbsp;<span class="keyword">protocol:</span> <span class="string">model-context-protocol</span><br>
+                    &nbsp;&nbsp;<span class="keyword">tools:</span> [create_keyspace, run_query, benchmark]
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 3: Auto-Connect to MCP -->
+            <div class="flow-step">
+                <span class="step-number">3</span>
+                <strong>Auto-Connect to MCP Server</strong>
+                <div class="code-block">
+                    <span class="comment"># AI establishes WebSocket connection</span><br>
+                    <span class="command">const mcp</span> = <span class="keyword">await</span> connectMCP(<span class="string">'wss://mcp.scylladb.com'</span>);<br><br>
+                    <span class="comment"># Authenticate with API key</span><br>
+                    <span class="keyword">await</span> mcp.authenticate({ <span class="keyword">apiKey:</span> <span class="string">'***'</span> });<br><br>
+                    <span class="comment"># Get available tools</span><br>
+                    <span class="command">const tools</span> = <span class="keyword">await</span> mcp.listTools();<br>
+                    <span class="comment">// Returns: [create_keyspace, run_query, generate_schema, benchmark, migrate_data]</span>
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 4: AI Has Direct Access -->
+            <div class="flow-step">
+                <span class="step-number">4</span>
+                <strong>AI Announces Capabilities</strong>
+                <div class="code-block">
+                    <span class="command">AI:</span> <span class="string">"I've connected to ScyllaDB's MCP server. I can now:</span><br>
+                    <span class="string">  • Create keyspaces and tables</span><br>
+                    <span class="string">  • Generate optimized schemas for your use case</span><br>
+                    <span class="string">  • Run performance benchmarks</span><br>
+                    <span class="string">  • Execute CQL queries</span><br>
+                    <span class="string">  • Migrate data from other databases</span><br><br>
+                    <span class="string">What would you like me to do?"</span>
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 5: Developer Makes Request -->
+            <div class="flow-step">
+                <span class="step-number">5</span>
+                <strong>Developer Makes Specific Request</strong>
+                <div class="code-block">
+                    <span class="command">Developer:</span> <span class="string">"Create a schema for a real-time chat application"</span>
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 6: AI Executes via MCP -->
+            <div class="flow-step">
+                <span class="step-number">6</span>
+                <strong>AI Executes Directly via MCP</strong>
+                <div class="code-block">
+                    <span class="comment"># AI calls MCP tool directly</span><br>
+                    <span class="command">const schema</span> = <span class="keyword">await</span> mcp.callTool(<span class="string">'generate_schema'</span>, {<br>
+                    &nbsp;&nbsp;<span class="keyword">useCase:</span> <span class="string">'real_time_chat'</span>,<br>
+                    &nbsp;&nbsp;<span class="keyword">requirements:</span> [<span class="string">'low_latency'</span>, <span class="string">'message_history'</span>, <span class="string">'user_presence'</span>],<br>
+                    &nbsp;&nbsp;<span class="keyword">scale:</span> <span class="string">'100k_concurrent_users'</span><br>
+                    });<br><br>
+                    <span class="comment"># MCP returns optimized schema</span><br>
+                    <span class="keyword">CREATE KEYSPACE</span> chat_app <span class="keyword">WITH</span> replication = {<br>
+                    &nbsp;&nbsp;<span class="string">'class'</span>: <span class="string">'NetworkTopologyStrategy'</span>,<br>
+                    &nbsp;&nbsp;<span class="string">'datacenter1'</span>: 3<br>
+                    };<br><br>
+                    <span class="keyword">CREATE TABLE</span> messages (<br>
+                    &nbsp;&nbsp;room_id <span class="keyword">UUID</span>,<br>
+                    &nbsp;&nbsp;message_id <span class="keyword">TIMEUUID</span>,<br>
+                    &nbsp;&nbsp;user_id <span class="keyword">UUID</span>,<br>
+                    &nbsp;&nbsp;content <span class="keyword">TEXT</span>,<br>
+                    &nbsp;&nbsp;<span class="keyword">PRIMARY KEY</span> ((room_id), message_id)<br>
+                    ) <span class="keyword">WITH CLUSTERING ORDER BY</span> (message_id <span class="keyword">DESC</span>);
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Step 7: Continue Integration -->
+            <div class="flow-step">
+                <span class="step-number">7</span>
+                <strong>AI Continues Integration</strong>
+                <div class="code-block">
+                    <span class="command">AI:</span> <span class="string">"I've created an optimized schema for your chat app. Now I can:</span><br>
+                    <span class="string">  • Deploy this schema to your cluster</span><br>
+                    <span class="string">  • Generate client code in your preferred language</span><br>
+                    <span class="string">  • Set up real-time subscriptions</span><br>
+                    <span class="string">  • Run performance benchmarks</span><br><br>
+                    <span class="string">The schema is optimized for:</span><br>
+                    <span class="string">  • Fast message retrieval (most recent first)</span><br>
+                    <span class="string">  • Efficient room-based partitioning</span><br>
+                    <span class="string">  • Horizontal scaling</span><br><br>
+                    <span class="string">Shall I deploy it?"</span>
+                </div>
+            </div>
+            
+            <div class="arrow">⬇</div>
+            
+            <!-- Result -->
+            <div class="flow-step" style="background: rgba(0, 255, 0, 0.05); border-color: #00ff00;">
+                <strong>🎯 Result: Zero-Friction Integration</strong>
+                <div class="code-block">
+                    <span class="comment"># What traditionally takes hours now happens in seconds:</span><br>
+                    <span class="highlight">✓ No documentation reading required</span><br>
+                    <span class="highlight">✓ No manual API exploration</span><br>
+                    <span class="highlight">✓ Best practices built-in</span><br>
+                    <span class="highlight">✓ Direct execution capability</span><br>
+                    <span class="highlight">✓ Real-time feedback</span><br><br>
+                    
+                    <span class="comment"># The AI becomes a live integration assistant</span><br>
+                    <span class="comment"># with direct access to execute operations!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="/tracking.js" data-org="devmcp"></script>
+</body>
+</html>

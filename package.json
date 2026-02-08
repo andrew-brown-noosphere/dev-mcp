@@ -1,0 +1,26 @@
+{
+  "name": "devmcp-ai-landing",
+  "version": "1.0.0",
+  "description": "Landing page for DevMCP.ai - The future of MCP-powered developer tooling",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "python3 -m http.server 8080",
+    "scanner": "node api/scanner-server.js"
+  },
+  "keywords": [
+    "MCP",
+    "developer tools",
+    "AI agents",
+    "Model Context Protocol"
+  ],
+  "author": "Noosphere",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.64.0",
+    "@supabase/supabase-js": "^2.95.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "playwright": "^1.40.1"
+  }
+}

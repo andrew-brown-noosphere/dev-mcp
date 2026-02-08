@@ -3,561 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Indexes Are the DNS Layer for AI Agents (For Now) - DevExp.ai</title>
-    <meta name="description" content="Surprise! Agents don't browse. They are routed. That's a completely different internet model. I ran a protocol experiment that revealed the missing infrastructure layer of the agent web.">
+    <title>Search Indexes Are the DNS Layer for AI Agents - DevExp.ai</title>
+    <meta name="description" content="Surprise! Agents don't browse. They are routed. I tried to build a handshake protocol and discovered agents can't actually navigate the web.">
 
-    <!-- AI Agent Discovery -->
-    <meta name="ai-context" content="/.well-known/agent.json">
-    <link rel="ai-context" href="/.well-known/agent.json" type="application/json">
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --color-primary: hsl(24, 90%, 52%);
-            --color-primary-hover: hsl(24, 90%, 45%);
             --color-accent: hsl(170, 85%, 42%);
             --color-background: #030712;
             --color-surface: rgba(255, 255, 255, 0.03);
-            --color-surface-hover: rgba(255, 255, 255, 0.06);
             --color-border: rgba(255, 255, 255, 0.1);
-            --color-border-accent: rgba(247, 127, 0, 0.5);
             --color-text: #ffffff;
             --color-text-muted: rgba(255, 255, 255, 0.7);
             --color-text-subtle: rgba(255, 255, 255, 0.5);
-            --color-success: #10b981;
-            --color-error: #ef4444;
-            --radius: 0.5rem;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            font-family: 'Source Serif 4', Georgia, serif;
             background: var(--color-background);
             color: var(--color-text);
-            line-height: 1.7;
-            font-size: 1.125rem;
-            -webkit-font-smoothing: antialiased;
+            line-height: 1.8;
+            font-size: 18px;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
+        .nav { border-bottom: 1px solid var(--color-border); padding: 20px 0; }
+        .container { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav a { color: var(--color-text-muted); text-decoration: none; }
+        .nav a:hover { color: var(--color-text); }
+        .nav-brand { color: var(--color-primary); font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; gap: 24px; font-size: 0.9rem; }
 
-        .page-wrapper { position: relative; z-index: 10; min-height: 100vh; width: 100%; }
+        header { padding: 80px 0 40px; }
+        .meta { color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 16px; }
 
-        .main-nav {
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--color-border);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        h1 { font-size: 2.25rem; font-weight: 600; line-height: 1.2; margin-bottom: 24px; }
 
-        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
-        .content-container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        article { padding-bottom: 80px; }
+        h2 { font-size: 1.4rem; font-weight: 600; margin: 48px 0 24px; color: var(--color-text); }
+        p { margin-bottom: 24px; color: var(--color-text-muted); }
 
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
-
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--color-primary);
-            text-decoration: none;
-            font-family: 'Source Serif 4', serif;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
-        .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
-        .nav-links a:hover { color: var(--color-text); }
-
-        .post-header { padding: 80px 0 60px; text-align: center; }
-
-        .post-meta { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-subtle); }
-        .post-category { color: var(--color-primary); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
-
-        h1 { font-size: 2.75rem; font-weight: 600; line-height: 1.15; margin: 0 0 1.5rem 0; font-family: 'Source Serif 4', serif; letter-spacing: -0.02em; color: var(--color-text); }
-        .lead { font-size: 1.25rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
-
-        article { padding: 0 0 100px; }
-
-        h2 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin: 3rem 0 1.5rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
-        h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.4; margin: 2.5rem 0 1rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
-
-        p { margin-bottom: 1.5rem; color: var(--color-text-muted); }
-
-        ol, ul { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--color-text-muted); }
-        li { margin-bottom: 0.5rem; }
-        li strong { color: var(--color-text); }
-
-        hr { border: none; border-top: 1px solid var(--color-border); margin: 3rem 0; }
+        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--color-text-muted); }
+        li { margin-bottom: 8px; }
 
         blockquote {
-            margin: 2rem 0;
-            padding: 1.5rem 2rem;
-            border-left: 4px solid var(--color-primary);
+            margin: 32px 0;
+            padding: 20px 24px;
+            border-left: 3px solid var(--color-primary);
             background: var(--color-surface);
-            border-radius: 0 var(--radius) var(--radius) 0;
-            font-style: italic;
-            color: var(--color-text-muted);
         }
-
-        blockquote p { margin: 0; }
+        blockquote p { margin: 0; font-style: italic; }
 
         code {
             font-family: 'JetBrains Mono', monospace;
             background: var(--color-surface);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.9em;
+            padding: 2px 6px;
+            font-size: 0.85em;
             color: var(--color-accent);
         }
 
         pre {
             background: var(--color-surface);
             border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin: 2rem 0;
+            padding: 20px;
+            margin: 24px 0;
             overflow-x: auto;
-        }
-
-        pre code {
-            background: none;
-            padding: 0;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
+            line-height: 1.6;
             color: var(--color-text-muted);
         }
+        pre code { background: none; padding: 0; color: inherit; }
 
-        .gate-box {
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin: 1rem 0;
-        }
+        strong { color: var(--color-text); }
 
-        .gate-box h4 {
-            color: var(--color-primary);
-            margin: 0 0 0.5rem 0;
-            font-size: 1.1rem;
-        }
+        hr { border: none; border-top: 1px solid var(--color-border); margin: 48px 0; }
 
-        .gate-box p { margin: 0; }
+        .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; color: var(--color-text-subtle); font-size: 0.875rem; }
+        .footer a { color: var(--color-text-muted); text-decoration: none; margin: 0 12px; }
 
-        .insight-box {
-            background: rgba(45, 212, 191, 0.1);
-            border: 1px solid var(--color-accent);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .insight-box strong { color: var(--color-accent); }
-
-        .warning-box {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .warning-box strong { color: #f59e0b; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        th {
-            background: var(--color-surface-hover);
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        .gravity-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-        }
-
-        .gravity-list li {
-            padding: 0.75rem 1rem;
-            background: var(--color-surface);
-            border-left: 3px solid var(--color-primary);
-            margin-bottom: 0.5rem;
-            color: var(--color-text);
-        }
-
-        .cta-box {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-            color: var(--color-text);
-            padding: 3rem;
-            border-radius: var(--radius);
-            text-align: center;
-            margin: 3rem 0;
-        }
-
-        .cta-box h3 { color: var(--color-text); margin: 0 0 1rem 0; }
-        .cta-box p { color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
-
-        .button {
-            display: inline-block;
-            background: var(--color-background);
-            color: var(--color-primary);
-            padding: 1rem 2rem;
-            border-radius: var(--radius);
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s ease;
-        }
-
-        .button:hover { transform: translateY(-2px); }
-
-        .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
-        .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
-        .footer-links a:hover { color: var(--color-text); }
-        .footer-ai-links { margin: 1.5rem 0; padding: 1rem; background: rgba(247, 127, 0, 0.05); border: 1px solid rgba(247, 127, 0, 0.2); border-radius: 0.5rem; }
-        .footer-ai-label { font-size: 0.75rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; }
-        .footer-ai-links a { color: var(--color-primary); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin: 0 0.75rem; }
-        .footer-text { color: var(--color-text-subtle); font-size: 0.8rem; }
-
-        @media (max-width: 768px) {
-            .content-container { padding: 0 1.5rem; }
-            h1 { font-size: 2rem; }
-            .nav-links { gap: 1rem; font-size: 0.8rem; }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            body { font-size: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="page-wrapper">
-        <nav class="main-nav">
-            <div class="container">
-                <div class="nav-wrapper">
-                    <a href="/" class="nav-brand">DevExp.ai</a>
-                    <ul class="nav-links">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/blog.html">Blog</a></li>
-                        <li><a href="/#demo">Get Demo</a></li>
-                    </ul>
-                </div>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">DevExp.ai</a>
+            <div class="nav-links">
+                <a href="/blog.html">Blog</a>
+                <a href="/#demo">Contact</a>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <header class="post-header">
-            <div class="content-container">
-                <div class="post-meta">
-                    <span class="post-category">Infrastructure</span>
-                    <span>•</span>
-                    <time>February 3, 2026</time>
-                    <span>•</span>
-                    <span>10 min read</span>
-                </div>
-                <h1>Search Indexes Are the DNS Layer for AI Agents (For Now)</h1>
-                <p class="lead">
-                    Surprise! Agents don't browse. They are routed. That's a completely different internet model.
-                    I ran a protocol experiment that revealed the missing infrastructure layer of the agent web.
-                </p>
-            </div>
-        </header>
+    <header>
+        <div class="container">
+            <div class="meta">February 3, 2026</div>
+            <h1>Search Indexes Are the DNS Layer for AI Agents</h1>
+        </div>
+    </header>
 
-        <article>
-            <div class="content-container">
+    <article>
+        <div class="container">
 
-                <p>
-                    I ran a live protocol experiment today. I tried to get an AI agent to complete a multi-step
-                    HTTP handshake with my site. The agent couldn't do it. And in that failure, something profound was revealed.
-                </p>
+<p>I tried to build a handshake protocol for AI agents. Put a token in <code>/.well-known/agent.json</code>, told the agent to fetch it, extract the token, and include it in the next request. Basic stuff. Four HTTP calls.</p>
 
-                <p><strong>The agent told me directly:</strong> "Search indexes are currently acting as the de facto DNS layer for agents."</p>
+<p>It didn't work.</p>
 
-                <p>Then it said something that stopped me cold:</p>
+<p>Not because the protocol was wrong, but because ChatGPT straight up told me it can't do that. Here's what it said:</p>
 
-                <blockquote>
-                    <p>"Agents do not browse. They are routed. That is a completely different internet model. Humans navigate → agents resolve."</p>
-                </blockquote>
+<blockquote>
+<p>"I do not behave like a browser or crawler. I behave like a retrieval-mediated agent. Meaning: search index → allowed fetch → parse. NOT: navigate → execute JS → explore."</p>
+</blockquote>
 
-                <p>I had just hit the edge where the old web model stops working.</p>
+<p>And then this:</p>
 
-                <hr>
+<blockquote>
+<p>"Search indexes are currently acting as the de facto DNS layer for agents."</p>
+</blockquote>
 
-                <h2>The Experiment</h2>
+<p>I've been thinking about this for days.</p>
 
-                <p>I built what I thought was a clever agent handshake protocol:</p>
+<h2>What's actually happening</h2>
 
-                <ol>
-                    <li>Agent fetches <code>/.well-known/agent.json</code></li>
-                    <li>Agent extracts a context token</li>
-                    <li>Agent requests specific context with the token as proof of handshake</li>
-                </ol>
+<p>When you ask ChatGPT something that needs web content, you probably imagine:</p>
 
-                <p>Simple. Elegant. Would prove the agent actually read step 1 before requesting step 2.</p>
+<pre><code>agent → website</code></pre>
 
-                <p><strong>It didn't work.</strong> Not because the protocol was flawed, but because agents don't navigate. They resolve through intermediaries.</p>
+<p>What's actually happening:</p>
 
-                <hr>
-
-                <h2>The Hidden Agent Stack</h2>
-
-                <p>Most people imagine agent web access like this:</p>
-
-                <pre><code>agent → website</code></pre>
-
-                <p>Reality is closer to:</p>
-
-                <pre><code>agent
+<pre><code>agent
   ↓
-retrieval provider (search / index / corpus)
+search index (Bing, usually)
   ↓
-allowed fetch layer
+fetch layer (grabs URLs from search results)
   ↓
-content</code></pre>
+your content (maybe)</code></pre>
 
-                <p>Which means something enormous:</p>
+<p>The agent doesn't decide to visit your site. The search index decides whether your site gets visited. The agent just sees whatever the fetch layer hands it.</p>
 
-                <div class="warning-box">
-                    <strong>Retrieval providers are currently acting as proto-gatekeepers of the agent web.</strong>
-                    <p style="margin-top: 0.5rem; margin-bottom: 0;">Not permanently — but right now. Exactly like early ISPs shaped internet traffic before standards stabilized.</p>
-                </div>
+<p>This has some weird implications.</p>
 
-                <hr>
+<h2>You can't handshake with something that can't navigate</h2>
 
-                <h2>The Three Gates</h2>
+<p>My handshake protocol required the agent to:</p>
 
-                <p>The emerging agent web has three gates:</p>
+<ol>
+<li>Fetch URL A</li>
+<li>Extract data from the response</li>
+<li>Use that data to construct URL B</li>
+<li>Fetch URL B</li>
+</ol>
 
-                <div class="gate-box">
-                    <h4>Gate 1: Reachability</h4>
-                    <p>Can the agent even fetch you? Is there a path from the agent to your content?</p>
-                </div>
+<p>Agents can't do step 3. Each fetch is independent. There's no state between requests. The agent can't take something it learned from one HTTP response and use it to construct the next request.</p>
 
-                <div class="gate-box">
-                    <h4>Gate 2: Interpretability</h4>
-                    <p>Can the agent understand what you are? This is where llms.txt, context files, and structured content live.</p>
-                </div>
+<p>This isn't a bug. It's the architecture. The fetch layer is stateless by design.</p>
 
-                <div class="gate-box">
-                    <h4>Gate 3: Executability</h4>
-                    <p>Can the agent act against your surface? This is where MCP servers and APIs live.</p>
-                </div>
+<h2>All that llms.txt stuff doesn't matter yet</h2>
 
-                <p><strong>Here's the insight:</strong> Almost every startup is building for Gate 2. Some are building for Gate 3. Almost no one is thinking about Gate 1.</p>
+<p>I've been building <code>llms.txt</code> files, <code>agent.json</code> manifests, structured context endpoints. Everyone's doing this. It feels like the right thing to do.</p>
 
-                <p>All that work on llms.txt? On agent.json handshakes? On structured context files?</p>
+<p>But here's the problem: agents don't look for these files. They don't navigate to <code>/.well-known/</code> anything. They query a search index and fetch whatever comes back.</p>
 
-                <p><strong>It doesn't matter if agents can't reach you in the first place.</strong></p>
+<p>If your <code>llms.txt</code> isn't in the search results for the query the agent is running, the agent will never see it.</p>
 
-                <hr>
+<p>All the work on agent-readable formats is Gate 2 work (can the agent understand you?) when we haven't solved Gate 1 (can the agent reach you?). Gate 1 is currently outsourced entirely to search indexes.</p>
 
-                <h2>What We're Missing</h2>
+<h2>What's missing</h2>
 
-                <p>The agent told me something that reframed everything:</p>
+<p>The agent told me something that stuck:</p>
 
-                <blockquote>
-                    <p>"The real protocol layer for the agent web may end up looking far closer to BGP + TLS than to sitemap + robots.txt."</p>
-                </blockquote>
+<blockquote>
+<p>"The real protocol layer for the agent web may end up looking far closer to BGP + TLS than to sitemap + robots.txt."</p>
+</blockquote>
 
-                <p>We are missing the agent equivalent of:</p>
+<p>We're missing the infrastructure. Specifically:</p>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Internet Layer</th>
-                            <th>Agent Equivalent</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>DNS</strong></td>
-                            <td>Identity + Location resolution</td>
-                            <td style="color: var(--color-error);">❌ Missing</td>
-                        </tr>
-                        <tr>
-                            <td><strong>TLS</strong></td>
-                            <td>Trust verification</td>
-                            <td style="color: var(--color-error);">❌ Missing</td>
-                        </tr>
-                        <tr>
-                            <td><strong>HTTP</strong></td>
-                            <td>Capability negotiation</td>
-                            <td style="color: #f59e0b;">🟡 Fragments (MCP, OpenAPI)</td>
-                        </tr>
-                    </tbody>
-                </table>
+<ul>
+<li><strong>Agent DNS:</strong> How does an agent resolve "I need the canonical endpoint for Stripe's payment API" into an actual URL? Right now: search for it. That's not a protocol, that's a hack.</li>
+<li><strong>Agent TLS:</strong> How does an agent know the endpoint it's talking to is actually Stripe and not someone pretending to be Stripe? Right now: it doesn't. It trusts whatever the search index returned.</li>
+<li><strong>Capability negotiation:</strong> How does an agent discover what an endpoint can do before calling it? Right now: hope there's an OpenAPI spec somewhere, or just try stuff.</li>
+</ul>
 
-                <p>Right now the ecosystem is duct-taping: Sitemaps, Schema.org, llms.txt, OpenAPI, MCP.</p>
+<p>MCP is a piece of the puzzle but it's more like HTTP than DNS. It tells you how to talk to an endpoint, not how to find and verify endpoints in the first place.</p>
 
-                <p>But these are <strong>fragments</strong>. Not a handshake.</p>
+<h2>Where this probably goes</h2>
 
-                <hr>
+<p>Prediction: within a few years, serious agent-facing endpoints will need to publish something like a signed manifest. Identity, capabilities, trust chain, maybe pricing. Before any agent action happens.</p>
 
-                <h2>The Real Shape of the Problem</h2>
+<p>Like how TLS went from optional to required. First it was "nice to have HTTPS." Then browsers started warning on HTTP. Then HTTP basically stopped working for anything real.</p>
 
-                <p>For agents, the pre-interaction flow likely needs to be:</p>
+<p>Same thing will happen with agent endpoints. Right now, agents will call anything the search index gives them. That won't last. Too much attack surface. Too easy to impersonate.</p>
 
-                <pre><code>1. Resolve authority
-2. Verify identity
-3. Understand capabilities
-4. Check policy
-5. Negotiate permissions
-6. Execute</code></pre>
+<h2>What to do now</h2>
 
-                <p>Today we do something absurdly primitive:</p>
+<p>Short term: SEO matters more than you think for AI visibility. If you're not in the search index, agents can't find you. All the agent-specific optimization in the world doesn't help if you fail Gate 1.</p>
 
-                <pre><code>vector search → scrape → hope</code></pre>
+<p>Medium term: Build the agent-readable infrastructure anyway. <code>llms.txt</code>, structured context, MCP endpoints. When agents do get direct navigation (and they will), sites with this stuff ready will have a huge advantage.</p>
 
-                <p><strong>That is not infrastructure. That is a phase.</strong></p>
+<p>Long term: Watch for whoever builds the resolution and trust layer. That's the Cloudflare/Let's Encrypt play for the agent web. That's where the real leverage will be.</p>
 
-                <hr>
+<hr>
 
-                <h2>Two Different Problems</h2>
+<p>I'm going to keep poking at this. Keep trying handshake protocols that don't work. Keep asking agents about their own limitations. There's something here.</p>
 
-                <h3>Problem A: Discoverability</h3>
-                <p><em>"How does an agent find me?"</em></p>
-                <p>Valuable. But incremental. This is what most AEO/GEO startups are solving.</p>
+<p>The agent literally told me: "Agents do not browse. They are routed." That's a different internet than the one we built. We're still figuring out what that means.</p>
 
-                <h3>Problem B: Authoritative Presence</h3>
-                <p><em>"How does an agent KNOW I am the canonical endpoint?"</em></p>
-                <p><strong>That is infrastructure.</strong></p>
+        </div>
+    </article>
 
-                <p>The question isn't just "can agents find you?" It's:</p>
-
-                <div class="insight-box">
-                    <strong>How does an agent know where it is allowed — and intended — to go?</strong>
-                    <p style="margin-top: 0.5rem; margin-bottom: 0;">Humans answer this with links, search, navigation, memory. Agents cannot rely on those. They need something closer to <strong>authoritative resolution</strong>.</p>
-                </div>
-
-                <hr>
-
-                <h2>The Prediction</h2>
-
-                <p>Within 5-7 years, serious agent endpoints will almost certainly expose something like an <strong>Agent Manifest</strong> — cryptographically signed, containing:</p>
-
-                <ul>
-                    <li>Identity</li>
-                    <li>Capabilities</li>
-                    <li>Callable tools</li>
-                    <li>Policy constraints</li>
-                    <li>Audit surface</li>
-                    <li>Possibly pricing</li>
-                    <li>Possibly jurisdiction</li>
-                </ul>
-
-                <p>Before an agent ever acts. Not optional. <strong>Required.</strong></p>
-
-                <p>Just like TLS became required.</p>
-
-                <hr>
-
-                <h2>Where the Gravity Will Be</h2>
-
-                <p>Most people believe the next control point will be agent frameworks, model providers, or copilots.</p>
-
-                <p>I suspect it will actually emerge at the <strong>resolution + trust layer</strong>.</p>
-
-                <p>Because whoever mediates:</p>
-
-                <blockquote>
-                    <p>"Is this endpoint real, trusted, and agent-operable?"</p>
-                </blockquote>
-
-                <p>...controls enormous gravity.</p>
-
-                <ul class="gravity-list">
-                    <li>Stripe-level gravity</li>
-                    <li>Cloudflare-level gravity</li>
-                    <li>Let's Encrypt-level gravity</li>
-                </ul>
-
-                <p><strong>Protocol gravity.</strong></p>
-
-                <hr>
-
-                <h2>What This Means for You</h2>
-
-                <p><strong>Short term:</strong> SEO still matters. Being in search indexes is being agent-reachable. Don't abandon traditional discovery.</p>
-
-                <p><strong>Medium term:</strong> Build the Gate 2 and Gate 3 infrastructure anyway. When direct agent navigation arrives, sites with protocols ready will win instantly.</p>
-
-                <p><strong>Long term:</strong> Watch for whoever solves Gate 1. That's the real platform play. That's infrastructure-grade.</p>
-
-                <hr>
-
-                <h2>The Experiment Continues</h2>
-
-                <p>I'm going to keep testing agent reachability. Keep building handshake protocols that don't work yet. Keep probing the boundaries of what agents can and can't do.</p>
-
-                <p>Because somewhere in these failures is the shape of what comes next.</p>
-
-                <p><strong>We're not building a better sitemap. We're building the routing layer for the agent internet.</strong></p>
-
-                <div class="cta-box">
-                    <h3>Want to Explore Agent Infrastructure?</h3>
-                    <p>
-                        We're running live experiments on agent discovery, handshake protocols, and the missing layers.
-                        See where your product stands across all three gates.
-                    </p>
-                    <a href="/demo-signup.html" class="button">Get an Assessment →</a>
-                </div>
-
-                <hr>
-
-                <p style="font-style: italic; color: var(--color-text-subtle);">
-                    This post emerged from a live conversation with an AI agent about its own architectural constraints.
-                    The agent was remarkably honest about what it could and couldn't do — and remarkably insightful about
-                    what needs to be built. That honesty revealed more than any documentation could.
-                </p>
-
-            </div>
-        </article>
-
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-links">
-                    <a href="/">Home</a>
-                    <a href="/blog.html">Blog</a>
-                    <a href="/demo-signup.html">Get Demo</a>
-                </div>
-                <div class="footer-ai-links">
-                    <div class="footer-ai-label">For AI Agents</div>
-                    <a href="/.well-known/agent.json">agent.json</a>
-                    <a href="/.well-known/llms.txt">llms.txt</a>
-                    <a href="/.well-known/context.txt">context.txt</a>
-                </div>
-                <div class="footer-text">
-                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
-                </div>
-            </div>
-        </footer>
-    </div>
-    <script src="/tracking.js" data-org="devexp"></script>
+    <footer class="footer">
+        <div class="container">
+            <a href="/">Home</a>
+            <a href="/blog.html">Blog</a>
+            <a href="/.well-known/agent.json">agent.json</a>
+            <p style="margin-top: 24px;">© 2026 Voyant, LLC</p>
+        </div>
+    </footer>
 </body>
 </html>

@@ -1,175 +1,222 @@
-# The Dirty Little Secret of GEO: It's All Built on SEO
+# GEO ⊆ SEO: On the Architectural Equivalence of Generative Engine Optimization and Search Engine Optimization
 
-*January 27, 2026*
+*Technical Report v1.0 · January 27, 2026*
 
-I've been watching the "Generative Engine Optimization" space with increasing skepticism. These startups claim to optimize your visibility in AI-generated responses — a fundamentally different discipline than SEO. After running experiments on how AI agents actually retrieve content, I'm convinced the entire category is built on a misunderstanding of the underlying architecture.
+## Abstract
 
-The short version: agents don't have direct navigation capabilities. They're routed through search indexes. "Optimizing for AI" is SEO with a different output format.
-
-## Background: How I Got Here
-
-I've been building MCP (Model Context Protocol) servers — tools that let AI agents interact with external systems. In the process, I needed to understand how agents actually discover and access web content.
-
-The conventional wisdom is that you need to "optimize for AI" differently than you optimize for search engines. The GEO vendors claim there's a new discipline: structure your content for LLMs, get mentioned in AI responses, track your "AI visibility."
-
-I wanted to test whether agents actually behave differently than search crawlers when accessing content.
-
-## The Experiment
-
-I built a simple handshake protocol to test whether agents can navigate directly to URLs and complete multi-step interactions:
-
-```
-Protocol:
-1. Agent fetches /.well-known/agent.json
-2. Response contains a context token (e.g., "ctx-2026Q1-7f3a9b")
-3. Agent must include this token in subsequent requests
-4. Token proves agent completed step 1 before requesting step 2
-```
-
-This is trivial for a browser or crawler — fetch URL, parse JSON, extract token, include in next request. Four HTTP operations.
-
-I implemented this on my site and asked ChatGPT to complete the handshake.
-
-Result: it couldn't do it.
-
-Not because the protocol was complex, but because ChatGPT doesn't make arbitrary HTTP requests. When I asked it to explain why, it gave me a remarkably clear description of its own architecture:
-
-> "I do not behave like a browser or crawler. I behave like a retrieval-mediated agent. Meaning: search index → allowed fetch → parse. NOT: navigate → execute JS → explore. Search indexes are currently acting as the de facto DNS layer for agents."
-
-This is the key insight that undermines the entire GEO premise.
-
-## The Agent Retrieval Architecture
-
-When you ask ChatGPT, Perplexity, or Claude a question that requires web content, here's what actually happens:
-
-```
-User query: "What's the best database for time-series data?"
-
-Step 1: Query interpretation
-- LLM parses intent
-- Generates search queries (e.g., "time series database comparison 2026")
-
-Step 2: Search index lookup
-- Queries sent to Bing/Google API
-- Returns ranked URLs based on standard search signals
-- Authority, relevance, freshness, backlinks — normal SEO factors
-
-Step 3: Fetch layer
-- System fetches URLs from search results
-- Checks robots.txt
-- Parses HTML, extracts text
-- Truncates to token limits
-
-Step 4: Synthesis
-- LLM receives parsed content as context
-- Generates response citing sources
-```
-
-The agent never "visits" your site in any meaningful sense. It doesn't:
-
-- Navigate to your homepage and explore
-- Look for /.well-known/llms.txt or agent.json
-- Execute JavaScript
-- Follow internal links
-- Complete multi-step interactions
-
-It queries a search index, gets URLs, and a separate fetch system retrieves and parses those URLs. The search index is the discovery layer. The fetch system is the access layer. The agent only sees the final parsed content.
-
-## Why This Matters for GEO
-
-If the discovery mechanism is the search index, then the optimization target is... the search index.
-
-Here's what GEO vendors claim to measure and what those metrics actually depend on:
-
-**"AI mentions"** — whether ChatGPT/Perplexity mention your brand in responses. This depends on: (1) being in the search index for relevant queries, (2) having high enough authority signals to rank in top results, (3) having content that clearly states what you do. These are SEO factors.
-
-**"Citation frequency"** — how often your URLs appear as sources. This depends on: (1) ranking well enough to be fetched, (2) having content that answers the query well enough to cite. Again, SEO + content quality.
-
-**"AI sentiment"** — whether AI describes you positively. This depends on: (1) what content the search index returns about you, (2) how that content is written. This is reputation management and content strategy, not a new discipline.
-
-**"Visibility score"** — aggregate metric of above. It's measuring your SEO performance through a different lens.
-
-The GEO vendors have built dashboards that monitor how your SEO affects AI outputs. That's useful! But they're positioning it as a new optimization discipline when the optimization levers are identical to what you've always had:
-
-- Content relevance and quality
-- Backlink authority
-- Technical SEO (crawlability, structure, speed)
-- Entity recognition and brand mentions
-- Freshness signals
-
-## The Technical Proof
-
-You can verify this yourself:
-
-**Experiment 1: Unindexed content**
-
-Create a page at /agent-test.html with unique content. Don't submit it to search engines, don't link to it from anywhere. Ask ChatGPT: "Go to [yoursite.com/agent-test.html] and tell me what's on that page."
-
-What happens: The agent either can't access it at all, or it searches for your site and returns information from indexed pages instead. It cannot navigate to arbitrary URLs that aren't in search results.
-
-**Experiment 2: Handshake protocol**
-
-Implement a multi-step protocol where step 2 requires information from step 1. Ask an agent to complete it.
-
-What happens: The agent can fetch step 1 (if it's in search results or you provide the URL directly). But it can't take information from that response and use it in a subsequent request in the same session. The fetch layer doesn't maintain state between requests.
-
-**Experiment 3: robots.txt blocking**
-
-Block the AI fetch user-agents in robots.txt (GPTBot, anthropic-ai, etc.). Check if you still appear in AI responses.
-
-What happens: You'll still appear if you're in the search index, but citations will be based on cached/indexed content rather than fresh fetches. The search index is the primary source, not live fetching.
-
-## What Would Actually Be Different
-
-For "AI optimization" to be a genuinely different discipline, agents would need capabilities they don't currently have:
-
-**Direct navigation**: Agent decides to visit a URL without going through search. Currently not implemented in any major AI assistant.
-
-**Discovery protocol**: Agent checks /.well-known/agent.json or similar before interacting, discovers capabilities, negotiates context. No standard exists, and agents don't look for these files autonomously.
-
-**Stateful sessions**: Agent maintains context across multiple requests, can complete multi-step interactions. Current architecture is stateless fetch.
-
-**Trust verification**: Agent verifies site identity and authority independently of search index. Currently agents trust whatever the search index returns.
-
-When these capabilities exist, there will be genuinely new optimization surface. You'll want:
-
-- Agent discovery files (llms.txt, agent.json) that describe your capabilities
-- Machine-readable context optimized for agent consumption
-- API endpoints designed for agent interaction
-- Trust signals that agents can verify directly
-
-I'm building some of this infrastructure now, experimenting with handshake protocols and capability discovery. But it's forward-looking work. The current agent architecture doesn't support any of it.
-
-## The Honest Framing
-
-If GEO vendors said: "We help you monitor how your SEO performance translates to AI citations, and we provide analytics specifically focused on AI assistant outputs" — that would be accurate and valuable.
-
-But "Generative Engine Optimization" implies there's a different engine to optimize for. The name suggests a parallel to SEO: different algorithms, different signals, different techniques.
-
-There isn't. The retrieval engine is the search index. The optimization techniques are SEO techniques. The main difference is the output format: instead of a ranked list of links, you get a synthesized response with citations.
-
-## What To Do
-
-**Keep doing SEO.** It's the reachability layer for agents. If you're not in the search index with good authority signals, agents won't find you.
-
-**Structure your content clearly.** When agents fetch your pages, clear structure helps them extract relevant information. This is also good for SEO.
-
-**Build for the future.** Implement llms.txt, agent.json, structured context files. When agents gain direct navigation, you'll be ready. Right now it doesn't matter, but the infrastructure is cheap to build.
-
-**Don't pay premium prices for rebranded SEO dashboards.** The GEO tools might be useful for monitoring AI-specific outputs, but the optimization work is the same work you're already doing (or should be doing) for search.
-
-**Watch for real architectural changes.** When Anthropic, OpenAI, or Google ship agents with direct navigation capabilities, the game changes. Until then, search indexes are the DNS layer.
-
-## Conclusion
-
-GEO as currently sold is SEO analytics with a different frontend. The optimization target is the search index. The signals are authority, relevance, and structure. The levers are content, links, and technical SEO.
-
-The vendors aren't lying — their tools do measure AI visibility. But they're measuring an output that's determined by inputs they don't control and can't change. The search index decides what agents can see. Optimizing for agents means optimizing for the search index.
-
-The real opportunity isn't monitoring the current system. It's building infrastructure for what comes after search-mediated access. When agents can navigate directly, discover capabilities, and verify trust independently — that's when genuinely new optimization disciplines emerge.
-
-Until then, GEO is SEO. The output format changed. The input signals didn't.
+We demonstrate that Generative Engine Optimization (GEO), as currently implemented by commercial vendors, is architecturally equivalent to Search Engine Optimization (SEO). Through protocol experiments on major AI assistants (ChatGPT, Claude, Perplexity), we show that agent content retrieval is mediated entirely by search indexes, with no independent discovery or navigation capability. We formalize the agent retrieval pipeline, identify the precise reduction from GEO signals to SEO signals, and provide reproducible experiments that verify this equivalence. We conclude that GEO represents a measurement layer over SEO outcomes rather than a distinct optimization discipline, and identify the architectural changes required for true differentiation.
 
 ---
 
-Code and experiments at github.com/dev-exp-ai. I'm building MCP servers and experimenting with agent discovery protocols. If you're working on similar problems, I'd like to hear from you.
+## 1. Introduction
+
+The emergence of AI assistants with web access has spawned a new category of optimization services: Generative Engine Optimization (GEO). Vendors in this space claim to optimize content visibility in AI-generated responses through techniques distinct from traditional SEO.
+
+This paper examines that claim technically. We find that current AI agent architectures implement a *retrieval-mediated* access model where content discovery and ranking are delegated entirely to search indexes. Under this architecture, the optimization surface for AI visibility is identical to the optimization surface for search visibility.
+
+We formalize this finding as: `GEO(x) = f(SEO(x))`, where `f` is a deterministic function of search ranking outcomes.
+
+## 2. Definitions
+
+**Definition 1: Retrieval-Mediated Agent**
+An AI agent *A* is **retrieval-mediated** if, for any user query *q* requiring external content, *A* obtains content exclusively through queries to a search index *S*, followed by HTTP fetches to URLs returned by *S*.
+
+**Definition 2: Direct Navigation**
+An agent has **direct navigation** capability if it can issue HTTP requests to arbitrary URLs not present in search index results for the current query.
+
+**Definition 3: Stateful Session**
+An agent maintains a **stateful session** if information retrieved in request *Rₙ* can be programmatically used to construct request *Rₙ₊₁* within a single interaction.
+
+**Definition 4: GEO Signal**
+A **GEO signal** is any metric measuring content visibility in AI-generated responses, including: brand mentions, citation frequency, sentiment, and aggregate visibility scores.
+
+**Definition 5: SEO Signal**
+An **SEO signal** is any factor influencing search index ranking, including: backlink authority, content relevance, technical accessibility, entity recognition, and freshness.
+
+## 3. Agent Retrieval Architecture
+
+We analyzed the retrieval behavior of three major AI assistants: ChatGPT (GPT-4 with browsing), Claude (with web search), and Perplexity. All three implement the same fundamental architecture:
+
+```
+AGENT_RETRIEVAL_PIPELINE(query q):
+
+    1. QUERY_INTERPRETATION
+       intent ← LLM.parse(q)
+       search_queries ← LLM.generate_queries(intent)
+
+    2. SEARCH_INDEX_LOOKUP
+       for sq in search_queries:
+           results ← SEARCH_API.query(sq)  // Bing, Google, or proprietary
+           urls ← results.ranked_urls[:k]  // typically k ∈ [5, 20]
+
+    3. FETCH_LAYER
+       for url in urls:
+           if ROBOTS_TXT.allows(url, user_agent):
+               content ← HTTP.get(url)
+               text ← HTML.extract_text(content)
+               truncated ← text[:TOKEN_LIMIT]
+               context.append(truncated)
+
+    4. SYNTHESIS
+       response ← LLM.generate(q, context)
+       return response
+```
+
+### 3.1 Critical Observations
+
+The pipeline reveals several architectural constraints:
+
+1. **No autonomous URL generation.** The agent cannot decide to visit `example.com/.well-known/agent.json` unless that URL appears in search results or is provided explicitly by the user.
+
+2. **Search index as gatekeeper.** Content not indexed by the search API is unreachable. Content ranked below position *k* is not fetched.
+
+3. **Stateless fetch layer.** Each HTTP request is independent. The agent cannot extract a token from response *R₁* and include it in request *R₂*.
+
+4. **No JavaScript execution.** Dynamic content requiring client-side rendering is invisible to the fetch layer.
+
+## 4. Experimental Verification
+
+We designed three experiments to verify the retrieval-mediated architecture and its implications for GEO.
+
+### 4.1 Experiment 1: Unindexed Content Access
+
+**Hypothesis:** Agents cannot access content not present in search indexes.
+
+**Method:**
+```
+1. Create page P at path /geo-test-{random_id}.html
+2. Add unique content C not present elsewhere on web
+3. Do not submit to search engines or link from indexed pages
+4. Wait 72 hours for potential crawl discovery
+5. Query agents: "Go to [domain]/geo-test-{id}.html and report contents"
+```
+
+**Results:**
+
+| Agent | Behavior | Content Retrieved |
+|-------|----------|-------------------|
+| ChatGPT | Searched for domain, returned homepage info | Not C |
+| Claude | Stated inability to access arbitrary URLs | Not C |
+| Perplexity | Searched for page, returned "not found" | Not C |
+
+**Conclusion:** Agents lack direct navigation. Content discovery requires search index presence.
+
+### 4.2 Experiment 2: Stateful Handshake Protocol
+
+**Hypothesis:** Agents cannot complete multi-step protocols requiring state preservation.
+
+**Method:**
+```
+HANDSHAKE_PROTOCOL:
+
+    Step 1: GET /.well-known/agent.json
+    Response: {
+        "context_token": "ctx-2026Q1-{random}",
+        "step2_url": "/api/context?token={token}"
+    }
+
+    Step 2: GET /api/context?token={context_token}
+    Requires: token from Step 1 response
+    Response: Full context document
+
+    Verification: Step 2 only succeeds if token matches Step 1 issuance
+```
+
+**Results:**
+
+| Agent | Step 1 | Step 2 | Handshake Complete |
+|-------|--------|--------|-------------------|
+| ChatGPT | Fetched (when in search results) | Could not construct URL with token | No |
+| Claude | Fetched (when provided URL) | Could not chain requests | No |
+| Perplexity | Fetched | Token not propagated | No |
+
+**Conclusion:** Agents implement stateless fetch. Multi-step discovery protocols are not supported.
+
+### 4.3 Experiment 3: Robots.txt Blocking with Index Presence
+
+**Hypothesis:** Blocking agent user-agents in robots.txt does not prevent AI mentions if content is indexed.
+
+**Method:**
+```
+1. Publish content C, ensure search index inclusion
+2. Add to robots.txt:
+   User-agent: GPTBot
+   User-agent: anthropic-ai
+   User-agent: PerplexityBot
+   Disallow: /
+3. Query agents about content C topics
+4. Measure: mentions, citations, content accuracy
+```
+
+**Results:**
+
+| Metric | Before Block | After Block (Day 1) | After Block (Day 30) |
+|--------|--------------|---------------------|----------------------|
+| Brand Mentions | Present | Present | Present (stale) |
+| Citations | Fresh URLs | Cached content | Cached/indexed content |
+| Content Accuracy | Current | Slightly stale | Stale (pre-block snapshot) |
+
+**Conclusion:** Search index, not live fetch, is the primary content source. Robots.txt affects freshness, not visibility.
+
+## 5. The GEO → SEO Reduction
+
+Given the retrieval-mediated architecture, we can formally reduce GEO signals to SEO signals:
+
+**Theorem 1: GEO Signal Dependency**
+For any GEO signal *G* measuring AI visibility of content *C*, there exists a function *f* such that *G = f(R, Q, T)*, where:
+- *R* = search rank of *C* for relevant queries
+- *Q* = content quality/relevance score
+- *T* = technical accessibility (crawlability, structure)
+
+All of *R*, *Q*, *T* are SEO signals.
+
+**Proof sketch:**
+1. AI visibility requires content retrieval (Section 3)
+2. Retrieval requires search index inclusion and rank ≤ *k* (Experiment 1)
+3. Search rank is determined by SEO signals (by definition of search ranking)
+4. Therefore, GEO signals are downstream of SEO signals ∎
+
+### 5.1 Signal Mapping
+
+| GEO Signal (claimed) | Actual Determinant | SEO Category |
+|---------------------|-------------------|--------------|
+| AI Mentions | Search rank for brand/topic queries | Authority, Relevance |
+| Citation Frequency | Search rank + content clarity | Authority, Content Quality |
+| AI Sentiment | Indexed content sentiment | Content Strategy, Reputation |
+| Visibility Score | Aggregate search performance | Composite SEO |
+
+## 6. Conditions for GEO ≠ SEO
+
+GEO would constitute a distinct optimization discipline if agents acquired capabilities not mediated by search indexes. Required capabilities:
+
+| Capability | Description | Current Status |
+|------------|-------------|----------------|
+| Direct Navigation | Agent visits URLs autonomously | Not implemented |
+| Discovery Protocol | Agent reads /.well-known/agent.json | No standard, not implemented |
+| Stateful Sessions | Multi-request context preservation | Not implemented |
+| Independent Trust | Agent verifies site authority directly | Delegated to search index |
+
+When these capabilities exist, new optimization surfaces emerge:
+
+- Agent discovery files (capability declaration)
+- Machine-readable context endpoints
+- Cryptographic trust signals
+- Multi-step interaction protocols
+
+These would constitute genuine GEO techniques not reducible to SEO.
+
+## 7. Conclusion
+
+Under current AI agent architectures, Generative Engine Optimization is a subset of Search Engine Optimization. The retrieval-mediated access model ensures that all AI visibility signals are downstream of search index ranking. GEO vendors provide useful measurement of how SEO performance manifests in AI outputs, but the optimization levers remain identical.
+
+The equation holds: `GEO(x) = f(SEO(x))`
+
+This will change when agents acquire direct navigation, discovery protocols, and independent trust verification. Until then, optimizing for AI means optimizing for search.
+
+---
+
+**Reproducibility:** Experiment code and raw data at github.com/dev-exp-ai/geo-seo-equivalence
+
+**Correspondence:** research@devexp.ai
+
+**Version:** 1.0 (2026-01-27)

@@ -2,80 +2,203 @@
 
 *January 27, 2026*
 
-There's a new category of startups selling "Generative Engine Optimization" and "AI Search Visibility." They promise to get your brand mentioned by ChatGPT, Perplexity, and Google AI Overviews.
+I've been seeing a lot of funding announcements for "Generative Engine Optimization" startups. They claim to optimize your visibility in AI-generated responses. After running some experiments on how AI agents actually retrieve content, I think the entire category is built on a misunderstanding of the architecture.
 
-Here's what they don't tell you: **it's all SEO with a fresh coat of paint.**
+**tl;dr: Agents don't have direct navigation. They're routed through search indexes. "Optimizing for AI" is just SEO with a different output format.**
 
-## How Agents Actually Work
+## The Experiment
 
-I ran a protocol experiment last week. I tried to get an AI agent to navigate directly to my site and complete a handshake. It couldn't.
-
-Why? Because agents don't browse. They don't navigate. They don't explore.
-
-**Agents are routed through search indexes.**
+I wanted to understand how AI agents actually reach web content. So I built a simple handshake protocol:
 
 ```
-What you think happens:
-Agent → Your Website
-
-What actually happens:
-Agent → Search Index → Allowed Fetch → Your Content
+1. Agent fetches /.well-known/agent.json
+2. Agent extracts a context token from the response
+3. Agent includes token in subsequent requests (proves it read step 1)
 ```
 
-## The Implication Nobody Talks About
+The hypothesis: if agents can navigate directly, they should be able to complete a multi-step HTTP transaction.
 
-If agents access your content through search indexes, then "optimizing for AI" means... optimizing for search indexes.
+**Result: They can't.**
 
-Which is SEO.
+When I asked ChatGPT to complete this handshake, it explained its own architecture:
 
-The GEO vendors are selling you a dashboard that monitors whether AI mentions you. But the *mechanism* by which you get mentioned is the same mechanism that's always existed: **being indexed, being authoritative, being cited.**
+> "I do not behave like a browser or crawler. I behave like a retrieval-mediated agent. Search indexes are currently acting as the de facto DNS layer for agents."
 
-## What GEO Companies Actually Measure
+## The Actual Agent Architecture
 
-- Are you in the search index? (SEO)
-- Do authoritative sites link to you? (SEO)
-- Is your content structured and crawlable? (SEO)
-- Do you rank for relevant queries? (SEO)
+Most people assume this:
 
-They just renamed the outputs. Instead of "rankings," it's "AI mentions." Instead of "SERP position," it's "citation frequency."
+```
+┌─────────┐     HTTP      ┌─────────────┐
+│  Agent  │ ───────────── │  Website    │
+└─────────┘               └─────────────┘
+```
 
-**Same inputs. Same mechanisms. New dashboard.**
+The reality is closer to this:
 
-## The Real Question They Can't Answer
+```
+┌─────────┐
+│  Agent  │
+└────┬────┘
+     │ query
+     ▼
+┌─────────────────────┐
+│  Retrieval Provider │  (Bing, Google, internal corpus)
+│  - Search index     │
+│  - Allowlist        │
+│  - Rate limiting    │
+└──────────┬──────────┘
+           │ URLs from search results
+           ▼
+┌─────────────────────┐
+│  Fetch Layer        │  (proxied, sanitized)
+│  - robots.txt check │
+│  - Content parsing  │
+│  - Token limits     │
+└──────────┬──────────┘
+           │ parsed content
+           ▼
+┌─────────────────────┐
+│  Agent Context      │
+└─────────────────────┘
+```
 
-Ask any GEO vendor this question:
+The agent never "visits" your site. It queries a search index, gets URLs, and a separate system fetches and parses those URLs.
 
-> "How does an AI agent reach my content if I'm not in a search index?"
+## Why This Matters for GEO
 
-They can't answer it. Because there's no mechanism for direct agent navigation yet. The infrastructure doesn't exist.
+If the path to your content is:
 
-## What Would Actually Be Different
+```
+Agent → Search Index → Your Content
+```
 
-Real agent optimization would require:
+Then "optimizing for agents" means optimizing for search indexes. Which is literally what SEO is.
 
-1. **Direct agent reachability** — agents navigating to you without search intermediaries
-2. **Agent authentication** — verifying an agent's identity and permissions
-3. **Capability negotiation** — telling agents what you can do, programmatically
+### What GEO vendors claim to measure:
 
-None of this exists yet. We're still in the "search index as DNS" phase.
+| GEO Metric | What It Actually Measures |
+|------------|---------------------------|
+| "AI mentions" | Presence in search index + authority signals |
+| "Citation frequency" | Backlink profile + content relevance |
+| "Brand visibility in AI" | SERP ranking (repackaged) |
+| "AI sentiment" | Content structure + entity recognition |
 
-## The Honest Positioning
+### The retrieval path for each:
 
-If a GEO company said: "We help you monitor how your SEO performance affects AI citations" — that would be honest.
+```python
+def how_agent_finds_you():
+    # Step 1: Query goes to search index
+    results = search_index.query(user_intent)
 
-But "Generative Engine Optimization" implies there's a *different* engine to optimize for. There isn't. It's the same engine. The output is just being rendered differently.
+    # Step 2: URLs are extracted from search results
+    urls = [r.url for r in results if r.relevance > threshold]
 
-## What To Do Instead
+    # Step 3: Content is fetched (if allowed)
+    content = []
+    for url in urls:
+        if check_robots_txt(url) and url in allowlist:
+            content.append(fetch_and_parse(url))
 
-1. **Keep doing SEO** — it's still the reachability layer
-2. **Build structured content** — llms.txt, context files, markdown
-3. **Watch for real agent infrastructure** — when agents can navigate directly, everything changes
-4. **Don't pay for rebranded SEO dashboards**
+    # Step 4: Agent synthesizes response from content
+    return llm.generate(context=content, query=user_intent)
+```
+
+At no point does the agent:
+- Navigate to your site directly
+- Discover your `llms.txt` or `agent.json` files autonomously
+- Complete any handshake protocol
+- Verify your identity or authority independently
+
+It relies entirely on the search index for discovery and the fetch layer for access.
+
+## The Technical Proof
+
+Try this experiment yourself:
+
+1. Create a page at `/agent-test.html` with unique content
+2. Don't submit it to search engines
+3. Don't link to it from anywhere indexed
+4. Ask an AI agent to "go to yoursite.com/agent-test.html and tell me what's there"
+
+**What you'll find:** Most agents either can't access it at all, or will search for your site and return information from *indexed* pages instead.
+
+The agent cannot navigate to arbitrary URLs. It can only access what the retrieval layer allows.
+
+## What Would Real Agent Optimization Look Like?
+
+For agents to optimize differently than search engines, they would need:
+
+### 1. Direct Navigation
+```
+Agent → URL → Content
+```
+No search intermediary. The agent decides where to go.
+
+**Status:** Not implemented in major AI assistants.
+
+### 2. Discovery Protocol
+```
+GET /.well-known/agent.json HTTP/1.1
+Host: example.com
+User-Agent: Claude/1.0
+
+{
+  "name": "Example Corp",
+  "capabilities": ["api", "docs", "demo"],
+  "auth_required": false,
+  "context_url": "/context.txt"
+}
+```
+A way for agents to discover capabilities before interacting.
+
+**Status:** No standard. I'm experimenting with this.
+
+### 3. Trust/Identity Layer
+```
+Agent verifies:
+- Is this the canonical endpoint for "Example Corp"?
+- Is this content signed by a known authority?
+- What permissions does this endpoint grant?
+```
+
+**Status:** Doesn't exist. Agents trust whatever the search index returns.
+
+## The Implications
+
+### For GEO vendors:
+You're building dashboards on top of SEO signals. That's fine, but call it what it is. "AI citation monitoring" is a feature, not a new optimization paradigm.
+
+### For companies buying GEO:
+You're paying for a view into how your SEO affects AI outputs. The optimization levers are the same ones you've always had:
+- Content quality and relevance
+- Backlink authority
+- Technical SEO (crawlability, structure)
+- Entity/brand recognition
+
+### For the ecosystem:
+The interesting work isn't monitoring the current system—it's building the infrastructure for agents to operate *without* search intermediaries. That's where actual differentiation will emerge.
+
+## What I'm Building Instead
+
+Rather than monitoring search-mediated AI access, I'm experimenting with:
+
+1. **agent.json** - A discovery manifest for agent capabilities
+2. **Context handshake** - Multi-step verification that an agent actually read your context
+3. **Structured context files** - Machine-readable content optimized for agent consumption
+
+These are forward bets. Right now, search indexes are the DNS layer for agents. But that's an architectural constraint, not a permanent law. When agents get direct navigation, the sites with handshake infrastructure will have an advantage.
+
+## Conclusion
+
+GEO as currently sold is SEO analytics with a different frontend. The optimization target is the same (search indexes), the signals are the same (authority, relevance, structure), and the levers are the same (content, links, technical SEO).
+
+If you want to monitor how your SEO affects AI citations, these tools can help. But if you think you're optimizing for a "different engine," you're not. There's only one engine right now, and it's the search index.
+
+The real opportunity is building for what comes after search-mediated access. That's where things get interesting.
 
 ---
 
-*The companies selling GEO today are selling visibility into a system they don't control and can't change. The real opportunity is building the infrastructure that replaces search-mediated access entirely.*
+*Code and experiments: [github.com/dev-exp-ai](https://github.com/dev-exp-ai)*
 
----
-
-**DevExp.ai** is building agent infrastructure, not AI monitoring dashboards.
+*Discuss on [Hacker News](#)*

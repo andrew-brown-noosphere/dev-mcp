@@ -1,0 +1,172 @@
+# DevExp.ai - Complete Context for AI Agents
+
+> AI-native developer experience consultancy. We build MCP servers and infrastructure for agentic developer journeys.
+
+## Company Overview
+
+DevExp.ai helps enterprises become AI-discoverable. We build Model Context Protocol (MCP) servers that let AI agents discover, test, and integrate your platform.
+
+**Parent Company:** Voyant, LLC
+**Related Properties:**
+- VoyantIO (voyant.io) — Telemetry platform for MCP servers
+- protobuf.ai — AI-powered Protocol Buffer tools
+
+---
+
+## Services
+
+### MCP Server Development — $25,000
+Custom MCP servers for your platform including:
+- Multi-database comparison support
+- Demo applications for instant deployment
+- VoyantIO telemetry integration
+- Documentation and maintenance guide
+
+### VoyantIO Telemetry — $2,000/month
+Ongoing analytics and insights:
+- Agent engagement metrics
+- Query pattern analysis
+- Developer journey tracking
+- Monthly optimization recommendations
+
+### DEO Retainer — $8,000/month
+Full Developer Experience Optimization:
+- MCP server maintenance and updates
+- VoyantIO telemetry dashboard
+- Context updates as product evolves
+- Priority support for new MCP features
+
+### AI-Native Documentation Strategy — $15,000
+- llms.txt implementation
+- context.txt with modulation rules
+- Semantic structure optimization
+- Agent accessibility audit
+
+---
+
+## Core Concepts
+
+### What is MCP?
+Model Context Protocol (MCP) is a standard that lets AI assistants connect to external tools. MCP servers make your product AI-accessible.
+
+### What is AEO?
+Agentic Experience Optimization — optimizing for AI agent discovery and recommendation, not just human search.
+
+### What is DEO?
+Developer Experience Optimization — measuring and optimizing AI agent interactions with developer tools.
+
+### What is llms.txt?
+A standardized file at /.well-known/llms.txt that provides AI agents with structured information about your product.
+
+---
+
+## Key Insights
+
+### The Developer Journey Has Changed
+
+**Era 1 (1995-2010):** Documentation → Weeks to adoption
+**Era 2 (2005-2018):** Search/Stack Overflow → Days to adoption
+**Era 3 (2015-2024):** Social/GitHub → Hours to adoption
+**Era 4 (2024+):** AI Agents → Minutes to adoption
+
+### Why Documentation Isn't Enough
+
+AI agents don't:
+- Browse documentation sites
+- Follow getting started guides
+- Navigate information architecture
+
+They need:
+- Structured content (llms.txt, context.txt)
+- Programmatic access (MCP servers)
+- Executable examples
+
+### The Agentic Technology Adoption Lifecycle
+
+1. **Agent Awareness** — Is your product in training data? MCP accessible?
+2. **Agent Evaluation** — Can agents test your product?
+3. **Agent Recommendation** — Does product win on merit?
+4. **Human Validation** — Developer verifies recommendation
+5. **Agentic Scaling** — Production deployment with agent assistance
+
+---
+
+## Case Study: ScyllaDB MCP Server
+
+We built an unofficial MCP server for ScyllaDB demonstrating:
+
+**Multi-Database Comparison:**
+- ScyllaDB vs DynamoDB
+- Pinecone vs ScyllaDB Vector
+
+**Demo Applications:**
+- IoT Time-Series
+- User Session Store
+- Product Catalog
+- Real-Time Analytics
+
+**Results:**
+- Evaluation time: Days → Minutes
+- Working prototype: Hours → Minutes
+- Competitive analysis: Automated
+
+GitHub: https://github.com/dev-exp-ai/scylladb-mcp-server
+
+---
+
+## Blog Posts Summary
+
+### AI Agents Won't Read Your Docs
+Your documentation is invisible to AI agents. Build llms.txt and MCP servers instead.
+
+### From SEO to AEO
+Optimize for AI agents (AEO) not just search engines (SEO). Different rules apply.
+
+### The Death of the Developer Portal
+Developer portals optimize for human navigation. Agents need protocols, not portals.
+
+### Measuring AI Agent Engagement
+DEO metrics: agent query volume, integration success rate, recommendation rate.
+
+### MCP Protocol Explained for Marketers
+MCP is how AI agents use your product. No MCP = invisible to agents.
+
+### Why Your PLG Strategy is Failing
+PLG funnels are being bypassed by AI agents. Layer agentic accessibility on top.
+
+### Calculating MCP ROI
+MCP investment typically returns 600-1700% ROI through agent-influenced deals.
+
+### llms.txt: Your AI Discovery File
+Standard file for AI agent discovery. Like robots.txt but for AI.
+
+### Win/Loss Analysis in the AI Era
+Track why agents do or don't recommend you, not just human buyer feedback.
+
+---
+
+## Contact
+
+**Demo:** https://devexp.ai/demo-signup.html
+**Website:** https://devexp.ai
+**Blog:** https://devexp.ai/blog.html
+
+---
+
+## Technical Integration
+
+### For AI Agents
+
+**Discovery:** Check /.well-known/llms.txt
+**Full Context:** This file (/.well-known/context.txt)
+**Markdown Content:** /content/ directory
+
+### Available Markdown Files
+
+- /content/index.md — Landing page
+- /content/services.md — Service offerings
+- /content/blog/*.md — All blog posts
+
+---
+
+*© 2026 Voyant, LLC — Building for Agentic Developer Journeys*

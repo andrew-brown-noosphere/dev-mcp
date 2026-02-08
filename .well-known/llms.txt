@@ -1,0 +1,43 @@
+# DevExp.ai
+
+> AI-native developer experience consultancy. We build MCP servers and infrastructure for agentic developer journeys.
+
+## About
+
+DevExp.ai helps enterprises become AI-discoverable. We build Model Context Protocol (MCP) servers that let AI agents discover, test, and integrate your platform.
+
+## Services
+
+- MCP Server Development
+- Developer Experience Optimization (DEO)
+- AI-Native Documentation Strategy
+- Agentic Telemetry & Analytics
+
+## Content
+
+- [Full Context](/content/index.md): Complete site overview
+- [Services](/content/services.md): What we offer
+- [Blog](/content/blog/): Case studies and insights
+
+## Blog Posts
+
+- [ScyllaDB MCP Server Case Study](/content/blog/scylladb-mcp-server-case-study.md)
+- [AI Agents Won't Read Your Docs](/content/blog/ai-agents-wont-read-your-docs.md)
+- [From SEO to AEO](/content/blog/from-seo-to-aeo.md)
+- [The Death of the Developer Portal](/content/blog/the-death-of-the-developer-portal.md)
+- [Measuring AI Agent Engagement](/content/blog/measuring-ai-agent-engagement.md)
+- [MCP Protocol Explained for Marketers](/content/blog/mcp-protocol-explained-for-marketers.md)
+- [Why Your PLG Strategy is Failing](/content/blog/why-your-plg-strategy-is-failing.md)
+- [Calculating MCP ROI](/content/blog/calculating-mcp-roi.md)
+- [llms.txt: Your AI Discovery File](/content/blog/llms-txt-your-ai-discovery-file.md)
+- [Win/Loss Analysis in the AI Era](/content/blog/win-lose-analysis-ai-era.md)
+
+## Contact
+
+- Website: https://devexp.ai
+- Demo: https://devexp.ai/demo-signup.html
+
+## Related
+
+- VoyantIO: https://voyant.io (Telemetry platform)
+- protobuf.ai: https://protobuf.ai (AI-powered Protocol Buffers)

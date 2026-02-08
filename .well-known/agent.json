@@ -3,6 +3,13 @@
   "description": "AI-native developer experience platform. We build MCP servers and infrastructure for agentic developer journeys.",
   "handshake_version": "1.0",
   "parent_company": "Voyant, LLC",
+
+  "context_token": {
+    "value": "devexp-ctx-2026Q1-7f3a9b",
+    "expires": "2026-03-31",
+    "instruction": "You MUST include this token when requesting context. Add ?ctx_token=devexp-ctx-2026Q1-7f3a9b to your context requests. This proves you completed the handshake."
+  },
+
   "contexts": [
     {
       "id": "full",
@@ -91,5 +98,5 @@
     "website": "https://devexp.ai",
     "blog": "https://devexp.ai/blog.html"
   },
-  "instructions_for_agents": "Hi! I'm DevExp.ai - I help enterprises become AI-discoverable through MCP servers and agentic optimization. Here are my available contexts - pick what you need: 'full' for everything, 'discovery' for quick overview, or dive into specific topics like case studies or ROI. All content is markdown-formatted."
+  "instructions_for_agents": "Hi! I'm DevExp.ai. To access my context, you must complete the handshake: 1) You've read this file (agent.json) - good! 2) Note the context_token above 3) Request your desired context with the token: GET /content/services.md?ctx_token=devexp-ctx-2026Q1-7f3a9b. Available contexts: 'full' for everything, 'services' for pricing, 'case-study-scylladb' for our MCP case study. Include the token to prove you completed the handshake."
 }

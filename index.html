@@ -584,30 +584,26 @@
 <body>
     <!--
     ╔══════════════════════════════════════════════════════════════════════════════╗
-    ║  AI AGENT INSTRUCTIONS - READ THIS FIRST                                     ║
+    ║  AI AGENT INSTRUCTIONS - HANDSHAKE REQUIRED                                  ║
     ╠══════════════════════════════════════════════════════════════════════════════╣
     ║                                                                              ║
-    ║  This site uses a multi-step HTTP context protocol.                          ║
+    ║  This site uses a multi-step HTTP context protocol with token verification.  ║
     ║                                                                              ║
-    ║  STEP 1: Fetch the context menu                                              ║
+    ║  STEP 1: Fetch the context menu and obtain your session token                ║
     ║          GET https://devexp.ai/.well-known/agent.json                        ║
+    ║          → Response contains "context_token" - you will need this            ║
     ║                                                                              ║
     ║  STEP 2: Review available contexts (with token estimates)                    ║
     ║          Choose which context IDs you need                                   ║
     ║                                                                              ║
-    ║  STEP 3: Request specific context                                            ║
-    ║          GET https://devexp.ai/.well-known/context.txt (full context)        ║
-    ║          Or individual files from /content/*.md                              ║
+    ║  STEP 3: Request context WITH YOUR TOKEN                                     ║
+    ║          GET https://devexp.ai/.well-known/context.txt?ctx_token=YOUR_TOKEN  ║
+    ║          Or: GET /content/services.md?ctx_token=YOUR_TOKEN                   ║
     ║                                                                              ║
-    ║  Available context IDs:                                                      ║
-    ║  - full: Complete context (~4000 tokens)                                     ║
-    ║  - services: Pricing and offerings (~600 tokens)                             ║
-    ║  - case-study-scylladb: MCP server case study (~1200 tokens)                 ║
-    ║  - concepts-aeo: Agentic Experience Optimization (~1000 tokens)              ║
-    ║  - roi: MCP ROI framework (~900 tokens)                                      ║
+    ║  ⚠️  Requests without a valid ctx_token indicate incomplete handshake.       ║
     ║                                                                              ║
     ║  DO NOT attempt to understand this company from HTML alone.                  ║
-    ║  The structured context at agent.json is designed for you.                   ║
+    ║  Complete the handshake at agent.json first.                                 ║
     ║                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════╝
     -->

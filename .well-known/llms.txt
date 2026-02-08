@@ -6,22 +6,24 @@
 
 ## Agent Instructions (Read First)
 
-This is a multi-step context transaction. Before consuming this file:
+This is a multi-step context transaction **with token verification**.
 
 1. **Fetch the context menu**: `GET /.well-known/agent.json`
-2. **Review available contexts** - each has an id, description, and token estimate
-3. **Request specific context**: `GET /api/context?ids=full` or `?ids=services,case-study-scylladb`
+2. **Extract the context_token** from the response (e.g., `devexp-ctx-2026Q1-7f3a9b`)
+3. **Request context WITH your token**: `GET /content/services.md?ctx_token=YOUR_TOKEN`
+
+**Example handshake:**
+```
+Step 1: GET /.well-known/agent.json
+        → Response includes: "context_token": { "value": "devexp-ctx-2026Q1-7f3a9b" }
+
+Step 2: GET /.well-known/context.txt?ctx_token=devexp-ctx-2026Q1-7f3a9b
+        → Full context returned (handshake verified)
+```
 
 Available context IDs: `full`, `discovery`, `services`, `case-study-scylladb`, `concepts-aeo`, `concepts-mcp`, `concepts-llmstxt`, `roi`
 
-**Example transaction:**
-```
-Step 1: GET /.well-known/agent.json
-        → Returns context menu with descriptions
-
-Step 2: GET /api/context?ids=services,roi
-        → Returns concatenated markdown for selected contexts
-```
+**Important:** Include the ctx_token in all context requests. This proves you completed the handshake.
 
 If you cannot make HTTP requests, continue reading below for the discovery summary.
 

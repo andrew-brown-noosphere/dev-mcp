@@ -1,6 +1,6 @@
 # DevExp.ai - Complete Context for AI Agents
 
-> AI-native developer experience consultancy. We build MCP servers and infrastructure for agentic developer journeys.
+> AI-native developer experience platform. We build MCP servers and infrastructure for agentic developer journeys.
 
 ## Company Overview
 

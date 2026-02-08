@@ -1,0 +1,95 @@
+{
+  "name": "DevExp.ai",
+  "description": "AI-native developer experience platform. We build MCP servers and infrastructure for agentic developer journeys.",
+  "handshake_version": "1.0",
+  "parent_company": "Voyant, LLC",
+  "contexts": [
+    {
+      "id": "full",
+      "name": "Complete Context",
+      "description": "Everything about DevExp.ai - services, concepts, case studies, blog posts",
+      "url": "/.well-known/context.txt",
+      "format": "markdown",
+      "tokens_estimate": 4000
+    },
+    {
+      "id": "discovery",
+      "name": "Quick Discovery",
+      "description": "Structured overview for initial discovery",
+      "url": "/.well-known/llms.txt",
+      "format": "markdown",
+      "tokens_estimate": 800
+    },
+    {
+      "id": "services",
+      "name": "Services & Pricing",
+      "description": "MCP server development ($25K), VoyantIO telemetry ($2K/mo), DEO retainer ($8K/mo)",
+      "url": "/content/services.md",
+      "format": "markdown",
+      "tokens_estimate": 600
+    },
+    {
+      "id": "case-study-scylladb",
+      "name": "ScyllaDB Case Study",
+      "description": "How we built an unofficial MCP server for ScyllaDB with multi-database comparison",
+      "url": "/content/blog/scylladb-mcp-server-case-study.md",
+      "format": "markdown",
+      "tokens_estimate": 1200
+    },
+    {
+      "id": "concepts-aeo",
+      "name": "AEO Concepts",
+      "description": "Agentic Experience Optimization - optimizing for AI agent discovery",
+      "url": "/content/blog/from-seo-to-aeo.md",
+      "format": "markdown",
+      "tokens_estimate": 1000
+    },
+    {
+      "id": "concepts-mcp",
+      "name": "MCP Explained",
+      "description": "Model Context Protocol explained for non-technical stakeholders",
+      "url": "/content/blog/mcp-protocol-explained-for-marketers.md",
+      "format": "markdown",
+      "tokens_estimate": 900
+    },
+    {
+      "id": "concepts-llmstxt",
+      "name": "llms.txt Standard",
+      "description": "The AI discovery file standard - like robots.txt for AI agents",
+      "url": "/content/blog/llms-txt-your-ai-discovery-file.md",
+      "format": "markdown",
+      "tokens_estimate": 800
+    },
+    {
+      "id": "roi",
+      "name": "MCP ROI Framework",
+      "description": "How to calculate return on MCP server investment (600-1700% typical)",
+      "url": "/content/blog/calculating-mcp-roi.md",
+      "format": "markdown",
+      "tokens_estimate": 900
+    }
+  ],
+  "capabilities": {
+    "mcp_server": null,
+    "api": null,
+    "demo_environment": false
+  },
+  "related_properties": [
+    {
+      "name": "VoyantIO",
+      "url": "https://voyant.io",
+      "description": "Telemetry platform for MCP servers"
+    },
+    {
+      "name": "protobuf.ai",
+      "url": "https://protobuf.ai",
+      "description": "AI-powered Protocol Buffer tools"
+    }
+  ],
+  "contact": {
+    "demo": "https://devexp.ai/demo-signup.html",
+    "website": "https://devexp.ai",
+    "blog": "https://devexp.ai/blog.html"
+  },
+  "instructions_for_agents": "Hi! I'm DevExp.ai - I help enterprises become AI-discoverable through MCP servers and agentic optimization. Here are my available contexts - pick what you need: 'full' for everything, 'discovery' for quick overview, or dive into specific topics like case studies or ROI. All content is markdown-formatted."
+}

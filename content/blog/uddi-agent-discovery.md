@@ -83,7 +83,7 @@ If I were betting on what will work, based on the UDDI history:
 
 **Assume discovery will be search.** Until there's a compelling alternative, agents will discover capabilities through search indexes. Build for that reality, not for a hypothetical agent registry.
 
-**Trust will be point-to-point.** There won't be a universal agent trust layer. Each agent/endpoint pair will establish trust through API keys, OAuth, or some bilateral mechanism. Plan for integration-time trust establishment, not discovery-time trust verification.
+**Trust will be graph-based, not centralized.** There won't be a universal certificate authority for agents. But pure point-to-point trust (API keys, OAuth) doesn't scale either. The likely winner: trust graphs anchored to domains. A `trust.json` that declares "I trust these endpoints" and lets trust propagate through networks. Think PGP web-of-trust, but for agent endpoints. Some early work on this at [noosphere.tech](https://noosphere.tech).
 
 **Simple protocols win.** MCP is good because it's relatively simple. If a simpler alternative emerges, it'll probably win. Don't over-engineer.
 
@@ -97,7 +97,7 @@ What might actually work:
 
 **Capability fingerprinting.** Instead of formal descriptions, agents learn to recognize capabilities from behavior. "This endpoint responds to queries about weather" learned from interaction, not declared in metadata.
 
-**Trust networks.** Instead of a universal trust layer, webs of trust where agents inherit trust assessments from other agents they trust. More like PGP key signing than certificate authorities.
+**Trust graphs.** Domain-anchored trust declarations (`trust.json`) that let trust propagate through networks. If I trust Stripe, and Stripe's trust.json says they trust Plaid, my agent can infer a trust path. Webs of trust rather than certificate hierarchies.
 
 **Search-native discovery.** Instead of fighting search indexes, building on top of them. Structured data that search indexes understand, so agent discovery is just a specialized search query.
 

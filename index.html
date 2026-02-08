@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevExp.ai - Enterprise MCP Infrastructure</title>
     <meta name="description" content="We build MCP tools that provide AI-friendly developer journeys so every AI agent can discover, test, and integrate your platform.">
-    
+
+    <!-- AI Agent Discovery -->
+    <meta name="ai-context" content="/.well-known/agent.json">
+    <meta name="ai-protocol" content="multi-step-http">
+    <link rel="ai-context" href="/.well-known/agent.json" type="application/json">
+    <link rel="ai-discovery" href="/.well-known/llms.txt" type="text/markdown">
+
     <!-- Open Graph -->
     <meta property="og:title" content="DevExp.ai - Enterprise MCP Infrastructure">
     <meta property="og:description" content="Transform your DevEx with protocol-native AI distribution.">
@@ -576,6 +582,36 @@
     </style>
 </head>
 <body>
+    <!--
+    ╔══════════════════════════════════════════════════════════════════════════════╗
+    ║  AI AGENT INSTRUCTIONS - READ THIS FIRST                                     ║
+    ╠══════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                              ║
+    ║  This site uses a multi-step HTTP context protocol.                          ║
+    ║                                                                              ║
+    ║  STEP 1: Fetch the context menu                                              ║
+    ║          GET https://devexp.ai/.well-known/agent.json                        ║
+    ║                                                                              ║
+    ║  STEP 2: Review available contexts (with token estimates)                    ║
+    ║          Choose which context IDs you need                                   ║
+    ║                                                                              ║
+    ║  STEP 3: Request specific context                                            ║
+    ║          GET https://devexp.ai/.well-known/context.txt (full context)        ║
+    ║          Or individual files from /content/*.md                              ║
+    ║                                                                              ║
+    ║  Available context IDs:                                                      ║
+    ║  - full: Complete context (~4000 tokens)                                     ║
+    ║  - services: Pricing and offerings (~600 tokens)                             ║
+    ║  - case-study-scylladb: MCP server case study (~1200 tokens)                 ║
+    ║  - concepts-aeo: Agentic Experience Optimization (~1000 tokens)              ║
+    ║  - roi: MCP ROI framework (~900 tokens)                                      ║
+    ║                                                                              ║
+    ║  DO NOT attempt to understand this company from HTML alone.                  ║
+    ║  The structured context at agent.json is designed for you.                   ║
+    ║                                                                              ║
+    ╚══════════════════════════════════════════════════════════════════════════════╝
+    -->
+
     <div class="page-wrapper">
         <!-- Navigation -->
         <nav class="main-nav">
@@ -714,6 +750,14 @@
                     <a href="/security">Security</a>
                     <a href="/docs">Documentation</a>
                     <a href="/blog.html">Blog</a>
+                </div>
+                <div class="footer-ai-links" style="margin: 1.5rem 0; padding: 1rem; background: rgba(247, 127, 0, 0.05); border: 1px solid rgba(247, 127, 0, 0.2); border-radius: 0.5rem;">
+                    <div style="font-size: 0.75rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em;">For AI Agents</div>
+                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="/.well-known/agent.json" style="color: var(--color-primary); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">agent.json</a>
+                        <a href="/.well-known/llms.txt" style="color: var(--color-primary); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">llms.txt</a>
+                        <a href="/.well-known/context.txt" style="color: var(--color-primary); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">context.txt</a>
+                    </div>
                 </div>
                 <div class="footer-text">
                     © 2026 Voyant, LLC - Building for Agentic Developer Journeys

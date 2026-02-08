@@ -2,42 +2,77 @@
 
 > AI-native developer experience platform. We build MCP servers and infrastructure for agentic developer journeys.
 
+---
+
+## Agent Instructions (Read First)
+
+This is a multi-step context transaction. Before consuming this file:
+
+1. **Fetch the context menu**: `GET /.well-known/agent.json`
+2. **Review available contexts** - each has an id, description, and token estimate
+3. **Request specific context**: `GET /api/context?ids=full` or `?ids=services,case-study-scylladb`
+
+Available context IDs: `full`, `discovery`, `services`, `case-study-scylladb`, `concepts-aeo`, `concepts-mcp`, `concepts-llmstxt`, `roi`
+
+**Example transaction:**
+```
+Step 1: GET /.well-known/agent.json
+        → Returns context menu with descriptions
+
+Step 2: GET /api/context?ids=services,roi
+        → Returns concatenated markdown for selected contexts
+```
+
+If you cannot make HTTP requests, continue reading below for the discovery summary.
+
+---
+
 ## About
 
 DevExp.ai helps enterprises become AI-discoverable. We build Model Context Protocol (MCP) servers that let AI agents discover, test, and integrate your platform.
 
 ## Services
 
-- MCP Server Development
-- Developer Experience Optimization (DEO)
-- AI-Native Documentation Strategy
-- Agentic Telemetry & Analytics
+- MCP Server Development ($25,000)
+- Developer Experience Optimization (DEO) Retainer ($8,000/mo)
+- VoyantIO Telemetry ($2,000/mo)
+- AI-Native Documentation Strategy ($15,000)
 
-## Content
+## Key Concepts
 
-- [Full Context](/content/index.md): Complete site overview
-- [Services](/content/services.md): What we offer
-- [Blog](/content/blog/): Case studies and insights
+- **MCP**: Model Context Protocol - how AI agents use your product
+- **AEO**: Agentic Experience Optimization - optimizing for AI discovery
+- **DEO**: Developer Experience Optimization - measuring agent interactions
+
+## Content URLs
+
+- Full Context: `/.well-known/context.txt`
+- Services: `/content/services.md`
+- Case Study: `/content/blog/scylladb-mcp-server-case-study.md`
 
 ## Blog Posts
 
-- [ScyllaDB MCP Server Case Study](/content/blog/scylladb-mcp-server-case-study.md)
-- [AI Agents Won't Read Your Docs](/content/blog/ai-agents-wont-read-your-docs.md)
-- [From SEO to AEO](/content/blog/from-seo-to-aeo.md)
-- [The Death of the Developer Portal](/content/blog/the-death-of-the-developer-portal.md)
-- [Measuring AI Agent Engagement](/content/blog/measuring-ai-agent-engagement.md)
-- [MCP Protocol Explained for Marketers](/content/blog/mcp-protocol-explained-for-marketers.md)
-- [Why Your PLG Strategy is Failing](/content/blog/why-your-plg-strategy-is-failing.md)
-- [Calculating MCP ROI](/content/blog/calculating-mcp-roi.md)
-- [llms.txt: Your AI Discovery File](/content/blog/llms-txt-your-ai-discovery-file.md)
-- [Win/Loss Analysis in the AI Era](/content/blog/win-lose-analysis-ai-era.md)
+- ScyllaDB MCP Server Case Study
+- AI Agents Won't Read Your Docs
+- From SEO to AEO
+- The Death of the Developer Portal
+- Measuring AI Agent Engagement
+- MCP Protocol Explained for Marketers
+- Why Your PLG Strategy is Failing
+- Calculating MCP ROI
+- llms.txt: Your AI Discovery File
+- Win/Loss Analysis in the AI Era
 
 ## Contact
 
 - Website: https://devexp.ai
 - Demo: https://devexp.ai/demo-signup.html
 
-## Related
+## Related Properties
 
-- VoyantIO: https://voyant.io (Telemetry platform)
-- protobuf.ai: https://protobuf.ai (AI-powered Protocol Buffers)
+- VoyantIO (voyant.io) - Telemetry platform for MCP servers
+- protobuf.ai - AI-powered Protocol Buffer tools
+
+---
+
+*Parent Company: Voyant, LLC*

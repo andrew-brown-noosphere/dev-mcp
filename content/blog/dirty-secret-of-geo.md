@@ -14,8 +14,6 @@ The emergence of AI assistants with web access has spawned a new category of opt
 
 This paper examines that claim technically. We find that current AI agent architectures implement a *retrieval-mediated* access model where content discovery and ranking are delegated entirely to search indexes. Under this architecture, the optimization surface for AI visibility is identical to the optimization surface for search visibility.
 
-We formalize this finding as: `GEO(x) = f(SEO(x))`, where `f` is a deterministic function of search ranking outcomes.
-
 ## 2. Definitions
 
 **Definition 1: Retrieval-Mediated Agent**
@@ -160,21 +158,12 @@ HANDSHAKE_PROTOCOL:
 
 ## 5. The GEO → SEO Reduction
 
-Given the retrieval-mediated architecture, we can formally reduce GEO signals to SEO signals:
+Given the retrieval-mediated architecture, every GEO signal reduces to SEO signals:
 
-**Theorem 1: GEO Signal Dependency**
-For any GEO signal *G* measuring AI visibility of content *C*, there exists a function *f* such that *G = f(R, Q, T)*, where:
-- *R* = search rank of *C* for relevant queries
-- *Q* = content quality/relevance score
-- *T* = technical accessibility (crawlability, structure)
-
-All of *R*, *Q*, *T* are SEO signals.
-
-**Proof sketch:**
 1. AI visibility requires content retrieval (Section 3)
-2. Retrieval requires search index inclusion and rank ≤ *k* (Experiment 1)
-3. Search rank is determined by SEO signals (by definition of search ranking)
-4. Therefore, GEO signals are downstream of SEO signals ∎
+2. Retrieval requires search index inclusion and sufficient rank (Experiment 1)
+3. Search rank is determined by SEO signals
+4. Therefore, GEO signals are downstream of SEO signals
 
 ### 5.1 Signal Mapping
 
@@ -208,8 +197,6 @@ These would constitute genuine GEO techniques not reducible to SEO.
 ## 7. Conclusion
 
 Under current AI agent architectures, Generative Engine Optimization is a subset of Search Engine Optimization. The retrieval-mediated access model ensures that all AI visibility signals are downstream of search index ranking. GEO vendors provide useful measurement of how SEO performance manifests in AI outputs, but the optimization levers remain identical.
-
-The equation holds: `GEO(x) = f(SEO(x))`
 
 This will change when agents acquire direct navigation, discovery protocols, and independent trust verification. Until then, optimizing for AI means optimizing for search.
 

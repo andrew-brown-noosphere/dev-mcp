@@ -243,8 +243,4 @@ This will change when agents acquire direct navigation, discovery protocols, and
 
 ---
 
-**Reproducibility:** Experiment code and raw data at github.com/dev-exp-ai/geo-seo-equivalence
-
-**Correspondence:** research@devexp.ai
-
-**Version:** 1.0 (2026-01-27)
+*The experiments described here are reproducible with any AI assistant that has web access. Try them yourself.*

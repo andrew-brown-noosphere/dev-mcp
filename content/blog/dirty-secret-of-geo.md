@@ -186,6 +186,35 @@ Given the retrieval-mediated architecture, every GEO signal reduces to SEO signa
 | AI Sentiment | Indexed content sentiment | Content Strategy, Reputation |
 | Visibility Score | Aggregate search performance | Composite SEO |
 
+### 5.2 Post-Retrieval Considerations
+
+A fair objection: once content is retrieved, the LLM decides what to cite and how to present it. Two pages with identical search rank might receive different treatment. Does this create GEO-specific optimization surface?
+
+The synthesis layer does make decisions:
+
+- Whether to cite a source or use it as background
+- How to describe a brand or product
+- Whether to quote directly or paraphrase
+- Which sources to prioritize when multiple are retrieved
+
+These decisions favor content that is:
+
+- **Clear and direct.** States facts unambiguously rather than requiring inference.
+- **Quotable.** Contains self-contained statements that can be extracted.
+- **Structured.** Uses headings, lists, and formatting that aid extraction.
+- **Authoritative in tone.** Presents information confidently with specific details.
+
+However, these are not new optimization signals. They are content quality signals that also improve SEO performance:
+
+| Post-Retrieval Factor | SEO Equivalent |
+|-----------------------|----------------|
+| Clear, direct statements | Featured snippet optimization |
+| Quotable content | Linkable/shareable content |
+| Structured formatting | Technical SEO, accessibility |
+| Authoritative tone | E-E-A-T signals |
+
+The synthesis layer introduces no optimization target that doesn't already exist in SEO best practices. Content that LLMs prefer to cite is content that search engines prefer to rank and feature.
+
 ## 6. Conditions for GEO ≠ SEO
 
 GEO would constitute a distinct optimization discipline if agents acquired capabilities not mediated by search indexes. Required capabilities:

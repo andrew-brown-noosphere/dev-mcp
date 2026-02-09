@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Integrity for AI Agents: From SLSA to Agentic Trust - DevExp.ai</title>
+    <meta name="description" content="Supply chain security has been evolving for years—SLSA, in-toto, Sigstore, C2PA. But AI agents create a new urgency: they need to make trust decisions programmatically, at scale, for any digital artifact.">
+
+    <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-primary-hover: hsl(24, 90%, 45%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-surface-hover: rgba(255, 255, 255, 0.06);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-accent: rgba(247, 127, 0, 0.5);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+            --radius: 0.5rem;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.125rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(247, 127, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page-wrapper { position: relative; z-index: 10; min-height: 100vh; width: 100%; }
+
+        .main-nav {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .content-container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: 'Source Serif 4', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-links a { color: var(--color-text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--color-text); }
+
+        .post-header { padding: 80px 0 60px; text-align: center; }
+
+        .post-meta { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--color-text-subtle); }
+        .post-category { color: var(--color-primary); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+        h1 { font-size: 2.75rem; font-weight: 600; line-height: 1.15; margin: 0 0 1.5rem 0; font-family: 'Source Serif 4', serif; letter-spacing: -0.02em; color: var(--color-text); }
+        .lead { font-size: 1.25rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+        article { padding: 0 0 100px; }
+
+        h2 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin: 3rem 0 1.5rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+        h3 { font-size: 1.375rem; font-weight: 600; line-height: 1.4; margin: 2.5rem 0 1rem 0; color: var(--color-text); font-family: 'Source Serif 4', serif; }
+
+        p { margin-bottom: 1.5rem; color: var(--color-text-muted); }
+
+        ol, ul { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--color-text-muted); }
+        li { margin-bottom: 0.5rem; }
+        li strong { color: var(--color-text); }
+
+        a { color: var(--color-primary); }
+        a:hover { color: var(--color-primary-hover); }
+
+        blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid var(--color-primary);
+            background: var(--color-surface);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .highlight-box {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+        }
+
+        .warning-box strong {
+            color: #f87171;
+        }
+
+        .data-point {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        pre {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--color-text-muted);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: var(--color-surface);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            color: var(--color-text);
+            font-weight: 600;
+            background: var(--color-surface);
+        }
+
+        td {
+            color: var(--color-text-muted);
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: var(--color-text);
+            padding: 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-box h3 { color: var(--color-text); margin: 0 0 1rem 0; }
+        .cta-box p { color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
+
+        .button {
+            display: inline-block;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .button:hover { transform: translateY(-2px); color: var(--color-primary); }
+
+        .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
+        .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; }
+        .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
+        .footer-links a:hover { color: var(--color-text); }
+        .footer-text { color: var(--color-text-subtle); font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            .content-container { padding: 0 1.5rem; }
+            h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; font-size: 0.8rem; }
+            .data-point { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="nav-brand">DevExp.ai</a>
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/#demo">Get Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="post-header">
+            <div class="content-container">
+                <div class="post-meta">
+                    <span class="post-category">Security</span>
+                    <span>•</span>
+                    <time>February 9, 2026</time>
+                    <span>•</span>
+                    <span>18 min read</span>
+                </div>
+                <h1>Digital Integrity for AI Agents: From SLSA to Agentic Trust</h1>
+                <p class="lead">
+                    Supply chain security has been evolving for years—SLSA, in-toto, Sigstore, C2PA.
+                    But AI agents create a new urgency: they need to make trust decisions programmatically,
+                    at scale, for <em>any</em> digital artifact. Not just code.
+                </p>
+            </div>
+        </header>
+
+        <article>
+            <div class="content-container">
+
+                <h2>The Problem Isn't New. The Scale Is.</h2>
+
+                <p>
+                    Let's be clear: software supply chain security isn't a problem AI invented. The industry has been
+                    working on this for years. Google released <a href="https://slsa.dev/" target="_blank" rel="noopener">SLSA</a>
+                    (Supply-chain Levels for Software Artifacts) in 2021, based on their internal Binary Authorization
+                    for Borg system that had been running for eight years before that. The
+                    <a href="https://in-toto.io/" target="_blank" rel="noopener">in-toto</a> framework provides
+                    cryptographic attestations for every step of a build pipeline. <a href="https://sigstore.dev/" target="_blank" rel="noopener">Sigstore</a>
+                    brought keyless signing to open source. The <a href="https://c2pa.org/" target="_blank" rel="noopener">C2PA</a>
+                    (Coalition for Content Provenance and Authenticity) extended these concepts beyond code to media,
+                    documents, and any digital artifact.
+                </p>
+
+                <p>
+                    The frameworks exist. The standards are maturing. SLSA 1.0 shipped in April 2023. npm has SLSA
+                    provenance support. Container images can carry in-toto attestations. The infrastructure for
+                    verifiable software is real and deployed.
+                </p>
+
+                <p>
+                    So what's the problem?
+                </p>
+
+                <blockquote>
+                    "For humans, misinformation creates confusion. For AI agents, it creates broken workflows."
+                    <br><span style="font-style: normal; font-size: 0.9rem;">— <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">Noosphere Technologies</a></span>
+                </blockquote>
+
+                <p>
+                    AI agents don't have the luxury of human judgment. When a developer sees a suspicious package,
+                    they can pause, research, ask colleagues. An autonomous agent executing a build pipeline at
+                    3am has no such option. It either has a programmatic way to verify trust, or it's flying blind.
+                </p>
+
+                <h2>Beyond Code: The AI Age of Synthetic Everything</h2>
+
+                <p>
+                    Here's where the conversation gets bigger than npm packages and container images.
+                </p>
+
+                <p>
+                    In the AI age, <em>any digital artifact</em> can be faked. Deepfake videos. AI-generated documents.
+                    Synthetic audio. Fabricated research papers. Cloned websites. The line between authentic and
+                    synthetic content is dissolving. And AI agents are increasingly consuming, processing, and
+                    acting on this content autonomously.
+                </p>
+
+                <div class="highlight-box">
+                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: 1rem;">What AI Agents Consume (And Must Verify)</p>
+                    <p><strong style="color: var(--color-text);">Code & Packages:</strong> npm, PyPI, container images, binaries</p>
+                    <p><strong style="color: var(--color-text);">Documents:</strong> PDFs, contracts, research papers, regulatory filings</p>
+                    <p><strong style="color: var(--color-text);">Media:</strong> Images, videos, audio used in content pipelines</p>
+                    <p><strong style="color: var(--color-text);">Data:</strong> Training datasets, API responses, third-party feeds</p>
+                    <p><strong style="color: var(--color-text);">Instructions:</strong> Prompts, tool definitions, MCP server manifests</p>
+                </div>
+
+                <p>
+                    The Noosphere team has been writing about this convergence—what they call moving
+                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">"from content authenticity to context authenticity."</a>
+                    It's not enough to verify that an image is authentic. You need to verify that the <em>context</em>
+                    in which an agent encounters it is trustworthy. The source. The chain of custody. The claims
+                    being made about it.
+                </p>
+
+                <p>
+                    This is why C2PA matters for more than just combating deepfakes. Content credentials—cryptographically
+                    signed manifests embedded in media files—give AI agents a way to verify provenance for any
+                    digital artifact, not just executable code.
+                </p>
+
+                <h2>The Standards Landscape: What Already Exists</h2>
+
+                <p>
+                    Before we talk about what we built, let's acknowledge the serious work that's already been done.
+                    These aren't competing standards—they're complementary layers of a complete digital integrity stack:
+                </p>
+
+                <h3>SLSA (Supply-chain Levels for Software Artifacts)</h3>
+                <p>
+                    Originally developed by Google and now governed by OpenSSF, SLSA provides a framework for
+                    hardening supply chains with four levels of increasing assurance. Level 3 requires isolated,
+                    ephemeral build environments with cryptographic provenance. It's the foundation for
+                    trustworthy software builds.
+                </p>
+
+                <h3>in-toto</h3>
+                <p>
+                    A framework for cryptographically verifying that each step in a software supply chain was
+                    performed as expected. Every step produces a signed attestation. Consumers can verify the
+                    entire chain before trusting the artifact.
+                </p>
+
+                <h3>Sigstore</h3>
+                <p>
+                    Keyless signing for open source. Instead of managing long-lived signing keys, developers
+                    sign with their verified identity (via OIDC) and the signature is recorded in Rekor,
+                    a public transparency log. Perfect for open source projects that can't maintain PKI infrastructure.
+                </p>
+
+                <h3>C2PA (Content Credentials)</h3>
+                <p>
+                    A standard for embedding cryptographically signed provenance information in media files.
+                    Originally focused on combating misinformation in images and video, C2PA is increasingly
+                    relevant for any digital artifact—including software, documents, and AI-generated content.
+                </p>
+
+                <h3>SPIFFE/SPIRE</h3>
+                <p>
+                    Secure Production Identity Framework for Everyone. Provides cryptographic identity to workloads
+                    in distributed systems. When a build system or agent needs to prove who it is, SPIFFE provides
+                    the identity layer.
+                </p>
+
+                <p>
+                    The question isn't whether these standards work—they do. The question is: <strong>how do AI agents
+                    access them?</strong>
+                </p>
+
+                <h2>The Missing Layer: Agent-Accessible Trust Infrastructure</h2>
+
+                <p>
+                    All of these standards were designed for human-driven workflows. A developer runs
+                    <code>cosign verify</code>. A CI system checks SLSA provenance. A content moderator
+                    examines C2PA credentials. The verification happens, but it requires human orchestration.
+                </p>
+
+                <p>
+                    AI agents need something different: <strong>trust verification as a tool they can invoke
+                    autonomously.</strong>
+                </p>
+
+                <p>
+                    This is where MCP (Model Context Protocol) becomes relevant. MCP lets AI agents invoke
+                    external tools as part of their reasoning process. An agent can call a signing tool,
+                    a verification tool, or a trust chain lookup just as easily as it calls a calculator
+                    or a web search.
+                </p>
+
+                <p>
+                    We built <a href="https://github.com/noosphere-technologies/code-signing-mcp" target="_blank" rel="noopener">code-signing-mcp</a>
+                    to bridge this gap—bringing SLSA, in-toto, C2PA, and Sigstore capabilities to AI agents
+                    through a unified MCP interface.
+                </p>
+
+                <h2>Multi-Provider Architecture</h2>
+
+                <p>
+                    Different organizations have different signing needs. An open source project uses Sigstore.
+                    An enterprise uses HSM-backed keys with C2PA attestations. A development team uses local
+                    signing for testing. We built a pluggable provider system that lets agents (and developers)
+                    choose the right tool:
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Provider</th>
+                            <th>Standards</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Noosphere</strong></td>
+                            <td>C2PA, in-toto, DID, VC</td>
+                            <td>Enterprise with full attestation chain</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sigstore</strong></td>
+                            <td>SLSA, Rekor</td>
+                            <td>Open source keyless signing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SignPath</strong></td>
+                            <td>Authenticode</td>
+                            <td>Windows enterprise signing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Local</strong></td>
+                            <td>Ed25519/RSA</td>
+                            <td>Development, air-gapped environments</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    The agent doesn't need to understand the differences. It calls <code>sign_binary()</code>
+                    or <code>verify_signature()</code> and the provider handles the complexity. But when
+                    capabilities matter—"I need C2PA manifests for this media file"—the agent can query
+                    providers and select appropriately.
+                </p>
+
+                <h2>The AI-Native Feature: Decentralized Trust Graphs</h2>
+
+                <p>
+                    Here's where we go beyond existing tooling.
+                </p>
+
+                <p>
+                    Noosphere's thesis—which we agree with—is that
+                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">"without a decentralized trust graph, content authenticity is a toy."</a>
+                    Centralized verification doesn't scale when everyone can run their own AI.
+                    You need a way to express "I trust this entity" that other parties can discover and verify.
+                </p>
+
+                <p>
+                    We implemented <code>trust.txt</code>—a simple manifest (stored at <code>/.well-known/trust.txt</code>)
+                    that declares who you trust:
+                </p>
+
+                <pre><code># trust.txt for mycompany.com
+trust: did:web:verified-vendor.com
+trust: did:web:approved-oss-maintainer.com
+trust: did:web:security-audited-tools.com</code></pre>
+
+                <p>
+                    If you've worked in advertising, this will look familiar. It's <code>ads.txt</code> for
+                    software supply chains. A simple, decentralized, machine-readable way to declare trust
+                    relationships that AI agents can crawl and index.
+                </p>
+
+                <p>
+                    The <a href="https://github.com/noosphere-technologies/trust-graph-builder" target="_blank" rel="noopener">trust-graph-builder</a>
+                    crawls these files recursively, building a graph of trust relationships. When an agent
+                    calls <code>verify_trust_chain</code>, it walks this graph to find a path from your trust
+                    root to the artifact's signer.
+                </p>
+
+                <div class="highlight-box">
+                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: 1rem;">Example: Agent Verifying Trust Before Installing</p>
+                    <pre style="margin: 0;"><code>User: "Install the analytics library from that vendor"
+
+Agent: verify_trust_chain(
+    target="npm:vendor-analytics",
+    trust_root="did:web:mycompany.com"
+)
+
+Result: {
+    "trusted": true,
+    "signer": "did:web:verified-vendor.com",
+    "trust_path": [
+        "did:web:mycompany.com",
+        "did:web:verified-vendor.com"
+    ],
+    "attestations": {
+        "slsa_level": 3,
+        "c2pa_manifest": true,
+        "in_toto_link": "https://..."
+    }
+}
+
+Agent: "Verified. The package is signed by verified-vendor.com,
+       which is in your trust graph. SLSA Level 3 provenance confirmed.
+       Proceeding with installation."</code></pre>
+                </div>
+
+                <h2>Making Trust Deterministic</h2>
+
+                <p>
+                    The Noosphere team wrote about the convergence of Cedar Policies, in-toto, SLSA, SPIFFE,
+                    and C2PA under the title
+                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">"Making Trust Deterministic."</a>
+                    The key insight: with verifiable metadata standards and policy engines, trust decisions
+                    can be automated.
+                </p>
+
+                <p>
+                    An AI agent shouldn't have to "decide" whether to trust something based on vibes or heuristics.
+                    Given a clear policy ("trust artifacts signed by entities in my trust graph with SLSA Level 2+"),
+                    the agent can make a deterministic decision based on cryptographic evidence.
+                </p>
+
+                <p>
+                    This is the future we're building toward:
+                </p>
+
+                <ul>
+                    <li><strong>Policies are explicit:</strong> Organizations define trust policies in code</li>
+                    <li><strong>Evidence is cryptographic:</strong> SLSA provenance, in-toto attestations, C2PA manifests</li>
+                    <li><strong>Decisions are deterministic:</strong> Given policy + evidence, the answer is yes or no</li>
+                    <li><strong>Trust is decentralized:</strong> No central authority—trust graphs emerge from declarations</li>
+                </ul>
+
+                <h2>Three Trust Models</h2>
+
+                <p>
+                    Noosphere's blog explores three approaches to trust architecture—
+                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">"Hierarchy, Democracy, Anarchy? Choose Your Trust Model."</a>
+                    Our MCP server supports all three:
+                </p>
+
+                <div class="highlight-box">
+                    <p><strong style="color: var(--color-text);">Hierarchical (PKI-style):</strong>
+                        Trust flows from a root CA. The enterprise model. Works well when you have clear authority.</p>
+                    <p><strong style="color: var(--color-text);">Democratic (Web of Trust):</strong>
+                        Trust emerges from community consensus. The open source model. Works well for decentralized ecosystems.</p>
+                    <p><strong style="color: var(--color-text);">Anarchic (PGP-style):</strong>
+                        Every entity decides who to trust individually. Maximum sovereignty, maximum complexity.</p>
+                </div>
+
+                <p>
+                    Most organizations will use a hybrid. Internal artifacts use hierarchical trust via corporate PKI.
+                    Open source dependencies use the Sigstore transparency log (democratic). Specific vendor
+                    relationships are explicit in <code>trust.txt</code>. The MCP server doesn't impose a model—it
+                    provides the primitives to implement whatever trust architecture fits your needs.
+                </p>
+
+                <h2>Why MCP Matters for This</h2>
+
+                <p>
+                    We could have built this as a CLI tool, a REST API, or a library. We built it as an MCP
+                    server because AI agents are the primary consumer.
+                </p>
+
+                <p>
+                    MCP (Model Context Protocol) lets agents invoke tools as part of their reasoning process.
+                    When Claude is about to install a package, it can call <code>verify_trust_chain()</code>
+                    first—seamlessly, as part of its workflow. The verification doesn't require human
+                    intervention or a separate security review process.
+                </p>
+
+                <p>
+                    This is the shift from "security as a gate" to "security as a tool." The agent doesn't
+                    wait for approval. It has the capability to verify trust itself, and it uses that
+                    capability autonomously.
+                </p>
+
+                <h2>Getting Started</h2>
+
+                <h3>Installation</h3>
+                <pre><code>pip install code-signing-mcp</code></pre>
+
+                <h3>Connect to Claude Desktop</h3>
+                <pre><code>{
+  "mcpServers": {
+    "code-signing": {
+      "command": "code-signing-mcp",
+      "args": ["--transport", "stdio"]
+    }
+  }
+}</code></pre>
+
+                <h3>Available Tools</h3>
+                <ul>
+                    <li><code>sign_binary</code> — Sign any file with selected provider</li>
+                    <li><code>verify_signature</code> — Verify signatures and attestations</li>
+                    <li><code>verify_trust_chain</code> — Check if signer is in your trust graph</li>
+                    <li><code>compare_providers</code> — Compare provider capabilities</li>
+                    <li><code>supply_chain_attestation</code> — Generate SLSA/in-toto attestations</li>
+                </ul>
+
+                <h2>The Bigger Picture</h2>
+
+                <p>
+                    This MCP server is one piece of a larger puzzle. The industry has been building toward
+                    verifiable digital artifacts for years. SLSA, in-toto, Sigstore, C2PA—these aren't
+                    competing standards, they're complementary layers.
+                </p>
+
+                <p>
+                    What AI agents need is access to these capabilities through interfaces they can use
+                    autonomously. That's what we've built. Not a replacement for existing standards, but
+                    a bridge that makes them accessible to the agentic era.
+                </p>
+
+                <p>
+                    For more on the philosophical and technical foundations of agentic trust, digital integrity,
+                    and decentralized verification, we recommend the
+                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">Noosphere blog</a>.
+                    They're thinking deeply about these problems.
+                </p>
+
+                <div class="cta-box">
+                    <h3>Ready to Implement Agentic Trust?</h3>
+                    <p>
+                        We help organizations implement digital integrity infrastructure for AI-native workflows.
+                    </p>
+                    <a href="/demo-signup.html" class="button" data-track="CTA: Code Signing MCP Demo Request">Schedule a Demo</a>
+                </div>
+
+                <h2>Resources</h2>
+
+                <ul>
+                    <li><a href="https://github.com/noosphere-technologies/code-signing-mcp" target="_blank" rel="noopener">code-signing-mcp on GitHub</a></li>
+                    <li><a href="https://github.com/noosphere-technologies/trust-graph-builder" target="_blank" rel="noopener">trust-graph-builder on GitHub</a></li>
+                    <li><a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">Noosphere Blog — Digital Integrity & Agentic Trust</a></li>
+                    <li><a href="https://slsa.dev/" target="_blank" rel="noopener">SLSA Framework</a></li>
+                    <li><a href="https://in-toto.io/" target="_blank" rel="noopener">in-toto Framework</a></li>
+                    <li><a href="https://sigstore.dev/" target="_blank" rel="noopener">Sigstore</a></li>
+                    <li><a href="https://c2pa.org/" target="_blank" rel="noopener">C2PA (Content Credentials)</a></li>
+                    <li><a href="scylladb-mcp-server-case-study.html">ScyllaDB MCP Server Case Study</a></li>
+                </ul>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/security">Security</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-text">
+                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                </div>
+            </div>
+        </footer>
+    </div>
+<script src="/tracking.js" data-org="devexp"></script>
+</body>
+</html>

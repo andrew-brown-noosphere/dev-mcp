@@ -456,40 +456,115 @@
                     providers and select appropriately.
                 </p>
 
-                <h2>The AI-Native Feature: Decentralized Trust Graphs</h2>
+                <h2>Decentralized Trust Overlay: Extending C2PA for Resilience</h2>
 
                 <p>
-                    Here's where we go beyond existing tooling.
+                    C2PA mandates that verifiers use an official trust list—but production systems need more.
+                    What happens when the official list is temporarily unavailable? How do consortium partners
+                    add context about issuers? How do you maintain policy transparency across organizations?
                 </p>
 
                 <p>
-                    Noosphere's thesis—which we agree with—is that
-                    <a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">"without a decentralized trust graph, content authenticity is a toy."</a>
-                    Centralized verification doesn't scale when everyone can run their own AI.
-                    You need a way to express "I trust this entity" that other parties can discover and verify.
+                    We developed the <strong>Decentralized Trust Overlay (DTO)</strong>—an extension that layers
+                    resilience, transparency, and multi-party annotations on top of C2PA's official trust infrastructure
+                    without ever overriding official revocations.
+                </p>
+
+                <h3>Why DTO?</h3>
+
+                <div class="highlight-box">
+                    <p><strong style="color: var(--color-text);">Single-source reliance:</strong>
+                        A CDN hiccup or revocation push shouldn't stall verification pipelines. DTO provides redundant distribution.</p>
+                    <p><strong style="color: var(--color-text);">Policy transparency:</strong>
+                        Many ecosystems want to see not just who issued a trust entry, but which policies, challenges, and credentials were involved.</p>
+                    <p><strong style="color: var(--color-text);">Multi-party annotations:</strong>
+                        Partners often have additional context ("this issuer can only sign media," "this key is valid for 90 days"). DTO provides a structured way to publish those annotations.</p>
+                    <p><strong style="color: var(--color-text);">Verified distribution:</strong>
+                        By mirroring the official list into decentralized transports (IPFS, consortium APIs), DTO lets verifiers bootstrap trust from multiple locations while tying every entry back to the canonical C2PA data.</p>
+                </div>
+
+                <h3>How DTO Works</h3>
+
+                <p>
+                    The key constraint: <strong>DTO must never override official C2PA controls.</strong> No DTO endorsement
+                    may override an official revocation or add an issuer not present in the official bundle. DTO is
+                    a distribution and annotation layer, not a replacement.
+                </p>
+
+                <ol>
+                    <li><strong>Official ingestion:</strong> A fetcher downloads the C2PA trust list, verifies signatures against the published root, and stores the bundle under <code>data/trust-list/official/</code></li>
+                    <li><strong>Overlay generation:</strong> For each issuer in the official bundle, DTO writes an endorsement object with the fingerprint, issuer ID, timestamp, and attestor signature</li>
+                    <li><strong>Distribution:</strong> DTO data is published via REST API and optionally IPFS for durable, decentralized access</li>
+                    <li><strong>Verification fallback:</strong> If the official list is temporarily unavailable, verifiers can consult DTO—but results are flagged as <code>"trustSource": "dto-fallback"</code> so clients know</li>
+                </ol>
+
+                <h3>The Triad of Trust: did.json, agent.json, trust.json</h3>
+
+                <p>
+                    DTO fits into a broader architecture we call the <strong>Triad of Trust</strong>—three
+                    machine-readable files that together define an agent's identity, capabilities, and trust model:
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>did.json</code></td>
+                            <td>Identity & cryptographic keys (W3C DID Document)</td>
+                        </tr>
+                        <tr>
+                            <td><code>agent.json</code></td>
+                            <td>Role, capabilities, API endpoints, tools</td>
+                        </tr>
+                        <tr>
+                            <td><code>trust.json</code></td>
+                            <td>Trust anchors, verification policy, delegation rules</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    The <code>trust.json</code> file is where organizations declare their trust model—what root
+                    identities they recognize, what credentials they accept, and how they handle delegation:
+                </p>
+
+                <pre><code>{
+  "trust_anchors": [
+    "did:web:noosphere.tech",
+    "https://trustregistry.org/roots/edu"
+  ],
+  "verification_policy": {
+    "require_signed_attestations": true,
+    "allowed_issuers": ["did:web:noosphere.tech"],
+    "min_confidence_score": 0.8
+  },
+  "delegation": {
+    "enabled": true,
+    "accepted_roles": ["reviewer", "approver"],
+    "max_delegation_depth": 2
+  },
+  "trustList": {
+    "official": "https://example.com/trust/official/latest.json",
+    "dto": "https://example.com/trust/dto/latest.json",
+    "mediatorApi": "https://mediator.example.com/api/overlay"
+  }
+}</code></pre>
+
+                <p>
+                    When an AI agent encounters another agent or service, it fetches the <code>trust.json</code>
+                    to answer: "Can I delegate to this agent?" "Should I accept credentials issued by this entity?"
+                    "What's their trust model?"
                 </p>
 
                 <p>
-                    We implemented <code>trust.txt</code>—a simple manifest (stored at <code>/.well-known/trust.txt</code>)
-                    that declares who you trust:
-                </p>
-
-                <pre><code># trust.txt for mycompany.com
-trust: did:web:verified-vendor.com
-trust: did:web:approved-oss-maintainer.com
-trust: did:web:security-audited-tools.com</code></pre>
-
-                <p>
-                    If you've worked in advertising, this will look familiar. It's <code>ads.txt</code> for
-                    software supply chains. A simple, decentralized, machine-readable way to declare trust
-                    relationships that AI agents can crawl and index.
-                </p>
-
-                <p>
-                    The <a href="https://github.com/noosphere-technologies/trust-graph-builder" target="_blank" rel="noopener">trust-graph-builder</a>
-                    crawls these files recursively, building a graph of trust relationships. When an agent
-                    calls <code>verify_trust_chain</code>, it walks this graph to find a path from your trust
-                    root to the artifact's signer.
+                    This is the infrastructure that enables the <code>verify_trust_chain</code> tool in our MCP server.
+                    The trust graph is built from these declarations—crawled, indexed, and queryable by agents
+                    making real-time trust decisions.
                 </p>
 
                 <div class="highlight-box">
@@ -648,12 +723,13 @@ Agent: "Verified. The package is signed by verified-vendor.com,
 
                 <ul>
                     <li><a href="https://github.com/noosphere-technologies/code-signing-mcp" target="_blank" rel="noopener">code-signing-mcp on GitHub</a></li>
-                    <li><a href="https://github.com/noosphere-technologies/trust-graph-builder" target="_blank" rel="noopener">trust-graph-builder on GitHub</a></li>
                     <li><a href="https://www.noosphere.tech/blog" target="_blank" rel="noopener">Noosphere Blog — Digital Integrity & Agentic Trust</a></li>
+                    <li><a href="https://www.noosphere.tech" target="_blank" rel="noopener">Noosphere Digital Integrity Platform</a></li>
                     <li><a href="https://slsa.dev/" target="_blank" rel="noopener">SLSA Framework</a></li>
                     <li><a href="https://in-toto.io/" target="_blank" rel="noopener">in-toto Framework</a></li>
                     <li><a href="https://sigstore.dev/" target="_blank" rel="noopener">Sigstore</a></li>
                     <li><a href="https://c2pa.org/" target="_blank" rel="noopener">C2PA (Content Credentials)</a></li>
+                    <li><a href="https://journallist.net" target="_blank" rel="noopener">JournalList (trust.txt origins)</a></li>
                     <li><a href="scylladb-mcp-server-case-study.html">ScyllaDB MCP Server Case Study</a></li>
                 </ul>
             </div>

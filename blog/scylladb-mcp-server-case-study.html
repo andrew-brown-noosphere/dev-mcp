@@ -226,7 +226,7 @@
                     <span>•</span>
                     <time>February 6, 2026</time>
                     <span>•</span>
-                    <span>20 min read</span>
+                    <span>12 min read</span>
                 </div>
                 <h1>ScyllaDB MCP Server: What AI-Native Developer Distribution Actually Looks Like</h1>
                 <p class="lead">
@@ -246,22 +246,23 @@
                 </div>
 
                 <p>
-                    Enterprise infrastructure companies—the ones with
-                    sales-led motions, complex pricing, and products that require real expertise to evaluate—are
-                    watching developer-first startups eat their lunch. But you can't just bolt on a "free tier"
-                    and call it PLG. The motion has to feel native.
+                    ScyllaDB is one of those products that's genuinely better on the technical merits—a
+                    high-performance NoSQL database that consistently outperforms Cassandra and DynamoDB
+                    in real-world benchmarks. But technical superiority doesn't guarantee developer discovery,
+                    especially when AI agents are increasingly mediating how developers find and evaluate tools.
                 </p>
 
                 <p>
-                    We've spent months writing about the <a href="the-death-of-the-developer-portal.html">death of developer portals</a>,
-                    the rise of <a href="from-seo-to-aeo.html">AEO over SEO</a>, and why
+                    We've been exploring the rise of <a href="from-seo-to-aeo.html">AEO over SEO</a> and why
                     <a href="ai-agents-wont-read-your-docs.html">AI agents won't read your docs</a>.
                     But theory only goes so far. We needed to build something real.
+                </p>
 
                 <p>
-                    So we built an MCP server for ScyllaDB—a high-performance NoSQL database that competes with
-                    Cassandra and DynamoDB. Not because ScyllaDB asked us to (they didn't), but because it
-                    represents exactly the kind of infrastructure tool that lives or dies by developer adoption.
+                    So we built an MCP server for ScyllaDB. Not because they asked us to (they didn't), but because
+                    it's exactly the kind of product that deserves better AI-native distribution—technically
+                    excellent, with a strong developer community, but potentially invisible to agents that
+                    can't programmatically access it.
                 </p>
 
                 <h2>Why ScyllaDB?</h2>
@@ -384,71 +385,28 @@
                     take a team days or weeks to set up manually.
                 </p>
 
-                <h2>The Evolution of the Developer Journey</h2>
+                <h2>The Compression of Time-to-Value</h2>
 
                 <p>
-                    To understand why this shift matters, we need to look at how developers have discovered
-                    and adopted technology over the past three decades. Each era had its own discovery mechanisms,
-                    gatekeepers, and adoption patterns.
-                </p>
-
-                <h3>Era 1: The Documentation Era (1995-2010)</h3>
-                <p>
-                    In the early days of the commercial internet, developer tool adoption followed a predictable path:
-                    vendor documentation, technical books, and conference presentations. O'Reilly books were
-                    canonical. JavaDoc was revolutionary. Developers read manuals cover-to-cover.
-                </p>
-                <p>
-                    <strong>Discovery channel:</strong> Published documentation, technical books, conferences<br>
-                    <strong>Gatekeeper:</strong> Technical publishers and vendor marketing<br>
-                    <strong>Time to adoption:</strong> Weeks to months
-                </p>
-
-                <h3>Era 2: The Search Era (2005-2018)</h3>
-                <p>
-                    Google fundamentally changed how developers found solutions. Stack Overflow became the
-                    de facto knowledge base. Blog posts replaced books. SEO became a critical developer marketing
-                    function. The "getting started" page became the most important piece of documentation.
-                </p>
-                <p>
-                    <strong>Discovery channel:</strong> Google search, Stack Overflow, technical blogs<br>
-                    <strong>Gatekeeper:</strong> Search algorithms and community upvotes<br>
-                    <strong>Time to adoption:</strong> Days to weeks
-                </p>
-
-                <h3>Era 3: The Social Era (2015-2024)</h3>
-                <p>
-                    GitHub stars, Twitter (X) threads, and Discord communities became adoption signals.
-                    Developers followed other developers. "What's trending" mattered as much as "what's documented."
-                    Developer advocates became influencers. PLG strategies optimized for viral loops.
-                </p>
-                <p>
-                    <strong>Discovery channel:</strong> GitHub, Twitter/X, Discord, YouTube<br>
-                    <strong>Gatekeeper:</strong> Community momentum and social proof<br>
-                    <strong>Time to adoption:</strong> Hours to days
-                </p>
-
-                <h3>Era 4: The Agentic Era (2024-Present)</h3>
-                <p>
-                    We're now entering an era where AI agents mediate the entire discovery and evaluation process.
-                    Developers describe problems; agents propose and implement solutions. The "getting started"
-                    page becomes less effective if agents can't access your product programmatically.
-                </p>
-                <p>
-                    <strong>Discovery channel:</strong> AI assistants (Claude, ChatGPT, Cursor, Copilot)<br>
-                    <strong>Gatekeeper:</strong> MCP accessibility and training data presence<br>
-                    <strong>Time to adoption:</strong> Minutes
+                    Developer discovery has evolved through distinct eras—from documentation and books (weeks to adopt),
+                    to Google and Stack Overflow (days), to GitHub and social proof (hours). We're now in the
+                    agentic era, where AI assistants mediate the entire process in minutes.
                 </p>
 
                 <div class="highlight-box">
-                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: 1rem;">The Compression of Time-to-Value</p>
                     <p><strong style="color: var(--color-text);">1995:</strong> Read the book → 4-6 weeks to production</p>
                     <p><strong style="color: var(--color-text);">2010:</strong> Google it → 1-2 weeks to production</p>
                     <p><strong style="color: var(--color-text);">2020:</strong> Copy from Stack Overflow → 1-3 days to production</p>
                     <p><strong style="color: var(--color-text);">2026:</strong> Ask the agent → minutes to working prototype</p>
                 </div>
 
-                <h2>The Classic Developer Journey (And Why It's Breaking)</h2>
+                <p>
+                    The gatekeeper has shifted from publishers to search algorithms to community momentum—and now
+                    MCP accessibility is becoming an important complement. Products that are easy for agents to
+                    access have an advantage in this growing discovery channel.
+                </p>
+
+                <h2>The Classic Developer Journey (And How It's Evolving)</h2>
 
                 <p>
                     Before we can understand the agentic transformation, we need to acknowledge the foundational work
@@ -499,21 +457,15 @@
                 </p>
 
                 <p>
-                    Here's the problem: <strong>AI agents don't navigate touchpoints</strong>. They don't read landing pages,
-                    browse documentation sites, or ask questions on Stack Overflow. They execute tools and return results.
+                    Here's the shift: <strong>AI agents interact with products differently than humans</strong>. They don't
+                    browse documentation sites or ask questions on Stack Overflow. They execute tools and return results.
                 </p>
 
                 <p>
-                    In the agentic era, the Discover, Evaluate, and Learn stages collapse into a single agent interaction.
-                    The carefully orchestrated journey—your SEO, your docs landing page, your getting started guide,
-                    your code samples—gets bypassed entirely.
+                    In the agentic era, the Discover, Evaluate, and Learn stages can collapse into a single agent interaction.
+                    This doesn't mean traditional developer experience stops mattering—it means MCP servers and executable
+                    interfaces become an important complement to your existing docs and tutorials.
                 </p>
-
-                <blockquote>
-                    "We spent 18 months perfecting our developer journey based on Lewko's framework. Beautiful docs,
-                    interactive tutorials, great community. Then we realized 70% of our new users were coming through
-                    AI assistants that never saw any of it." — VP Developer Experience, Series C Infrastructure Startup
-                </blockquote>
 
                 <h2>The Agentic Technology Adoption Lifecycle</h2>
 
@@ -528,98 +480,27 @@
                     In the agentic era, we need a new model—one that accounts for AI agents as the primary
                     discovery and evaluation mechanism.
 
-                <h3>Stage 1: Agent Awareness</h3>
                 <p>
-                    Before a human developer ever considers your product, an AI agent must be aware it exists.
-                    This happens through:
-                </p>
-                <ul>
-                    <li><strong>Training data presence:</strong> Is your product mentioned in the corpus the model was trained on?</li>
-                    <li><strong>MCP server availability:</strong> Can the agent actually connect to and use your product?</li>
-                    <li><strong>llms.txt discoverability:</strong> Have you provided structured context for agent consumption?</li>
-                    <li><strong>context.txt for real-time context:</strong> Beyond static llms.txt, <a href="https://voyant.io" target="_blank" rel="noopener">VoyantIO's context.txt</a> tells agents <em>how</em> to approach your content—context modulation rules, semantic guidelines for understanding your product accurately, terminology constraints, and freshness signals that ensure agents work with current information rather than stale training data</li>
-                </ul>
-                <p>
-                    If you fail at Stage 1, you don't exist in the agentic ecosystem. No amount of traditional
-                    marketing will help.
+                    The key stages: <strong>Agent Awareness</strong> (can agents find you via MCP, llms.txt, or training data?),
+                    <strong>Agent Evaluation</strong> (can they actually run benchmarks and test your product?),
+                    <strong>Recommendation</strong> (surfacing options with working code), and
+                    <strong>Human Validation</strong> (developers verify agent claims with real data).
                 </p>
 
-                <h3>Stage 2: Agent Evaluation</h3>
                 <p>
-                    Once aware, agents evaluate products by actually using them—not by reading about them.
-                    This is where MCP servers become critical. An agent evaluating databases will:
+                    The critical insight: <strong>developers still make the final decision</strong>. MCP servers
+                    give them the ability to verify what the agent is telling them—running the same queries,
+                    seeing the same benchmarks, and validating recommendations with real data. The agent accelerates;
+                    the human validates.
                 </p>
-                <ul>
-                    <li>Create test schemas matching the developer's use case</li>
-                    <li>Insert representative data</li>
-                    <li>Run performance benchmarks</li>
-                    <li>Compare results across alternatives</li>
-                </ul>
-                <p>
-                    Products that are easy for agents to evaluate have a significant advantage. Good documentation
-                    still matters, but executable interfaces increasingly complement traditional docs.
-                </p>
-
-                <h3>Stage 3: Agent Recommendation</h3>
-                <p>
-                    Based on evaluation, the agent surfaces a recommendation—often with working code.
-                    But here's the key insight: <strong>developers still make the final decision</strong>.
-                    The agent's role is to accelerate discovery and provide evidence, not to dictate choices.
-                </p>
-                <p>
-                    This is where MCP servers become especially valuable: they give developers the ability
-                    to <em>verify</em> what the agent is telling them. Instead of trusting a recommendation
-                    blindly, developers can run the same queries, see the same benchmarks, and validate
-                    the agent's reasoning with real data.
-                </p>
-
-                <h3>Stage 4: Human Validation</h3>
-                <p>
-                    The human developer remains central to the process—but their role shifts from
-                    "discovering options from scratch" to "validating and refining agent-surfaced recommendations."
-                    This is actually a more powerful position: developers can focus on judgment and context
-                    rather than the tedious work of initial research.
-                </p>
-                <p>
-                    MCP servers are crucial here because they enable this validation. When an agent says
-                    "ScyllaDB will give you better latency for this workload," the developer can use the
-                    same MCP tools to run their own tests and confirm (or challenge) that recommendation.
-                    The agent accelerates; the human validates.
-                </p>
-
-                <h3>Stage 5: Agentic Scaling</h3>
-                <p>
-                    Once adopted, the same agents that helped with discovery help with scaling: optimizing
-                    queries, suggesting schema improvements, debugging production issues. The agent becomes
-                    a continuous interface to your product, not just a one-time discovery mechanism.
-                </p>
-                <p>
-                    Products that support deep agent integration see compounding adoption. Products that
-                    only support initial discovery lose users to competitors with better ongoing agent support.
-                </p>
-
-                <h3>Mapping the Classic Journey to the Agentic Model</h3>
 
                 <div class="highlight-box">
-                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: 1rem;">How Lewko's Stages Transform in the Agentic Era</p>
-                    <p><strong style="color: var(--color-text);">Discover → Agent Awareness:</strong> Instead of SEO and landing pages, you need MCP servers and llms.txt. The agent must find you in its tool registry, not Google.</p>
-                    <p><strong style="color: var(--color-text);">Evaluate → Agent Evaluation:</strong> Agents can run actual benchmarks alongside reading docs. Executable capabilities complement traditional documentation.</p>
-                    <p><strong style="color: var(--color-text);">Learn → Agent Recommendation:</strong> The learning phase accelerates dramatically. Agents can generate working code, but developers still need to understand and validate it.</p>
-                    <p><strong style="color: var(--color-text);">Build → Human Validation:</strong> Developers focus on validating agent recommendations rather than building from scratch. MCP tools let them verify claims with real data.</p>
-                    <p><strong style="color: var(--color-text);">Scale → Agentic Scaling:</strong> Support, workshops, and office hours get replaced by deeper MCP tools for monitoring, optimization, and troubleshooting.</p>
+                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: 1rem;">How the Classic Journey Transforms</p>
+                    <p><strong style="color: var(--color-text);">Discover → Agent Awareness:</strong> MCP servers and llms.txt complement SEO and landing pages.</p>
+                    <p><strong style="color: var(--color-text);">Evaluate → Agent Evaluation:</strong> Agents run actual benchmarks alongside reading docs.</p>
+                    <p><strong style="color: var(--color-text);">Learn/Build → Human Validation:</strong> Developers validate agent recommendations with real data.</p>
+                    <p><strong style="color: var(--color-text);">Scale → Agentic Scaling:</strong> Deeper MCP tools for monitoring, optimization, and troubleshooting.</p>
                 </div>
-
-                <p>
-                    The touchpoints that Lewko's framework carefully maps—forums, webinars, case studies,
-                    newsletters, Stack Overflow—don't disappear. They become training data and context that
-                    <em>informs</em> agent behavior rather than <em>guiding</em> human behavior directly.
-                </p>
-
-                <blockquote>
-                    "The agentic adoption lifecycle isn't a funnel—it's a flywheel. Agents that successfully
-                    implement your product become better at recommending it. Every successful implementation
-                    improves the agent's ability to recommend you for the next use case."
-                </blockquote>
 
                 <h2>What We're Measuring</h2>
 
@@ -768,15 +649,11 @@ class ScyllaDBMCPServer:
                 <h2>What This Means for the Industry</h2>
 
                 <p>
-                    We're at an inflection point. The companies that make their products AI-accessible
-                    will capture the next generation of developers. Those that don't will find themselves
-                    invisible to the primary channel through which developers now discover and evaluate tools.
+                    We're at an inflection point. Companies that make their products AI-accessible
+                    gain an advantage in reaching the next generation of developers. MCP servers and
+                    executable interfaces are becoming an important complement to traditional documentation
+                    and developer experience investments.
                 </p>
-
-                <blockquote>
-                    "The best documentation is no documentation—it's an interface that lets AI agents
-                    figure out how to use your product and then teach the developer."
-                </blockquote>
 
                 <p>
                     The ScyllaDB MCP server is just one example. Imagine this pattern applied to every
@@ -798,7 +675,6 @@ class ScyllaDBMCPServer:
                     <li><a href="https://github.com/dev-exp-ai/scylladb-mcp-server" target="_blank" rel="noopener">scylladb-mcp-server on GitHub</a> (unofficial, community project)</li>
                     <li><a href="https://github.com/anthropics/anthropic-cookbook" target="_blank" rel="noopener">MCP Protocol Specification</a></li>
                     <li><a href="https://www.devrelbook.com" target="_blank" rel="noopener">Developer Relations by Caroline Lewko</a></li>
-                    <li><a href="the-death-of-the-developer-portal.html">The Death of the Developer Portal</a></li>
                     <li><a href="mcp-protocol-explained-for-marketers.html">MCP Protocol Explained for Marketing Leaders</a></li>
                     <li><a href="measuring-ai-agent-engagement.html">The CMO's Guide to Measuring AI Agent Engagement</a></li>
                 </ul>

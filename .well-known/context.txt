@@ -13,37 +13,6 @@ DevExp.ai helps enterprises become AI-discoverable. We build Model Context Proto
 
 ---
 
-## Services
-
-### MCP Server Development — $25,000
-Custom MCP servers for your platform including:
-- Multi-database comparison support
-- Demo applications for instant deployment
-- VoyantIO telemetry integration
-- Documentation and maintenance guide
-
-### VoyantIO Telemetry — $2,000/month
-Ongoing analytics and insights:
-- Agent engagement metrics
-- Query pattern analysis
-- Developer journey tracking
-- Monthly optimization recommendations
-
-### DEO Retainer — $8,000/month
-Full Developer Experience Optimization:
-- MCP server maintenance and updates
-- VoyantIO telemetry dashboard
-- Context updates as product evolves
-- Priority support for new MCP features
-
-### AI-Native Documentation Strategy — $15,000
-- llms.txt implementation
-- context.txt with modulation rules
-- Semantic structure optimization
-- Agent accessibility audit
-
----
-
 ## Core Concepts
 
 ### What is MCP?

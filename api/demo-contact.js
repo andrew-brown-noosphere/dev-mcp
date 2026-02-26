@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'Email service is not configured.' });
     }
 
-    const fromEmail = process.env.DEMO_FROM_EMAIL || 'DevMCP Demo <noreply@devmcp.ai>';
+    const fromEmail = process.env.DEMO_FROM_EMAIL || 'DevMCP Demo <noreply@devexp.ai>';
     const toEmail = process.env.DEMO_TO_EMAIL || 'andrew@noosphere.tech';
 
     const emailResponse = await fetch('https://api.resend.com/emails', {

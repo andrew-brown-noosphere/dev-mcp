@@ -237,7 +237,7 @@
                     <span>•</span>
                     <time>February 10, 2026</time>
                     <span>•</span>
-                    <span>8 min read</span>
+                    <span>10 min read</span>
                 </div>
                 <h1>Enabling Fast APIs for Agents: How We Built an MCP Server for Protobuf.ai</h1>
                 <p class="lead">
@@ -353,8 +353,7 @@
   }],
   "evolutionPlan": {
     "steps": ["Add deprecated field", "Dual support period", "Migrate clients"],
-    "risk": "high",
-    "duration": "2 months"
+    "risk": "high"
   }
 }</code></pre>
 
@@ -377,15 +376,23 @@
   }
 }
 
-// MCP server generates protovalidate rules
+// MCP server generates validation annotations
 {
   "validatedSchema": `
     message CreateUserRequest {
-      string email = 1 [(validate.rules).string.email = true];
-      int32 age = 2 [(validate.rules).int32 = {gte: 18, lte: 120}];
-      string username = 3 [(validate.rules).string = {min_len: 3, max_len: 50}];
+      // @validate: email format required
+      string email = 1;
+      // @validate: range 18-120
+      int32 age = 2;
+      // @validate: length 3-50 characters
+      string username = 3;
     }
-  `
+  `,
+  "validationRules": {
+    "email": {"format": "email", "required": true},
+    "age": {"minimum": 18, "maximum": 120},
+    "username": {"minLength": 3, "maxLength": 50}
+  }
 }</code></pre>
 
                 <p>
@@ -440,6 +447,31 @@
 
                     <p><strong style="color: var(--color-text);">Cross-team consistency:</strong> The same rules apply whether you're on the payments team or the notifications team. The MCP server is the single source of truth.</p>
                 </div>
+
+                <h2>The Developer Journey to Protobuf</h2>
+
+                <p>
+                    Adopting Protocol Buffers isn't a weekend project. Teams considering the move from JSON/REST to gRPC and protobufs face a steep learning curve: new syntax, new tooling, new mental models for schema evolution. The traditional path looks like this:
+                </p>
+
+                <ol>
+                    <li><strong>Discovery:</strong> Developer reads documentation, watches conference talks, skims tutorials</li>
+                    <li><strong>Experimentation:</strong> Write first .proto file, figure out protoc flags, debug compilation errors</li>
+                    <li><strong>Integration:</strong> Generate code, wire up services, discover runtime issues</li>
+                    <li><strong>Governance:</strong> Realize you need lint rules, breaking change detection, validation—start over with proper tooling</li>
+                </ol>
+
+                <p>
+                    This journey takes weeks. Developers bounce between documentation sites, Stack Overflow, and trial-and-error. Many teams abandon the effort midway, deciding protobufs are "too complex" when really the tooling was just inaccessible.
+                </p>
+
+                <p>
+                    With an MCP server, the journey collapses. A developer asks their AI assistant: "Help me define a protobuf schema for a user service." The assistant doesn't guess—it calls the MCP server to generate valid schemas, check them against lint rules, and produce working client code. What took weeks now takes an afternoon.
+                </p>
+
+                <p>
+                    This is the real value proposition: not just making existing protobuf users more productive, but making protobuf adoption accessible to teams who would otherwise never try.
+                </p>
 
                 <h2>The Competitive Angle</h2>
 

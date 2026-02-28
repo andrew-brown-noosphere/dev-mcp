@@ -72,6 +72,31 @@
             color: var(--color-accent);
         }
 
+        .about-section {
+            border-top: 1px solid var(--color-border);
+            padding: 48px 0;
+            margin-top: 48px;
+        }
+        .about-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+        .about-section p {
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+        .cta-link {
+            display: inline-block;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .cta-link:hover {
+            text-decoration: underline;
+        }
+
         .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; color: var(--color-text-subtle); font-size: 0.875rem; }
         .footer a { color: var(--color-text-muted); text-decoration: none; margin: 0 12px; }
 
@@ -222,6 +247,14 @@
 
         </div>
     </article>
+
+    <section class="about-section">
+        <div class="container">
+            <h3>About DevExp.ai</h3>
+            <p>DevExp.ai helps companies make their products discoverable to AI agents. We build the infrastructure layer between your content and the agent web—llms.txt generation, MCP servers, agent-readable APIs, and trust verification.</p>
+            <p><a href="/#demo" class="cta-link">Get in Touch →</a></p>
+        </div>
+    </section>
 
     <footer class="footer">
         <div class="container">

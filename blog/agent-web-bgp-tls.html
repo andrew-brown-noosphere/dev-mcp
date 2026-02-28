@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why the Agent Web Will Look More Like BGP + TLS Than Sitemaps - DevExp.ai</title>
+    <meta name="description" content="The infrastructure agents need won't be built on metadata. It will be built on routing, identity, and trust. A follow-on to Search Indexes Are DNS for Agents.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .nav { border-bottom: 1px solid var(--color-border); padding: 20px 0; }
+        .container { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav a { color: var(--color-text-muted); text-decoration: none; }
+        .nav a:hover { color: var(--color-text); }
+        .nav-brand { color: var(--color-primary); font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; gap: 24px; font-size: 0.9rem; }
+
+        header { padding: 80px 0 40px; }
+        .meta { color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 16px; }
+        .meta a { color: var(--color-accent); text-decoration: none; }
+        .meta a:hover { text-decoration: underline; }
+
+        h1 { font-size: 2.25rem; font-weight: 600; line-height: 1.2; margin-bottom: 24px; }
+
+        article { padding-bottom: 80px; }
+        h2 { font-size: 1.4rem; font-weight: 600; margin: 48px 0 24px; color: var(--color-text); }
+        h3 { font-size: 1.1rem; font-weight: 600; margin: 32px 0 16px; color: var(--color-text); }
+        p { margin-bottom: 24px; color: var(--color-text-muted); }
+
+        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--color-text-muted); }
+        li { margin-bottom: 8px; }
+
+        blockquote {
+            margin: 32px 0;
+            padding: 20px 24px;
+            border-left: 3px solid var(--color-primary);
+            background: var(--color-surface);
+        }
+        blockquote p { margin: 0; font-style: italic; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--color-surface);
+            padding: 2px 6px;
+            font-size: 0.85em;
+            color: var(--color-accent);
+        }
+
+        pre {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 20px;
+            margin: 24px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--color-text-muted);
+        }
+        pre code { background: none; padding: 0; color: inherit; }
+
+        strong { color: var(--color-text); }
+        em { color: var(--color-text-muted); }
+
+        hr { border: none; border-top: 1px solid var(--color-border); margin: 48px 0; }
+
+        a { color: var(--color-accent); }
+
+        table {
+            width: 100%;
+            margin: 24px 0;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+        }
+        th { color: var(--color-text); font-weight: 600; }
+
+        .series-link {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 16px 20px;
+            margin: 24px 0;
+            font-size: 0.95rem;
+        }
+        .series-link a { text-decoration: none; }
+        .series-link a:hover { text-decoration: underline; }
+
+        .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; color: var(--color-text-subtle); font-size: 0.875rem; }
+        .footer a { color: var(--color-text-muted); text-decoration: none; margin: 0 12px; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            body { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">DevExp.ai</a>
+            <div class="nav-links">
+                <a href="/blog.html">Blog</a>
+                <a href="/#demo">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="meta">February 28, 2026 · Follow-on to <a href="/blog/search-indexes-are-dns-for-agents.html">Search Indexes Are DNS for Agents</a></div>
+            <h1>Why the Agent Web Will Look More Like BGP + TLS Than Sitemaps + Robots.txt</h1>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+
+<p>In my <a href="/blog/search-indexes-are-dns-for-agents.html">previous post</a>, I argued that search indexes have become the de facto DNS layer for AI agents. Agents don't navigate—they're routed through whatever the search index surfaces.</p>
+
+<p>That post identified the problem. This one explores what the solution might look like.</p>
+
+<p><strong>The short version:</strong> The infrastructure agents need will resemble BGP and TLS more than sitemaps and <code>robots.txt</code>. It's not about better metadata. It's about routing, identity, and trust.</p>
+
+<hr>
+
+<h2>The Response to the DNS Problem</h2>
+
+<p>After publishing the DNS piece, I saw a predictable response: "We're solving this with <code>llms.txt</code> / schema markup / MCP manifests / OpenAPI specs."</p>
+
+<p>These are useful artifacts. But they share a fundamental limitation:</p>
+
+<p><strong>They are descriptive. They describe content.</strong></p>
+
+<p>They don't solve routing.<br>
+They don't solve authority.<br>
+They don't solve trust.</p>
+
+<p>To understand what's actually needed, we have to look at two foundational internet protocols that most people never think about.</p>
+
+<hr>
+
+<h2>BGP: The Internet's Invisible Routing Spine</h2>
+
+<p>When you visit a website, your packets don't magically know where to go. They traverse multiple networks—your ISP, regional carriers, cloud providers, CDNs—owned by entirely different organizations.</p>
+
+<p>How do these networks coordinate?</p>
+
+<p><strong>BGP (Border Gateway Protocol).</strong></p>
+
+<p>BGP allows large networks (Autonomous Systems) to announce their reachability:</p>
+
+<blockquote>
+<p>"I can reach this IP range. Route traffic through me."</p>
+</blockquote>
+
+<p>Other networks decide whether to trust that announcement and propagate it.</p>
+
+<p>BGP answers a foundational question: <strong>Who is authorized to route traffic for a given destination?</strong></p>
+
+<p>It's not about content. It's about <em>authoritative reachability</em>.</p>
+
+<p>Without BGP, the internet fragments into islands.</p>
+
+<h3>The Agent Parallel</h3>
+
+<p>In my previous post, I noted that agents currently depend on search indexes for discovery. But search isn't routing—it's <em>discovery by inference</em>.</p>
+
+<p>When agents become primary actors—executing transactions, not just answering questions—inference won't cut it. They'll need to know:</p>
+
+<ul>
+<li>Is this the canonical endpoint for this capability?</li>
+<li>Is this source authoritative?</li>
+<li>Who vouches for this route?</li>
+</ul>
+
+<p>That's a BGP-shaped problem.</p>
+
+<hr>
+
+<h2>TLS: Cryptographic Identity</h2>
+
+<p>Once packets reach a server, a different problem emerges: <strong>How do you know you're talking to who you think you're talking to?</strong></p>
+
+<p>TLS does three things:</p>
+
+<ol>
+<li>The server proves its identity via certificate</li>
+<li>The client verifies against a trusted root authority</li>
+<li>Both sides establish an encrypted channel</li>
+</ol>
+
+<p>TLS answers: <strong>Is this endpoint really who it claims to be?</strong></p>
+
+<p>Without TLS, you can <em>reach</em> an endpoint but you can't <em>trust</em> it.</p>
+
+<h3>The Agent Parallel</h3>
+
+<p>Agents can't visually verify anything. They can't notice that <code>paypa1.com</code> isn't <code>paypal.com</code>. They can't recognize a phishing page by its typography.</p>
+
+<p>When an agent executes consequential actions, it needs cryptographic certainty:</p>
+
+<ul>
+<li>Who is on the other end?</li>
+<li>Was this response tampered with?</li>
+<li>Is this entity authorized to act?</li>
+</ul>
+
+<p>Today's agent architectures largely punt on this. They trust that search results lead to legitimate endpoints.</p>
+
+<p>As I wrote before: agents trust whatever search returns. That's not infrastructure. That's a prayer.</p>
+
+<hr>
+
+<h2>Why Static Declarations Aren't the Answer</h2>
+
+<p>The current approach to making the web "agent-friendly" focuses on metadata:</p>
+
+<ul>
+<li><code>sitemaps</code> — pages that exist</li>
+<li><code>schema.org</code> — structured content data</li>
+<li><code>robots.txt</code> / <code>llms.txt</code> — access guidance</li>
+<li><code>OpenAPI</code> — API documentation</li>
+<li><code>MCP manifests</code> — tool capabilities</li>
+</ul>
+
+<p>These are all <em>static declarations</em>. They say:</p>
+
+<blockquote>
+<p>"Here is what I expose."</p>
+</blockquote>
+
+<p>They don't answer:</p>
+
+<ul>
+<li>Who authorizes this endpoint?</li>
+<li>Is this the canonical source, or a mirror, or a fake?</li>
+<li>Can an agent rely on this for consequential decisions?</li>
+<li>What policies govern automated action?</li>
+</ul>
+
+<p><strong>They're fragments. Not a handshake.</strong></p>
+
+<p>In the previous post, I called this the "Gate 1 vs Gate 2" problem: these files solve understanding (Gate 2) before discoverability (Gate 1). But the problem is deeper than that.</p>
+
+<p>Even if agents <em>could</em> discover these files, the files don't establish trust. A sitemap tells you pages exist. It doesn't tell you whether the entity is legitimate or whether an agent is authorized to act.</p>
+
+<p><code>llms.txt</code> is closer to a README than to a certificate.</p>
+
+<hr>
+
+<h2>The Missing Control Plane</h2>
+
+<p>If agents become primary web actors, we'll need a new <strong>control plane</strong> that:</p>
+
+<ol>
+<li><strong>Resolves authoritative endpoints</strong> — not through search, but direct resolution</li>
+<li><strong>Verifies identity cryptographically</strong> — endpoints prove who they are</li>
+<li><strong>Exposes machine-readable capabilities</strong> — what can be done, under what constraints</li>
+<li><strong>Enforces executable policy</strong> — governance rules that execute, not just publish</li>
+<li><strong>Negotiates action rights</strong> — both sides agree before execution</li>
+</ol>
+
+<p>This is structurally closer to BGP + TLS than to SEO.</p>
+
+<p><strong>It's infrastructure. Not metadata.</strong></p>
+
+<hr>
+
+<h2>The Capability Shift</h2>
+
+<p>The current web is page-centric. Everything revolves around documents humans read.</p>
+
+<p>Agents operate in a capability-centric world. They don't want to read your About page. They want to know:</p>
+
+<ul>
+<li>What can I do here?</li>
+<li>What do I need to provide?</li>
+<li>What will I get back?</li>
+<li>Who vouches for this?</li>
+</ul>
+
+<p>Instead of:</p>
+
+<pre><code>navigate → interpret → decide</code></pre>
+
+<p>We're moving to:</p>
+
+<pre><code>resolve → verify → negotiate → execute</code></pre>
+
+<p>This changes where power sits:</p>
+
+<ul>
+<li>Not in content aggregation</li>
+<li>Not in ranking algorithms</li>
+<li>But in <strong>authoritative resolution</strong> and <strong>trust infrastructure</strong></li>
+</ul>
+
+<hr>
+
+<h2>What This Might Look Like</h2>
+
+<p>Imagine:</p>
+
+<ol>
+<li><strong>Direct capability resolution</strong> — An agent needing to book a flight doesn't search "airline booking." It resolves <code>flights.delta.com</code> through a routing protocol, receiving a signed capability manifest.</li>
+<li><strong>Cryptographic credentials</strong> — The booking API presents a certificate chain proving authorization, issued by a verifiable trust authority.</li>
+<li><strong>Negotiated capabilities</strong> — Before executing, agent and endpoint exchange a machine-readable contract: required data, permitted actions, applicable policies.</li>
+<li><strong>End-to-end provenance</strong> — Every piece of context carries attestations: who created it, who reviewed it, what evidence supports it.</li>
+<li><strong>Executable governance</strong> — Rate limits, authorization scopes, audit requirements encoded in protocol, not ToS.</li>
+</ol>
+
+<p>The components exist: W3C PROV-O for provenance, C2PA for content authenticity, in-toto for attestation, DIDs for decentralized identity.</p>
+
+<p>What's missing is the integration layer.</p>
+
+<hr>
+
+<h2>The Browser Era vs. The Agent Era</h2>
+
+<p>The browser era optimized for <strong>human navigation</strong>: render pages, make links clickable, trust the human to judge.</p>
+
+<p>The agent era will optimize for <strong>machine coordination</strong>: resolve capabilities authoritatively, verify identity cryptographically, negotiate programmatically, enforce policy automatically.</p>
+
+<p>The primitives are different. The trust models are different.</p>
+
+<p>Building the agent web on sitemaps and schema markup is like building e-commerce on Gopher. The foundation isn't wrong—it's insufficient.</p>
+
+<hr>
+
+<h2>Conclusion</h2>
+
+<p>In the <a href="/blog/search-indexes-are-dns-for-agents.html">previous post</a>, I argued that search indexes have become an unintentional DNS layer for agents—and that this creates fragility.</p>
+
+<p>The solution isn't better metadata layered on top of the human web.</p>
+
+<p>It's the infrastructure layers the human web could avoid—because humans compensate with judgment and caution.</p>
+
+<p>Agents can't compensate. They need:</p>
+
+<ul>
+<li><strong>Routing</strong> — authoritative paths to capabilities</li>
+<li><strong>Identity</strong> — cryptographic proof</li>
+<li><strong>Trust</strong> — verifiable provenance</li>
+<li><strong>Governance</strong> — executable policy</li>
+</ul>
+
+<p>That's not <code>llms.txt</code>. That's BGP + TLS for the agent era.</p>
+
+<p>The organizations that build this infrastructure—or position themselves as trust anchors within it—will shape how agents interact with the world.</p>
+
+<p>Everyone else will be routed around.</p>
+
+<hr>
+
+<div class="series-link">
+<strong>Previous in series:</strong> <a href="/blog/search-indexes-are-dns-for-agents.html">Search Indexes Are the DNS Layer for AI Agents</a>
+</div>
+
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="/">Home</a>
+            <a href="/blog.html">Blog</a>
+            <a href="/.well-known/agent.json">agent.json</a>
+            <p style="margin-top: 24px;">© 2026 Voyant, LLC</p>
+        </div>
+    </footer>
+</body>
+</html>

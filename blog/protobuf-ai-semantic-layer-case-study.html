@@ -258,11 +258,6 @@
                     Meanwhile, their users were increasingly working with AI assistants. Developers weren't running lint commands manually—they were asking Claude or Cursor to "check this schema for issues." The AI would hallucinate lint rules or miss breaking changes entirely, because it had no programmatic access to protobuf tooling.
                 </p>
 
-                <blockquote>
-                    "Our users were asking AI assistants to review their schemas, and the AI was making things up. It didn't know our lint rules. It couldn't actually validate anything. We needed to give agents real access to our tools."
-                    <cite>— Protobuf.ai Team</cite>
-                </blockquote>
-
                 <p>
                     The ask was straightforward: build an MCP server that exposes protobuf governance capabilities to AI agents. Make linting, breaking change detection, protovalidate rules, and SDK generation available through the Model Context Protocol.
                 </p>
@@ -446,27 +441,6 @@
                     <p><strong style="color: var(--color-text);">Cross-team consistency:</strong> The same rules apply whether you're on the payments team or the notifications team. The MCP server is the single source of truth.</p>
                 </div>
 
-                <h2>Results</h2>
-
-                <p>
-                    Since launching the MCP server, protobuf.ai has seen measurable impact:
-                </p>
-
-                <div class="highlight-box">
-                    <span class="data-point">73%</span>
-                    <p>Reduction in schema-related PR review cycles. Issues caught before human review.</p>
-                </div>
-
-                <div class="highlight-box">
-                    <span class="data-point">0</span>
-                    <p>Breaking change incidents in production since MCP adoption. Previously: 2-3 per quarter.</p>
-                </div>
-
-                <div class="highlight-box">
-                    <span class="data-point">4x</span>
-                    <p>Faster onboarding for new developers working with protobufs. AI assistants provide correct guidance from day one.</p>
-                </div>
-
                 <h2>The Competitive Angle</h2>
 
                 <p>
@@ -476,11 +450,6 @@
                 <p>
                     Protobuf.ai's MCP server doesn't replace those tools. It makes them accessible to AI agents. When developers increasingly work through AI assistants, that accessibility becomes a competitive advantage.
                 </p>
-
-                <blockquote>
-                    "We're not competing on linting rules or breaking change algorithms. We're competing on how developers access those capabilities. The answer increasingly is: through their AI assistant."
-                    <cite>— Protobuf.ai Team</cite>
-                </blockquote>
 
                 <p>
                     This is the pattern we see across developer tools. The underlying capabilities matter—but so does how AI agents can use them. MCP is the bridge.

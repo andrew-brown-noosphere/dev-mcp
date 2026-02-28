@@ -255,7 +255,7 @@
                 </p>
 
                 <p>
-                    Meanwhile, their users were increasingly working with AI assistants. Developers weren't running <code>buf lint</code> manually—they were asking Claude or Cursor to "check this schema for issues." The AI would hallucinate lint rules or miss breaking changes entirely, because it had no programmatic access to protobuf tooling.
+                    Meanwhile, their users were increasingly working with AI assistants. Developers weren't running lint commands manually—they were asking Claude or Cursor to "check this schema for issues." The AI would hallucinate lint rules or miss breaking changes entirely, because it had no programmatic access to protobuf tooling.
                 </p>
 
                 <blockquote>
@@ -270,7 +270,7 @@
                 <h2>Why MCP for Protocol Buffers?</h2>
 
                 <p>
-                    The existing protobuf tooling ecosystem is mature. <code>buf</code> provides excellent linting, the BSR (Buf Schema Registry) handles versioning, and protovalidate enforces runtime constraints. But all of these tools assume a human running CLI commands.
+                    The existing protobuf tooling ecosystem is mature. Established tools provide excellent linting, schema registries handle versioning, and protovalidate enforces runtime constraints. But all of these tools assume a human running CLI commands.
                 </p>
 
                 <p>
@@ -329,7 +329,7 @@
 }</code></pre>
 
                 <p>
-                    The agent doesn't guess at naming conventions—it gets definitive answers with automated fixes. Rules include <code>MESSAGE_PASCAL_CASE</code>, <code>FIELD_LOWER_SNAKE_CASE</code>, <code>ENUM_VALUE_PREFIX</code>, and the full set familiar to anyone using <code>buf lint</code>.
+                    The agent doesn't guess at naming conventions—it gets definitive answers with automated fixes. Rules include <code>MESSAGE_PASCAL_CASE</code>, <code>FIELD_LOWER_SNAKE_CASE</code>, <code>ENUM_VALUE_PREFIX</code>, and the full set familiar to anyone who's configured protobuf linting.
                 </p>
 
                 <h3>2. Breaking Change Detection</h3>
@@ -386,9 +386,9 @@
 {
   "validatedSchema": `
     message CreateUserRequest {
-      string email = 1 [(buf.validate.field).string.email = true];
-      int32 age = 2 [(buf.validate.field).int32 = {gte: 18, lte: 120}];
-      string username = 3 [(buf.validate.field).string = {min_len: 3, max_len: 50}];
+      string email = 1 [(validate.rules).string.email = true];
+      int32 age = 2 [(validate.rules).int32 = {gte: 18, lte: 120}];
+      string username = 3 [(validate.rules).string = {min_len: 3, max_len: 50}];
     }
   `
 }</code></pre>
@@ -470,7 +470,7 @@
                 <h2>The Competitive Angle</h2>
 
                 <p>
-                    The protobuf tooling market is established. Buf raised $100M to build the definitive protobuf platform. Their tools are excellent—but they're built for humans running CLIs.
+                    The protobuf tooling market is established. Well-funded incumbents have built excellent CLI tools for linting, breaking change detection, and schema management. But those tools are built for humans running terminal commands.
                 </p>
 
                 <p>

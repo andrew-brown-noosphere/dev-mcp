@@ -237,7 +237,7 @@
                     <span>•</span>
                     <time>February 10, 2026</time>
                     <span>•</span>
-                    <span>10 min read</span>
+                    <span>12 min read</span>
                 </div>
                 <h1>Enabling Fast APIs for Agents: How We Built an MCP Server for Protobuf.ai</h1>
                 <p class="lead">
@@ -256,6 +256,32 @@
 
                 <p>
                     Meanwhile, their users were increasingly working with AI assistants. Developers weren't running lint commands manually—they were asking Claude or Cursor to "check this schema for issues." The AI would hallucinate lint rules or miss breaking changes entirely, because it had no programmatic access to protobuf tooling.
+                </p>
+
+                <h3>The Gap: Advice vs. Action</h3>
+
+                <p>
+                    Ask any AI assistant "why should I use protobuf?" and you'll get a reasonable answer: performance, type safety, schema evolution. Ask it to help you adopt protobufs and it'll suggest a sensible sequence: start with one service, define schemas, generate clients.
+                </p>
+
+                <p>
+                    But here's what the AI <em>can't</em> do without tooling access:
+                </p>
+
+                <ul>
+                    <li>Validate that your schema actually compiles</li>
+                    <li>Check if your field naming follows conventions</li>
+                    <li>Detect if your changes will break existing clients</li>
+                    <li>Generate working SDK code in your target language</li>
+                    <li>Enforce your organization's specific lint rules</li>
+                </ul>
+
+                <p>
+                    Without MCP access, the AI is just <em>talking</em>. It gives advice, but can't take action. Hand it a schema and ask "is this correct?" — it'll say something that sounds right. But it's guessing. It has no way to actually run the validation.
+                </p>
+
+                <p>
+                    This is the gap Protobuf.ai asked us to close.
                 </p>
 
                 <p>
@@ -466,11 +492,29 @@
                 </p>
 
                 <p>
-                    With an MCP server, the journey collapses. A developer asks their AI assistant: "Help me define a protobuf schema for a user service." The assistant doesn't guess—it calls the MCP server to generate valid schemas, check them against lint rules, and produce working client code. What took weeks now takes an afternoon.
+                    With an MCP server, the journey transforms. Here's what it looks like:
+                </p>
+
+                <div class="highlight-box">
+                    <p><strong style="color: var(--color-text);">Developer:</strong> "Help me define a protobuf schema for a user service with email, name, and age fields."</p>
+
+                    <p><strong style="color: var(--color-text);">AI + MCP:</strong> <em>Generates schema, calls lint tool, returns validated .proto file with correct naming conventions.</em></p>
+
+                    <p><strong style="color: var(--color-text);">Developer:</strong> "Add a phone number field."</p>
+
+                    <p><strong style="color: var(--color-text);">AI + MCP:</strong> <em>Calls breaking change detector, confirms safe addition, updates schema, regenerates SDK.</em></p>
+
+                    <p><strong style="color: var(--color-text);">Developer:</strong> "Actually, change the age field from int to string."</p>
+
+                    <p><strong style="color: var(--color-text);">AI + MCP:</strong> <em>"That's a breaking change—existing clients expect an integer. Here's a migration plan: add a new field, deprecate the old one, migrate over two releases."</em></p>
+                </div>
+
+                <p>
+                    The developer never opened documentation. Never debugged protoc flags. Never guessed at compatibility rules. The AI handled it—not by knowing protobuf conventions from training data, but by calling tools that definitively validate every change.
                 </p>
 
                 <p>
-                    This is the real value proposition: not just making existing protobuf users more productive, but making protobuf adoption accessible to teams who would otherwise never try.
+                    What took weeks now takes an afternoon. This is the real value proposition: not just making existing protobuf users more productive, but making protobuf adoption accessible to teams who would otherwise never try.
                 </p>
 
                 <h2>The Competitive Angle</h2>

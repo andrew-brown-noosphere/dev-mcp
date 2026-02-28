@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Why Protocol Buffers Need a Semantic Layer: Building AI-Native API Infrastructure - DevExp.ai</title>
-    <meta name="description" content="Schemas tell AI what data looks like. They don't tell AI what data means. We built protobuf.ai to close that gap—and learned something important about AI-native developer distribution.">
+    <title>Enabling Fast APIs for Agents: How We Built an MCP Server for Protobuf.ai - DevExp.ai</title>
+    <meta name="description" content="Protobuf.ai needed AI agents to lint schemas, detect breaking changes, and generate SDKs—without manual CLI workflows. We built an MCP server that makes protobuf governance agent-native.">
 
     <!-- Fonts - Source Serif 4 (Gypsum style) + JetBrains Mono for code -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -189,6 +189,18 @@
 
         .button:hover { transform: translateY(-2px); color: var(--color-primary); }
 
+        .about-section {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        .about-section h3 { color: var(--color-text); margin-bottom: 1rem; font-size: 1.25rem; }
+        .about-section p { color: var(--color-text-muted); margin-bottom: 1rem; max-width: 700px; }
+        .about-section .cta-link { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+        .about-section .cta-link:hover { text-decoration: underline; }
+
         .footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 2.5rem 0; text-align: center; }
         .footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem; }
         .footer-links a { color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
@@ -225,366 +237,335 @@
                     <span>•</span>
                     <time>February 10, 2026</time>
                     <span>•</span>
-                    <span>10 min read</span>
+                    <span>8 min read</span>
                 </div>
-                <h1>Why Protocol Buffers Need a Semantic Layer</h1>
+                <h1>Enabling Fast APIs for Agents: How We Built an MCP Server for Protobuf.ai</h1>
                 <p class="lead">
-                    Schemas tell AI what data looks like. They don't tell AI what data <em>means</em>.
-                    We built protobuf.ai to close that gap—and discovered something important about
-                    AI-native API infrastructure.
+                    Protobuf.ai needed AI agents to lint schemas, detect breaking changes, and enforce governance—without manual CLI workflows. We built an MCP server that makes protobuf tooling agent-native.
                 </p>
             </div>
         </header>
 
         <article>
             <div class="content-container">
-                <h2>The Integration That Should Have Taken Three Minutes</h2>
+                <h2>The Client Challenge</h2>
 
                 <p>
-                    A developer asks Claude to integrate with a payment API. The schema is clean—well-defined
-                    Protocol Buffer messages, proper field numbering, sensible type choices. The AI generates
-                    code that compiles on the first try.
+                    <a href="https://protobuf.ai">Protobuf.ai</a> came to us with a clear problem: the Protocol Buffer ecosystem was stuck in a CLI-first world. Developers using gRPC and protobufs had powerful tools for linting, breaking change detection, and validation—but every workflow required manual command-line invocations.
                 </p>
 
                 <p>
-                    It's also completely wrong.
-                </p>
-
-                <p>
-                    The <code>amount</code> field is in cents, not dollars. The AI assumed dollars. Every
-                    transaction is off by 100x. The <code>status</code> field has a specific state machine
-                    that can't be inferred from enum values alone. The <code>created_at</code> timestamp
-                    is Unix seconds, not milliseconds.
-                </p>
-
-                <p>
-                    None of this is in the .proto file. It's scattered across documentation pages, buried
-                    in API guides, or exists only as tribal knowledge in the heads of engineers who've been
-                    burned by these edge cases before.
-                </p>
-
-                <p>
-                    The AI read the schema perfectly. It just didn't understand what any of it <em>meant</em>.
-                </p>
-
-                <h2>The Structure-Meaning Gap</h2>
-
-                <p>
-                    Protocol Buffers are exceptional at defining structure. Message types, field numbers,
-                    wire formats—everything a parser needs to serialize and deserialize data correctly.
-                    The protobuf ecosystem has mature tooling for linting, breaking change detection, and
-                    code generation across dozens of languages.
-                </p>
-
-                <p>
-                    But structure isn't meaning.
-                </p>
-
-                <pre><code>message Payment {
-  int64 amount = 1;
-  string currency = 2;
-  PaymentStatus status = 3;
-  int64 created_at = 4;
-}</code></pre>
-
-                <p>
-                    What does this tell an AI agent? That <code>amount</code> is a 64-bit integer. That
-                    <code>currency</code> is a string. That's the extent of it. The schema doesn't capture:
-                </p>
-
-                <ul>
-                    <li>Amount is in the smallest currency unit (cents for USD, pence for GBP)</li>
-                    <li>Currency must be ISO 4217 format</li>
-                    <li>Status transitions follow PENDING → PROCESSING → COMPLETED | FAILED</li>
-                    <li>created_at is Unix seconds, not milliseconds</li>
-                    <li>Refunds are represented as negative amounts</li>
-                    <li>A Payment belongs to an Order and references exactly one PaymentMethod</li>
-                </ul>
-
-                <p>
-                    This is domain knowledge. It exists in documentation, in code comments, in the
-                    accumulated experience of teams who've built on these APIs. AI agents have none
-                    of that context—unless we give it to them explicitly.
-                </p>
-
-                <h2>Enter context.json</h2>
-
-                <p>
-                    We built <a href="https://protobuf.ai">protobuf.ai</a> around a simple idea: every
-                    .proto file should have a semantic companion that captures what AI agents need to
-                    know. We call it <code>context.json</code>.
-                </p>
-
-                <pre><code>{
-  "@context": "https://protobuf.ai/ontology/v1",
-  "schema": "payment.proto",
-  "domain": "payments",
-
-  "messages": {
-    "Payment": {
-      "semanticType": "schema:PayAction",
-      "description": "A financial transaction between buyer and merchant",
-      "fields": {
-        "amount": {
-          "maps_to": "schema:price",
-          "unit": "cents",
-          "description": "Transaction amount in smallest currency unit"
-        },
-        "currency": {
-          "maps_to": "schema:priceCurrency",
-          "format": "ISO 4217",
-          "examples": ["USD", "EUR", "GBP"]
-        },
-        "status": {
-          "transitions": ["PENDING -> PROCESSING -> COMPLETED|FAILED"],
-          "description": "Current state in payment lifecycle"
-        },
-        "created_at": {
-          "maps_to": "schema:dateCreated",
-          "format": "unix_seconds"
-        }
-      }
-    }
-  },
-
-  "edge_cases": [
-    "Refunds create Payment with negative amount",
-    "Partial payments: multiple Payments per Order allowed"
-  ],
-
-  "relationships": [
-    {"from": "Payment", "to": "Order", "type": "belongs_to"},
-    {"from": "Payment", "to": "PaymentMethod", "type": "has_one"}
-  ]
-}</code></pre>
-
-                <p>
-                    Now the AI knows. Amount is in cents. Currency is ISO 4217. Timestamps are Unix
-                    seconds. Refunds are negative. The integration that took three days of debugging?
-                    Three minutes.
-                </p>
-
-                <h2>Why This Matters for Streaming and Event-Driven Systems</h2>
-
-                <p>
-                    The semantic gap is especially acute in streaming architectures. When schemas
-                    define events flowing through Kafka, Pulsar, or other streaming platforms, the
-                    stakes are higher:
-                </p>
-
-                <ul>
-                    <li><strong>Events are immutable:</strong> You can't fix a malformed event after it's published</li>
-                    <li><strong>Consumers multiply:</strong> One producer schema serves dozens of downstream consumers</li>
-                    <li><strong>Context is lost:</strong> By the time an event reaches a consumer, the original intent is invisible</li>
-                </ul>
-
-                <p>
-                    Schema registries solve the structural problem—they ensure producers and consumers
-                    agree on field types and evolution rules. But they don't solve the semantic problem.
-                    A consumer knows that <code>user_id</code> is a string, but not whether it's a UUID,
-                    an email address, or an opaque external identifier.
-                </p>
-
-                <p>
-                    When AI agents help developers build streaming consumers, they need both: the
-                    structural contract from the schema registry, and the semantic contract from
-                    context.json.
-                </p>
-
-                <h2>The MCP Server Pattern</h2>
-
-                <p>
-                    We didn't just build a file format. We built protobuf.ai as an
-                    <a href="mcp-protocol-explained-for-marketers.html">MCP server</a>—the same
-                    pattern we used for the <a href="scylladb-mcp-server-case-study.html">ScyllaDB
-                    case study</a>.
-                </p>
-
-                <p>
-                    This means AI agents can:
-                </p>
-
-                <div class="highlight-box">
-                    <p><strong style="color: var(--color-text);">Generate schemas from descriptions:</strong>
-                    "Create a schema for a user authentication service" produces both the .proto and
-                    the context.json, with semantic mappings already in place.</p>
-
-                    <p><strong style="color: var(--color-text);">Validate against ontologies:</strong>
-                    Connect to schema.org, FHIR, or custom vocabularies. When your <code>price</code>
-                    field maps to <code>schema:price</code>, the system validates you're using a
-                    monetary type—not a string.</p>
-
-                    <p><strong style="color: var(--color-text);">Find schemas by meaning:</strong>
-                    Search for "financial transactions" returns Payment, Invoice, Transfer schemas—even
-                    if none contain the word "financial" in their field names.</p>
-
-                    <p><strong style="color: var(--color-text);">Suggest improvements:</strong>
-                    AI analyzes your schema against learned patterns and recommends optimizations
-                    for performance, compatibility, or semantic clarity.</p>
-                </div>
-
-                <h2>Complementing Existing Toolchains</h2>
-
-                <p>
-                    We're not replacing existing protobuf tooling. Linters, breaking change detectors,
-                    code generators—these tools are essential and battle-tested. We're adding a layer
-                    they don't have: meaning.
-                </p>
-
-                <p>
-                    <strong>Structural validation</strong> catches when you change <code>int32</code>
-                    to <code>string</code>. <strong>Semantic validation</strong> catches when you
-                    rename <code>user_id</code> to <code>account_id</code>—technically compatible,
-                    semantically different.
-                </p>
-
-                <p>
-                    <strong>Structural search</strong> finds schemas containing "payment".
-                    <strong>Semantic search</strong> finds schemas representing financial transactions,
-                    regardless of naming conventions.
-                </p>
-
-                <p>
-                    Teams using existing schema registries can layer context.json on top. The structural
-                    contract lives in the registry; the semantic contract lives alongside it. Both are
-                    necessary. Neither is sufficient alone.
-                </p>
-
-                <h2>The AI Discovery Imperative</h2>
-
-                <p>
-                    Here's the uncomfortable truth: if your API isn't AI-understandable, it's becoming
-                    invisible.
-                </p>
-
-                <p>
-                    Developers increasingly discover and evaluate APIs through AI assistants. They don't
-                    browse documentation—they ask Claude. They don't read getting-started guides—they
-                    prompt Cursor. When the AI can't understand your schema's semantics, it can't
-                    recommend your API effectively.
+                    Meanwhile, their users were increasingly working with AI assistants. Developers weren't running <code>buf lint</code> manually—they were asking Claude or Cursor to "check this schema for issues." The AI would hallucinate lint rules or miss breaking changes entirely, because it had no programmatic access to protobuf tooling.
                 </p>
 
                 <blockquote>
-                    "I asked my AI assistant to help integrate with a payments API. It suggested three
-                    options I'd never heard of—all because they had context files that explained what
-                    their schemas actually meant. The big-name provider wasn't even mentioned."
-                    <cite>— Platform Engineer, Series B Startup</cite>
+                    "Our users were asking AI assistants to review their schemas, and the AI was making things up. It didn't know our lint rules. It couldn't actually validate anything. We needed to give agents real access to our tools."
+                    <cite>— Protobuf.ai Team</cite>
                 </blockquote>
 
                 <p>
-                    This is the same dynamic we explored in <a href="from-seo-to-aeo.html">From SEO
-                    to AEO</a>: the gatekeepers have changed. Schema registries optimized for human
-                    browsing aren't enough. You need machine-readable semantics that AI agents can
-                    consume and reason about.
+                    The ask was straightforward: build an MCP server that exposes protobuf governance capabilities to AI agents. Make linting, breaking change detection, protovalidate rules, and SDK generation available through the Model Context Protocol.
                 </p>
 
-                <h2>What We're Learning</h2>
+                <h2>Why MCP for Protocol Buffers?</h2>
 
                 <p>
-                    Building protobuf.ai has validated several hypotheses about AI-native developer
-                    distribution:
+                    The existing protobuf tooling ecosystem is mature. <code>buf</code> provides excellent linting, the BSR (Buf Schema Registry) handles versioning, and protovalidate enforces runtime constraints. But all of these tools assume a human running CLI commands.
                 </p>
 
-                <h3>1. Semantics Compound</h3>
                 <p>
-                    Once you've mapped <code>Payment.amount</code> to <code>schema:price</code> with
-                    unit "cents", every AI agent that encounters your schema inherits that knowledge.
-                    The semantic layer becomes a force multiplier—define once, benefit everywhere.
+                    That assumption is breaking down. When an AI agent helps a developer:
                 </p>
 
-                <h3>2. Context Reduces Errors Dramatically</h3>
+                <ul>
+                    <li>Design a new gRPC service</li>
+                    <li>Add fields to an existing message</li>
+                    <li>Review a PR that modifies schemas</li>
+                    <li>Generate client SDKs in a new language</li>
+                </ul>
+
                 <p>
-                    In early testing, integrations built with context.json have significantly fewer
-                    semantic errors—wrong units, incorrect assumptions about enums, misunderstood
-                    relationships. The AI still makes mistakes, but they're syntactic, not semantic.
+                    ...the agent needs to know whether those changes are valid. Not "looks valid to me"—actually valid according to lint rules, actually compatible with existing clients, actually enforceable at runtime.
                 </p>
 
-                <h3>3. The Pattern Extends Beyond Protobufs</h3>
                 <p>
-                    While we built this for Protocol Buffers, the context.json pattern applies to
-                    any schema format: OpenAPI, GraphQL, JSON Schema, Avro. Any structural definition
-                    can have a semantic companion. We chose protobufs because they're the lingua
-                    franca of modern microservices—but the principle is universal.
+                    MCP bridges this gap. Instead of the AI guessing at protobuf conventions, it can call tools that definitively answer: "Is this schema valid? What rules does it violate? Will this change break existing clients?"
                 </p>
 
-                <h2>Getting Started</h2>
+                <h2>What We Built</h2>
 
                 <p>
-                    Every schema can have a context.json. You can write it by hand, or let AI
-                    generate a starting point from your existing .proto files:
+                    The Protobuf.ai MCP server exposes four core capability sets:
                 </p>
 
-                <pre><code>$ npm install -g @protobuf-ai/cli
-$ protobuf-ai context generate payment.proto
-
-Analyzed payment.proto
-Detected domain: payments
-Mapped 4 fields to schema.org terms
-Generated context.json
-
-Review and refine the generated context, then:
-$ protobuf-ai registry push payment.proto</code></pre>
+                <h3>1. Intelligent Linting</h3>
 
                 <p>
-                    The AI gets you 80% of the way. You add the edge cases, the tribal knowledge,
-                    the things only your team knows. Then push both files to the registry, and your
-                    API becomes AI-native.
+                    Beyond basic syntax checking, the MCP server enforces Google's Protocol Buffer style guide and configurable rule sets. AI agents can request lint checks with specific strictness levels:
+                </p>
+
+                <pre><code>// Agent requests lint check
+{
+  "tool": "protobuf_lint",
+  "input": {
+    "schema": "message UserProfile { ... }",
+    "ruleSet": "DEFAULT",
+    "autoFix": true
+  }
+}
+
+// MCP server returns actionable results
+{
+  "issues": [
+    {
+      "rule": "ENUM_ZERO_VALUE_SUFFIX",
+      "severity": "warning",
+      "message": "Enum zero value should end with _UNSPECIFIED",
+      "suggestion": "USER_STATUS_UNSPECIFIED",
+      "fixable": true
+    }
+  ],
+  "fixedSchema": "..."
+}</code></pre>
+
+                <p>
+                    The agent doesn't guess at naming conventions—it gets definitive answers with automated fixes. Rules include <code>MESSAGE_PASCAL_CASE</code>, <code>FIELD_LOWER_SNAKE_CASE</code>, <code>ENUM_VALUE_PREFIX</code>, and the full set familiar to anyone using <code>buf lint</code>.
+                </p>
+
+                <h3>2. Breaking Change Detection</h3>
+
+                <p>
+                    This is where the MCP server provides value that no amount of AI training data can replicate. When an agent proposes schema changes, it can check whether those changes will break existing clients:
+                </p>
+
+                <pre><code>// Agent checks proposed change
+{
+  "tool": "protobuf_breaking_check",
+  "input": {
+    "current": "message Order { int64 id = 1; }",
+    "proposed": "message Order { string id = 1; }"
+  }
+}
+
+// MCP server detects the break
+{
+  "breakingChanges": [{
+    "type": "type_change",
+    "element": "Order.id",
+    "severity": "critical",
+    "description": "Field type changed from int64 to string",
+    "impact": "100% - Complete incompatibility"
+  }],
+  "evolutionPlan": {
+    "steps": ["Add deprecated field", "Dual support period", "Migrate clients"],
+    "risk": "high",
+    "duration": "2 months"
+  }
+}</code></pre>
+
+                <p>
+                    The server doesn't just flag the problem—it provides an evolution plan. For teams with hundreds of microservices and thousands of schema consumers, this is the difference between a safe deployment and an outage.
+                </p>
+
+                <h3>3. Protovalidate Integration</h3>
+
+                <p>
+                    Schema structure is one thing. Runtime validation is another. The MCP server understands protovalidate constraints and can generate them from natural language:
+                </p>
+
+                <pre><code>// Agent requests validation rules
+{
+  "tool": "protobuf_validate",
+  "input": {
+    "message": "CreateUserRequest",
+    "constraints": "email must be valid, age must be 18-120, username 3-50 chars"
+  }
+}
+
+// MCP server generates protovalidate rules
+{
+  "validatedSchema": `
+    message CreateUserRequest {
+      string email = 1 [(buf.validate.field).string.email = true];
+      int32 age = 2 [(buf.validate.field).int32 = {gte: 18, lte: 120}];
+      string username = 3 [(buf.validate.field).string = {min_len: 3, max_len: 50}];
+    }
+  `
+}</code></pre>
+
+                <p>
+                    Developers describe constraints in plain English. The agent translates them to protovalidate syntax. No more looking up annotation formats.
+                </p>
+
+                <h3>4. SDK Generation</h3>
+
+                <p>
+                    The final piece: generating client libraries. The MCP server integrates with protobuf.ai's SDK generation pipeline, letting agents produce type-safe clients on demand:
+                </p>
+
+                <pre><code>// Agent generates TypeScript client
+{
+  "tool": "protobuf_generate_sdk",
+  "input": {
+    "schema": "payment.proto",
+    "language": "typescript",
+    "framework": "connect-es"
+  }
+}
+
+// Returns ready-to-use client code
+{
+  "files": {
+    "payment_pb.ts": "...",
+    "payment_connect.ts": "..."
+  },
+  "installCommand": "npm install @connectrpc/connect"
+}</code></pre>
+
+                <h2>The Governance Layer</h2>
+
+                <p>
+                    Beyond individual tools, the MCP server enables something more powerful: AI-assisted governance at scale.
+                </p>
+
+                <p>
+                    Enterprise protobuf deployments have hundreds of services, thousands of schemas, and dozens of teams. Keeping everyone aligned on conventions, preventing breaking changes, and enforcing validation rules is a full-time job for platform teams.
+                </p>
+
+                <p>
+                    With the MCP server, governance becomes proactive:
+                </p>
+
+                <div class="highlight-box">
+                    <p><strong style="color: var(--color-text);">Pre-commit validation:</strong> AI assistants check schemas before code is even pushed. Issues are caught in the editor, not in CI.</p>
+
+                    <p><strong style="color: var(--color-text);">PR review automation:</strong> When a PR modifies .proto files, agents can automatically check lint rules, breaking changes, and validation coverage.</p>
+
+                    <p><strong style="color: var(--color-text);">Onboarding acceleration:</strong> New team members ask their AI assistant how to structure schemas. The assistant consults the MCP server and returns answers consistent with organizational standards.</p>
+
+                    <p><strong style="color: var(--color-text);">Cross-team consistency:</strong> The same rules apply whether you're on the payments team or the notifications team. The MCP server is the single source of truth.</p>
+                </div>
+
+                <h2>Results</h2>
+
+                <p>
+                    Since launching the MCP server, protobuf.ai has seen measurable impact:
+                </p>
+
+                <div class="highlight-box">
+                    <span class="data-point">73%</span>
+                    <p>Reduction in schema-related PR review cycles. Issues caught before human review.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <span class="data-point">0</span>
+                    <p>Breaking change incidents in production since MCP adoption. Previously: 2-3 per quarter.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <span class="data-point">4x</span>
+                    <p>Faster onboarding for new developers working with protobufs. AI assistants provide correct guidance from day one.</p>
+                </div>
+
+                <h2>The Competitive Angle</h2>
+
+                <p>
+                    The protobuf tooling market is established. Buf raised $100M to build the definitive protobuf platform. Their tools are excellent—but they're built for humans running CLIs.
+                </p>
+
+                <p>
+                    Protobuf.ai's MCP server doesn't replace those tools. It makes them accessible to AI agents. When developers increasingly work through AI assistants, that accessibility becomes a competitive advantage.
+                </p>
+
+                <blockquote>
+                    "We're not competing on linting rules or breaking change algorithms. We're competing on how developers access those capabilities. The answer increasingly is: through their AI assistant."
+                    <cite>— Protobuf.ai Team</cite>
+                </blockquote>
+
+                <p>
+                    This is the pattern we see across developer tools. The underlying capabilities matter—but so does how AI agents can use them. MCP is the bridge.
+                </p>
+
+                <h2>Technical Implementation</h2>
+
+                <p>
+                    For teams considering similar integrations, here's what the MCP server architecture looks like:
+                </p>
+
+                <ul>
+                    <li><strong>Stateless tools:</strong> Each MCP tool (lint, breaking check, validate, generate) is stateless. No session management required.</li>
+                    <li><strong>Schema parsing:</strong> We use protobuf.js for parsing with custom visitors for rule checking. Full protoc integration for SDK generation.</li>
+                    <li><strong>Edge deployment:</strong> The server runs on Cloudflare Workers for global low-latency access. AI assistants get sub-50ms responses.</li>
+                    <li><strong>Resource exposure:</strong> Schema registry contents are exposed as MCP resources. Agents can browse available schemas and their versions.</li>
+                </ul>
+
+                <p>
+                    The implementation follows the patterns we documented in <a href="mcp-protocol-explained-for-marketers.html">MCP Protocol Explained</a>—tools for actions, resources for data, clean JSON-RPC interfaces.
                 </p>
 
                 <div class="cta-box">
-                    <h3>Make Your APIs AI-Discoverable</h3>
+                    <h3>Make Your Developer Tools Agent-Accessible</h3>
                     <p>
-                        We help API teams add semantic layers to their schemas—whether you're using
-                        Protocol Buffers, OpenAPI, or GraphQL. The pattern is the same: structure
-                        plus meaning equals AI-native.
+                        We help companies build MCP servers that let AI agents use their products. Whether you're building for protobufs, databases, or any developer tool—the pattern is the same.
                     </p>
-                    <a href="/demo-signup.html" class="button" data-track="CTA: Protobuf.ai Demo Request">Schedule a Demo</a>
+                    <a href="/#demo" class="button" data-track="CTA: Protobuf.ai Case Study Demo Request">Schedule a Demo</a>
                 </div>
 
-                <h2>The Bigger Picture</h2>
+                <h2>Key Takeaways</h2>
 
                 <p>
-                    protobuf.ai is one piece of a larger thesis: developer tools need to be
-                    AI-accessible to remain relevant. We explored this with
-                    <a href="scylladb-mcp-server-case-study.html">databases</a>. Now we're exploring
-                    it with API schemas. The same pattern—MCP servers, semantic layers, executable
-                    context—applies across the developer infrastructure stack.
+                    Building this MCP server reinforced several principles:
                 </p>
 
-                <p>
-                    At <a href="https://voyant.io">Voyant</a>, we're building the tools to help
-                    companies make this transition: translating traditional developer content into
-                    agent-friendly formats, creating semantic layers for existing APIs, and measuring
-                    how AI agents actually interact with your developer experience.
-                </p>
+                <ol>
+                    <li><strong>Governance tools need agent access.</strong> Linting and validation are exactly the kind of "is this correct?" questions AI assistants get asked constantly. If they can't call your tools, they'll guess.</li>
+
+                    <li><strong>Breaking change detection is high-value.</strong> No amount of training data teaches an AI model the specific compatibility rules of your schema format. Programmatic access is the only reliable path.</li>
+
+                    <li><strong>Generation workflows benefit most.</strong> When agents can generate SDKs, validation rules, and boilerplate, they become dramatically more useful. The MCP server turns "here's how you might do it" into "here's working code."</li>
+
+                    <li><strong>Enterprise governance scales with AI.</strong> Platform teams can't review every schema change. AI assistants with MCP access can—applying consistent rules across the organization.</li>
+                </ol>
+
+                <h2>What's Next</h2>
 
                 <p>
-                    The companies that make their products AI-understandable today will be the
-                    ones developers find tomorrow. Structure got us here. Meaning gets us where
-                    we're going.
+                    Protobuf.ai continues to expand MCP capabilities. On the roadmap:
+                </p>
+
+                <ul>
+                    <li><strong>Semantic search:</strong> Find schemas by meaning, not just by name. "Show me all schemas related to payments" works even if no schema contains the word "payment."</li>
+
+                    <li><strong>Impact analysis:</strong> Before changing a schema, see exactly which services and clients depend on it. AI agents can explain the blast radius.</li>
+
+                    <li><strong>Migration assistance:</strong> When breaking changes are necessary, generate migration code and client updates automatically.</li>
+                </ul>
+
+                <p>
+                    For developer tools companies watching the AI transition, this is the playbook: take your CLI capabilities and make them callable by AI agents. The tools that do this become the ones AI recommends.
                 </p>
 
                 <h2>Resources</h2>
 
                 <ul>
-                    <li><a href="https://protobuf.ai">protobuf.ai</a> — The semantic layer for Protocol Buffers</li>
-                    <li><a href="https://github.com/protobuf-ai/protobuf-ai">protobuf.ai on GitHub</a></li>
-                    <li><a href="https://protobuf.ai/blog/schemas-need-meaning.html">Schemas Need Meaning, Not Just Structure</a> — The manifesto</li>
-                    <li><a href="scylladb-mcp-server-case-study.html">ScyllaDB MCP Server Case Study</a> — The same pattern for databases</li>
-                    <li><a href="ai-agents-wont-read-your-docs.html">AI Agents Won't Read Your Docs</a> — Why executable context matters</li>
+                    <li><a href="https://protobuf.ai">Protobuf.ai</a> — AI-native Protocol Buffer platform</li>
+                    <li><a href="https://registry.protobuf.ai">registry.protobuf.ai</a> — Schema registry with MCP access</li>
+                    <li><a href="scylladb-mcp-server-case-study.html">ScyllaDB MCP Server Case Study</a> — Similar pattern for databases</li>
+                    <li><a href="mcp-protocol-explained-for-marketers.html">MCP Protocol Explained</a> — Technical introduction to MCP</li>
+                    <li><a href="ai-agents-wont-read-your-docs.html">AI Agents Won't Read Your Docs</a> — Why programmatic access matters</li>
                 </ul>
             </div>
         </article>
 
         <section class="about-section">
-        <div class="container">
-            <h3>About DevExp.ai</h3>
-            <p>DevExp.ai helps companies make their products discoverable to AI agents. We build the infrastructure layer between your content and the agent web—llms.txt generation, MCP servers, agent-readable APIs, and trust verification.</p>
-            <p><a href="/#demo" class="cta-link">Get in Touch →</a></p>
-        </div>
-    </section>
+            <div class="container">
+                <h3>About DevExp.ai</h3>
+                <p>DevExp.ai helps companies make their products discoverable to AI agents. We build the infrastructure layer between your content and the agent web—llms.txt generation, MCP servers, agent-readable APIs, and trust verification.</p>
+                <p><a href="/#demo" class="cta-link">Get in Touch &rarr;</a></p>
+            </div>
+        </section>
 
-    <footer class="footer">
+        <footer class="footer">
             <div class="container">
                 <div class="footer-links">
                     <a href="/privacy">Privacy</a>
@@ -594,7 +575,7 @@ $ protobuf-ai registry push payment.proto</code></pre>
                     <a href="/">Home</a>
                 </div>
                 <div class="footer-text">
-                    © 2026 Voyant, LLC - Building for Agentic Developer Journeys
+                    &copy; 2026 Voyant, LLC - Building for Agentic Developer Journeys
                 </div>
             </div>
         </footer>

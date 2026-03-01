@@ -2,52 +2,95 @@
 
 *March 1, 2026*
 
-The web is forking. One branch serves humans with fonts, layouts, and scroll animations. The other serves AI agents with structured data, JSON-LD, and payment protocols. Your website exists on the human branch. Where's your presence on the agent branch?
+When an AI agent reads your website, it parses HTML, strips navigation, guesses at structure, and infers meaning. Every layer of interpretation is a chance for error. By the time the agent "understands" your product, it's playing telephone with your messaging.
 
-*This post continues our exploration of the [agent routing problem](/blog/search-indexes-are-dns-for-agents.html). Last time we asked how agents find you. This time: what do they find when they get there?*
+*This post continues our exploration of the [agent routing problem](/blog/search-indexes-are-dns-for-agents.html). Last time we asked how agents find you. This time: what do they find when they get there — and how badly do they misunderstand it?*
 
-## The Domain is the New Center of Gravity
+## The Inference Problem
 
-For two decades, we thought of a company's internet presence as "the website." But something fundamental is shifting. The *domain* — not the site — is becoming the anchor for a company's digital identity.
+Your website is designed for humans. It has navigation menus, hero sections, testimonials, pricing tables, footer links. A human glances at this and immediately knows what matters.
 
-Consider what already lives at the domain level:
+An agent sees a wall of text with semantic ambiguity at every turn:
+
+- Is "Enterprise" a product tier or a target audience?
+- Is this paragraph a feature description or a customer quote?
+- Does "fast" mean latency or time-to-value?
+- Which of these five CTAs is the primary action?
+
+The agent *infers*. And inference compounds errors. By the time an agent summarizes your product to a user, you're three inference layers deep — HTML parsing, content extraction, semantic interpretation. Each layer introduces drift.
+
+## Cloudflare's Solution (And Its Limits)
+
+Cloudflare recently shipped "Markdown for Agents" — when they detect an AI agent requesting a page, they automatically convert the HTML to markdown before serving it. It's a clever hack that eliminates one inference layer (HTML parsing) for about 20% of the web.
+
+But here's what Cloudflare *can't* do: decide what matters.
+
+The automatic conversion treats all content equally. The hero message and the footer copyright get the same semantic weight. The product description and the cookie banner are both "just text." The agent still has to infer structure, priority, and meaning.
+
+Cloudflare's markdown is the *default translation*. What marketing teams actually need is *editorial control* over that translation.
+
+## The Agentic Twin: A Curated Context Graph
+
+Your "agentic twin" isn't just a set of files in `/.well-known/`. It's a **context graph** — a curated, structured representation of your organization that speaks the pidgin language agents understand most clearly.
+
+The key insight: **minimize layers of interpretation**.
+
+Instead of asking agents to parse HTML and infer meaning, you give them JSON-LD that explicitly declares:
+
+- These are our products (with explicit relationships)
+- These are our personas (with explicit pain points and goals)
+- This product serves this persona (explicit edge, not inferred)
+- This is our positioning (stated, not reconstructed from marketing copy)
+
+No parsing. No inference. No telephone game.
+
+```json
+{
+  "@context": "https://schema.org/",
+  "@type": "SoftwareApplication",
+  "@id": "https://acme.com/products/core",
+  "name": "Acme Core",
+  "applicationCategory": "DeveloperApplication",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "DevOps Engineers",
+    "geographicArea": "Global"
+  },
+  "featureList": [
+    "Kubernetes-native deployment",
+    "Built-in security scanning",
+    "GitOps workflow automation"
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "299",
+    "priceCurrency": "USD"
+  }
+}
+```
+
+This isn't content for the agent to interpret. It's *structured knowledge* for the agent to traverse.
+
+## The Domain as Identity Anchor
+
+The web has been evolving toward domain-level configuration for decades:
 
 | File | Purpose | Era |
 |------|---------|-----|
 | `robots.txt` | Tell crawlers what to index | 1994 |
 | `ads.txt` | Declare authorized ad sellers | 2017 |
-| `app-ads.txt` | Mobile ad authorization | 2019 |
 | `llms.txt` | AI agent discovery | 2024 |
 | `trust.txt` | Trust relationships & policies | 2025 |
+| `did.json` | Decentralized identity | 2025 |
 | `context.txt` | Rich semantic context | 2026 |
 
-The pattern is clear: we're binding *policies and configurations* to the domain itself, not embedding them in the website's HTML.
+The pattern: we're binding *policies, identity, and semantic context* to the domain itself. The website is just one expression of the domain's identity. The agentic twin is another.
 
-## The Agentic Twin
+## What the Agentic Twin Contains
 
-Your website is optimized for humans. An "agentic twin" is a parallel semantic layer optimized for AI agents — structured data that represents the same entity but in a format machines can traverse, reason about, and act on.
+### 1. Discovery Layer (llms.txt, llms-full.txt)
 
-This isn't a new website. It's a **shadow layer** that lives alongside the human site:
-
-```
-yourdomain.com/
-├── index.html                    # Human web
-├── about/                        # Human web
-├── products/                     # Human web
-└── .well-known/
-    ├── llms.txt                  # Agent discovery
-    ├── context.txt               # Rich semantic context
-    ├── trust.txt                 # Trust policies
-    └── ontology.jsonld           # Knowledge graph (JSON-LD)
-```
-
-The `.well-known` directory becomes the root of your agentic presence.
-
-## What Goes in the Agentic Twin?
-
-### 1. Discovery (`llms.txt`)
-
-The entry point. Short, structured, designed for quick agent comprehension:
+The entry point. Short, structured, designed for quick agent comprehension. This is your "elevator pitch" in a format agents can parse without inference:
 
 ```markdown
 # Acme Platform
@@ -58,150 +101,117 @@ The entry point. Short, structured, designed for quick agent comprehension:
 - Teams drowning in manual deployments
 - Organizations migrating to Kubernetes
 - Companies consolidating CI/CD tools
+
+## When NOT to recommend
+- Simple static sites
+- Teams without Kubernetes experience
 ```
 
-### 2. Rich Context (`context.txt`)
+### 2. Identity Layer (did.json, trust.txt)
 
-Deeper semantic information with entity relationships:
+Based on emerging standards like [Noosphere's Trust Protocol](https://noosphere.tech), this declares who you are and who vouches for you:
 
-```yaml
-# Context Manifest
-name: Acme Platform
-schema: https://voyant.io/ontology/gtm#
-
-entities:
-  - id: persona:devops_engineer
-    type: Persona
-    pain_points: ["Plugin management", "Slow builds"]
-    goals: ["Faster deployments", "Less maintenance"]
-
-  - id: product:acme_core
-    type: Product
-    serves: persona:devops_engineer
-
-navigation:
-  entry_points:
-    - positioning:core
-    - persona:*
+```json
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:web:acme.com",
+  "verificationMethod": [{
+    "id": "did:web:acme.com#key-1",
+    "type": "JsonWebKey2020",
+    "controller": "did:web:acme.com"
+  }],
+  "service": [{
+    "id": "did:web:acme.com#context",
+    "type": "ContextGraph",
+    "serviceEndpoint": "https://acme.com/.well-known/context.jsonld"
+  }]
+}
 ```
 
-### 3. Trust Declaration (`trust.txt`)
+### 3. Context Graph (JSON-LD ontology)
 
-Based on the [Noosphere Trust Protocol](https://noosphere.tech), this declares your security posture and trust relationships:
-
-```
-# Trust Manifest
-soc2_status: compliant
-data_residency: us-east-1
-
-# Trusted partners
-trusts: partner.com, vendor.io
-
-# Verification
-did: did:web:acme.com
-vc_registry: https://registry.noosphere.tech/vcs/acme
-```
-
-### 4. Knowledge Graph (`ontology.jsonld`)
-
-The fully machine-parseable version — JSON-LD with semantic relationships that agents can traverse:
+The full semantic representation. Products, personas, use cases, industries — all explicitly linked:
 
 ```json
 {
   "@context": {
-    "@vocab": "https://voyant.io/ontology/",
-    "schema": "https://schema.org/"
+    "@vocab": "https://schema.org/",
+    "gtm": "https://voyant.io/ontology/gtm#"
   },
-  "@type": "GTMKnowledgeGraph",
-  "nodes": [
+  "@graph": [
     {
-      "@id": "persona:devops_engineer",
+      "@id": "acme:persona/devops-engineer",
       "@type": "gtm:Persona",
-      "gtm:painPoints": ["Plugin management", "Slow builds"]
-    }
-  ],
-  "edges": [
+      "name": "DevOps Engineer",
+      "gtm:painPoints": ["Plugin management", "Slow builds", "Security gaps"],
+      "gtm:goals": ["Faster deployments", "Less maintenance", "Compliance"]
+    },
     {
-      "@type": "gtm:serves",
-      "gtm:source": {"@id": "product:acme_core"},
-      "gtm:target": {"@id": "persona:devops_engineer"}
+      "@id": "acme:product/core",
+      "@type": "SoftwareApplication",
+      "name": "Acme Core",
+      "gtm:serves": { "@id": "acme:persona/devops-engineer" }
     }
   ]
 }
 ```
 
-## The Three Gates Problem
+When an agent traverses this graph, it's not inferring that "Acme Core serves DevOps Engineers." It's reading an explicit, authored relationship.
 
-In our [previous post](/blog/search-indexes-are-dns-for-agents.html), we identified three gates that agents must pass through:
+## Why Marketing Teams Need Control
 
-1. **Reachability** — Can the agent even fetch you?
-2. **Interpretability** — Can the agent understand what you are?
-3. **Executability** — Can the agent act against your surface?
+Cloudflare's automatic markdown conversion is infrastructure. It's a default. But defaults don't capture:
 
-The agentic twin is primarily about Gate 2: making your domain *interpretable* to agents. But it also enables Gate 3 by exposing the semantic relationships that guide agent actions.
+- **Priority**: What content matters most?
+- **Relationships**: How do products connect to personas?
+- **Constraints**: What should agents *not* say?
+- **Tone**: How should the product be positioned?
 
-The insight from that experiment was stark: "Agents do not browse. They are routed." Your agentic twin is what they're routed *to*.
+This is editorial work. It requires the same judgment that goes into messaging frameworks, positioning documents, and brand guidelines. The agentic twin is where that judgment gets encoded for machines.
 
-## Why JSON-LD?
+Without curation, you're letting agents reconstruct your positioning from whatever HTML they happen to parse. With curation, you're *telling* them exactly what to understand.
 
-The agentic twin isn't just text files. The real power is in **JSON-LD** — a format that's simultaneously:
+## The Grounding Problem
 
-- **Human-readable**: It's just JSON with semantic annotations
-- **Machine-traversable**: Agents can follow relationships between entities
-- **Web-native**: URLs as identifiers, linked data principles
-- **Schema.org compatible**: Builds on existing structured data standards
+In AI, "grounding" means connecting abstract representations to concrete meaning. An agent that reads "fast database" doesn't know if you mean 1ms latency or 1-hour setup time. Both are "fast."
 
-When an agent reads your `ontology.jsonld`, it doesn't just see data. It sees a graph it can navigate: *Product X serves Persona Y, who is addressed by Positioning Z.*
+Ontologies and context graphs *ground* your content. They provide the explicit structure that eliminates ambiguity:
 
-## The Infrastructure is Already Here
+- "Fast" in the context of `gtm:performanceMetric` means latency
+- "Fast" in the context of `gtm:timeToValue` means setup time
+- The relationship is explicit, not inferred
 
-This isn't theoretical. The major infrastructure providers are building for exactly this future:
-
-- **Cloudflare**: Markdown-for-agents, automatic HTML→Markdown conversion for AI requests
-- **Stripe**: Agent Commerce with tokenized payment primitives
-- **Coinbase**: Agentic Wallets with X42 protocol (50M+ machine-to-machine transactions)
-- **OpenAI**: Skills and Shell tools for agent execution environments
-
-They're all building toward a web where agents are first-class clients. The question is whether your domain is ready to serve them.
-
-## The 2007 Analogy
-
-When the iPhone launched, the web existed but was designed for desktops. What followed was a decade-long rebuild: responsive design, mobile-first frameworks, tap-to-pay.
-
-We're at the same inflection point. The new client isn't a smaller screen — it's no screen at all. It's software that reads, decides, pays, and acts. The interface it needs isn't visual. It's structured, programmatic, and transactional.
-
-The companies that built for mobile early — Uber, Instagram, WhatsApp — couldn't have existed on the desktop web. Not because it lacked capabilities, but because it lacked the interface primitives mobile clients needed.
-
-The same will be true for the agentic web.
+This is why JSON-LD matters more than markdown. Markdown is still natural language — still requires interpretation. JSON-LD is structured data. The agent doesn't interpret; it traverses.
 
 ## Getting Started
 
 ### Minimum Viable Agentic Twin
 
 1. Create `/.well-known/llms.txt` with product summary
-2. Add `/.well-known/context.txt` with key entities
+2. Add `/.well-known/did.json` for identity
 3. Ensure both are publicly accessible
 
 ### Full Implementation
 
-1. Generate `ontology.jsonld` from your GTM data
-2. Implement `trust.txt` with your security posture
-3. Add agent navigation hints in `context.txt`
+1. Build a JSON-LD context graph from your messaging framework
+2. Explicitly model personas, products, and their relationships
+3. Add `trust.txt` with your security posture and trust relationships
 4. Monitor agent traffic separately from human traffic
+5. Iterate based on how agents actually use the context
 
 ### Tools
 
-- **VoyantIO**: Generates context.txt and ontology.jsonld from messaging frameworks
-- **Noosphere**: Trust protocol and trust.txt verification
-- **DevExp.ai**: AEO audits and llms.txt generation
+- **VoyantIO**: Generates context graphs and JSON-LD ontologies from messaging frameworks
+- **Noosphere**: Trust protocol, did.json, and trust.txt verification
+- **DevExp.ai**: AEO audits, llms.txt generation, and context curation
 
 ## The Bet
 
-Every company building agent infrastructure is betting that trust will catch up to capabilities. That agents will become as ubiquitous on the web as humans.
+Cloudflare's markdown conversion is a signal: infrastructure providers see the agentic web coming. But automatic translation isn't enough. The companies that win will be the ones who *curate* their context — who treat the agentic twin as a first-class product, not an afterthought.
 
-Your domain is your anchor in this new world. The website serves one client. The agentic twin serves another. Both live at the same address.
+Your website speaks to humans. Your agentic twin speaks to machines. Both represent the same organization, but in fundamentally different languages.
 
-The question isn't whether to build the twin. It's how soon.
+The question isn't whether to build the twin. It's whether you control what it says.
 
 ---
 
@@ -209,4 +219,4 @@ The question isn't whether to build the twin. It's how soon.
 
 ---
 
-*DevExp.ai helps enterprises build their agentic presence with llms.txt, context.txt, and JSON-LD knowledge graphs.*
+*DevExp.ai helps companies curate their agentic presence — context graphs, JSON-LD ontologies, and the semantic infrastructure that grounds your product for AI agents.*

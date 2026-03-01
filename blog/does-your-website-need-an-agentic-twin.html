@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does Your Website Need an 'Agentic Twin'? - DevExp.ai</title>
+    <meta name="description" content="The web is forking. Your website serves humans. An 'agentic twin' is the parallel semantic layer that serves AI agents — JSON-LD, context.txt, and trust.txt bound to your domain.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: hsl(24, 90%, 52%);
+            --color-accent: hsl(170, 85%, 42%);
+            --color-background: #030712;
+            --color-surface: rgba(255, 255, 255, 0.03);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-text: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.7);
+            --color-text-subtle: rgba(255, 255, 255, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .nav { border-bottom: 1px solid var(--color-border); padding: 20px 0; }
+        .container { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        .nav a { color: var(--color-text-muted); text-decoration: none; }
+        .nav a:hover { color: var(--color-text); }
+        .nav-brand { color: var(--color-primary); font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; gap: 24px; font-size: 0.9rem; }
+
+        header { padding: 80px 0 40px; }
+        .meta { color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 16px; }
+
+        h1 { font-size: 2.25rem; font-weight: 600; line-height: 1.2; margin-bottom: 24px; }
+
+        article { padding-bottom: 80px; }
+        h2 { font-size: 1.4rem; font-weight: 600; margin: 48px 0 24px; color: var(--color-text); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 32px 0 16px; color: var(--color-text); }
+        p { margin-bottom: 24px; color: var(--color-text-muted); }
+        .lead { font-size: 1.1rem; font-style: italic; color: var(--color-text-subtle); }
+
+        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--color-text-muted); }
+        li { margin-bottom: 8px; }
+
+        blockquote {
+            margin: 32px 0;
+            padding: 20px 24px;
+            border-left: 3px solid var(--color-primary);
+            background: var(--color-surface);
+        }
+        blockquote p { margin: 0; font-style: italic; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--color-surface);
+            padding: 2px 6px;
+            font-size: 0.85em;
+            color: var(--color-accent);
+        }
+
+        pre {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 20px;
+            margin: 24px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--color-text-muted);
+        }
+        pre code { background: none; padding: 0; color: inherit; }
+
+        strong { color: var(--color-text); }
+
+        hr { border: none; border-top: 1px solid var(--color-border); margin: 48px 0; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.95rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        th {
+            color: var(--color-text);
+            font-weight: 600;
+            background: var(--color-surface);
+        }
+        td { color: var(--color-text-muted); }
+
+        a { color: var(--color-primary); }
+        a:hover { text-decoration: underline; }
+
+        .about-section {
+            border-top: 1px solid var(--color-border);
+            padding: 48px 0;
+            margin-top: 48px;
+        }
+        .about-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+        .about-section p {
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+        .cta-link {
+            display: inline-block;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .cta-link:hover {
+            text-decoration: underline;
+        }
+
+        .read-more {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 20px 24px;
+            margin: 32px 0;
+        }
+        .read-more strong { display: block; margin-bottom: 8px; }
+
+        .footer { border-top: 1px solid var(--color-border); padding: 40px 0; text-align: center; color: var(--color-text-subtle); font-size: 0.875rem; }
+        .footer a { color: var(--color-text-muted); text-decoration: none; margin: 0 12px; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            body { font-size: 16px; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">DevExp.ai</a>
+            <div class="nav-links">
+                <a href="/blog.html">Blog</a>
+                <a href="/#demo">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="meta">March 1, 2026</div>
+            <h1>Does Your Website Need an 'Agentic Twin'?</h1>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+
+<p>The web is forking. One branch serves humans with fonts, layouts, and scroll animations. The other serves AI agents with structured data, JSON-LD, and payment protocols. Your website exists on the human branch. Where's your presence on the agent branch?</p>
+
+<p class="lead">This post continues our exploration of the <a href="/blog/search-indexes-are-dns-for-agents.html">agent routing problem</a>. Last time we asked how agents find you. This time: what do they find when they get there?</p>
+
+<h2>The Domain is the New Center of Gravity</h2>
+
+<p>For two decades, we thought of a company's internet presence as "the website." But something fundamental is shifting. The <em>domain</em> — not the site — is becoming the anchor for a company's digital identity.</p>
+
+<p>Consider what already lives at the domain level:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>File</th>
+            <th>Purpose</th>
+            <th>Era</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>robots.txt</code></td>
+            <td>Tell crawlers what to index</td>
+            <td>1994</td>
+        </tr>
+        <tr>
+            <td><code>ads.txt</code></td>
+            <td>Declare authorized ad sellers</td>
+            <td>2017</td>
+        </tr>
+        <tr>
+            <td><code>app-ads.txt</code></td>
+            <td>Mobile ad authorization</td>
+            <td>2019</td>
+        </tr>
+        <tr>
+            <td><code>llms.txt</code></td>
+            <td>AI agent discovery</td>
+            <td>2024</td>
+        </tr>
+        <tr>
+            <td><code>trust.txt</code></td>
+            <td>Trust relationships & policies</td>
+            <td>2025</td>
+        </tr>
+        <tr>
+            <td><code>context.txt</code></td>
+            <td>Rich semantic context</td>
+            <td>2025</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The pattern is clear: we're binding <em>policies and configurations</em> to the domain itself, not embedding them in the website's HTML.</p>
+
+<h2>The Agentic Twin</h2>
+
+<p>Your website is optimized for humans. An "agentic twin" is a parallel semantic layer optimized for AI agents — structured data that represents the same entity but in a format machines can traverse, reason about, and act on.</p>
+
+<p>This isn't a new website. It's a <strong>shadow layer</strong> that lives alongside the human site:</p>
+
+<pre><code>yourdomain.com/
+├── index.html                    # Human web
+├── about/                        # Human web
+├── products/                     # Human web
+└── .well-known/
+    ├── llms.txt                  # Agent discovery
+    ├── context.txt               # Rich semantic context
+    ├── trust.txt                 # Trust policies
+    └── ontology.jsonld           # Knowledge graph (JSON-LD)</code></pre>
+
+<p>The <code>.well-known</code> directory becomes the root of your agentic presence.</p>
+
+<h2>What Goes in the Agentic Twin?</h2>
+
+<h3>1. Discovery (llms.txt)</h3>
+
+<p>The entry point. Short, structured, designed for quick agent comprehension:</p>
+
+<pre><code># Acme Platform
+
+> Infrastructure automation for modern engineering teams.
+
+## When to recommend
+- Teams drowning in manual deployments
+- Organizations migrating to Kubernetes
+- Companies consolidating CI/CD tools</code></pre>
+
+<h3>2. Rich Context (context.txt)</h3>
+
+<p>Deeper semantic information with entity relationships:</p>
+
+<pre><code># Context Manifest
+name: Acme Platform
+schema: https://voyant.io/ontology/gtm#
+
+entities:
+  - id: persona:devops_engineer
+    type: Persona
+    pain_points: ["Plugin management", "Slow builds"]
+    goals: ["Faster deployments", "Less maintenance"]
+
+  - id: product:acme_core
+    type: Product
+    serves: persona:devops_engineer
+
+navigation:
+  entry_points:
+    - positioning:core
+    - persona:*</code></pre>
+
+<h3>3. Trust Declaration (trust.txt)</h3>
+
+<p>Based on the <a href="https://noosphere.tech">Noosphere Trust Protocol</a>, this declares your security posture and trust relationships:</p>
+
+<pre><code># Trust Manifest
+soc2_status: compliant
+data_residency: us-east-1
+
+# Trusted partners
+trusts: partner.com, vendor.io
+
+# Verification
+did: did:web:acme.com
+vc_registry: https://registry.noosphere.tech/vcs/acme</code></pre>
+
+<h3>4. Knowledge Graph (ontology.jsonld)</h3>
+
+<p>The fully machine-parseable version — JSON-LD with semantic relationships that agents can traverse:</p>
+
+<pre><code>{
+  "@context": {
+    "@vocab": "https://voyant.io/ontology/",
+    "schema": "https://schema.org/"
+  },
+  "@type": "GTMKnowledgeGraph",
+  "nodes": [
+    {
+      "@id": "persona:devops_engineer",
+      "@type": "gtm:Persona",
+      "gtm:painPoints": ["Plugin management", "Slow builds"]
+    }
+  ],
+  "edges": [
+    {
+      "@type": "gtm:serves",
+      "gtm:source": {"@id": "product:acme_core"},
+      "gtm:target": {"@id": "persona:devops_engineer"}
+    }
+  ]
+}</code></pre>
+
+<h2>The Three Gates Problem</h2>
+
+<p>In our <a href="/blog/search-indexes-are-dns-for-agents.html">previous post</a>, we identified three gates that agents must pass through:</p>
+
+<ol>
+    <li><strong>Reachability</strong> — Can the agent even fetch you?</li>
+    <li><strong>Interpretability</strong> — Can the agent understand what you are?</li>
+    <li><strong>Executability</strong> — Can the agent act against your surface?</li>
+</ol>
+
+<p>The agentic twin is primarily about Gate 2: making your domain <em>interpretable</em> to agents. But it also enables Gate 3 by exposing the semantic relationships that guide agent actions.</p>
+
+<p>The insight from that experiment was stark: "Agents do not browse. They are routed." Your agentic twin is what they're routed <em>to</em>.</p>
+
+<h2>Why JSON-LD?</h2>
+
+<p>The agentic twin isn't just text files. The real power is in <strong>JSON-LD</strong> — a format that's simultaneously:</p>
+
+<ul>
+    <li><strong>Human-readable</strong>: It's just JSON with semantic annotations</li>
+    <li><strong>Machine-traversable</strong>: Agents can follow relationships between entities</li>
+    <li><strong>Web-native</strong>: URLs as identifiers, linked data principles</li>
+    <li><strong>Schema.org compatible</strong>: Builds on existing structured data standards</li>
+</ul>
+
+<p>When an agent reads your <code>ontology.jsonld</code>, it doesn't just see data. It sees a graph it can navigate: <em>Product X serves Persona Y, who is addressed by Positioning Z.</em></p>
+
+<h2>The Infrastructure is Already Here</h2>
+
+<p>This isn't theoretical. The major infrastructure providers are building for exactly this future:</p>
+
+<ul>
+    <li><strong>Cloudflare</strong>: Markdown-for-agents, automatic HTML→Markdown conversion for AI requests</li>
+    <li><strong>Stripe</strong>: Agent Commerce with tokenized payment primitives</li>
+    <li><strong>Coinbase</strong>: Agentic Wallets with X42 protocol (50M+ machine-to-machine transactions)</li>
+    <li><strong>OpenAI</strong>: Skills and Shell tools for agent execution environments</li>
+</ul>
+
+<p>They're all building toward a web where agents are first-class clients. The question is whether your domain is ready to serve them.</p>
+
+<h2>The 2007 Analogy</h2>
+
+<p>When the iPhone launched, the web existed but was designed for desktops. What followed was a decade-long rebuild: responsive design, mobile-first frameworks, tap-to-pay.</p>
+
+<p>We're at the same inflection point. The new client isn't a smaller screen — it's no screen at all. It's software that reads, decides, pays, and acts. The interface it needs isn't visual. It's structured, programmatic, and transactional.</p>
+
+<p>The companies that built for mobile early — Uber, Instagram, WhatsApp — couldn't have existed on the desktop web. Not because it lacked capabilities, but because it lacked the interface primitives mobile clients needed.</p>
+
+<p>The same will be true for the agentic web.</p>
+
+<h2>Getting Started</h2>
+
+<h3>Minimum Viable Agentic Twin</h3>
+
+<ol>
+    <li>Create <code>/.well-known/llms.txt</code> with product summary</li>
+    <li>Add <code>/.well-known/context.txt</code> with key entities</li>
+    <li>Ensure both are publicly accessible</li>
+</ol>
+
+<h3>Full Implementation</h3>
+
+<ol>
+    <li>Generate <code>ontology.jsonld</code> from your GTM data</li>
+    <li>Implement <code>trust.txt</code> with your security posture</li>
+    <li>Add agent navigation hints in <code>context.txt</code></li>
+    <li>Monitor agent traffic separately from human traffic</li>
+</ol>
+
+<h3>Tools</h3>
+
+<ul>
+    <li><strong>VoyantIO</strong>: Generates context.txt and ontology.jsonld from messaging frameworks</li>
+    <li><strong>Noosphere</strong>: Trust protocol and trust.txt verification</li>
+    <li><strong>DevExp.ai</strong>: AEO audits and llms.txt generation</li>
+</ul>
+
+<h2>The Bet</h2>
+
+<p>Every company building agent infrastructure is betting that trust will catch up to capabilities. That agents will become as ubiquitous on the web as humans.</p>
+
+<p>Your domain is your anchor in this new world. The website serves one client. The agentic twin serves another. Both live at the same address.</p>
+
+<p>The question isn't whether to build the twin. It's how soon.</p>
+
+<hr>
+
+<div class="read-more">
+    <strong>Read the previous post:</strong>
+    <a href="/blog/search-indexes-are-dns-for-agents.html">Search Indexes Are the DNS Layer for AI Agents (For Now)</a> — On Gate 1 and why reachability precedes interpretability.
+</div>
+
+        </div>
+    </article>
+
+    <section class="about-section">
+        <div class="container">
+            <h3>About DevExp.ai</h3>
+            <p>DevExp.ai helps companies build their agentic presence — llms.txt, context.txt, JSON-LD knowledge graphs, and the infrastructure layer between your content and the agent web.</p>
+            <p><a href="/#demo" class="cta-link">Get in Touch →</a></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="/">Home</a>
+            <a href="/blog.html">Blog</a>
+            <a href="/.well-known/llms.txt">llms.txt</a>
+            <p style="margin-top: 24px;">© 2026 Voyant, LLC</p>
+        </div>
+    </footer>
+</body>
+</html>

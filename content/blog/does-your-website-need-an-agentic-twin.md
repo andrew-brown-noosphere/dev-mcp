@@ -19,7 +19,7 @@ Consider what already lives at the domain level:
 | `app-ads.txt` | Mobile ad authorization | 2019 |
 | `llms.txt` | AI agent discovery | 2024 |
 | `trust.txt` | Trust relationships & policies | 2025 |
-| `context.txt` | Rich semantic context | 2025 |
+| `context.txt` | Rich semantic context | 2026 |
 
 The pattern is clear: we're binding *policies and configurations* to the domain itself, not embedding them in the website's HTML.
 

@@ -158,18 +158,39 @@ The full semantic representation. Products, personas, use cases, industries — 
 
 When an agent traverses this graph, it's not inferring that "Acme Core serves DevOps Engineers." It's reading an explicit, authored relationship.
 
-## Why Marketing Teams Need Control
+## Why Teams Need Control
 
-Cloudflare's automatic markdown conversion is infrastructure. It's a default. But defaults don't capture:
+Cloudflare's automatic markdown conversion is infrastructure. It's a default. But defaults don't capture intent, priority, or workflow — and every team that produces content has opinions about how agents should interpret it.
 
-- **Priority**: What content matters most?
-- **Relationships**: How do products connect to personas?
-- **Constraints**: What should agents *not* say?
-- **Tone**: How should the product be positioned?
+### Product Marketing
 
-This is editorial work. It requires the same judgment that goes into messaging frameworks, positioning documents, and brand guidelines. The agentic twin is where that judgment gets encoded for machines.
+Positioning isn't just words on a page. It's a strategic choice about what to emphasize, what to downplay, and how to differentiate. When an agent reconstructs your positioning from parsed HTML, it flattens that strategy into "just text." Product marketing needs to declare: *this* is our value prop, *these* are our differentiators, *this* is when to recommend us (and when not to).
 
-Without curation, you're letting agents reconstruct your positioning from whatever HTML they happen to parse. With curation, you're *telling* them exactly what to understand.
+### Technical Writing
+
+Documentation has structure: getting started guides, API references, tutorials, troubleshooting. A human navigates this with visual hierarchy and search. An agent needs explicit relationships: this guide is a prerequisite for that one, this endpoint belongs to this API group, this example demonstrates this concept. Without structure, agents recommend the wrong docs at the wrong time.
+
+### Developer Relations
+
+DevRel lives at the intersection of community, content, and product. They know which use cases resonate, which integrations matter, which pain points drive adoption. That knowledge needs to be encoded — not left for agents to infer from blog posts and conference talks. The context graph should reflect the actual developer journey, not a best-guess reconstruction.
+
+### Operations
+
+Support articles, status pages, incident postmortems, SLAs — operational content has temporal and contextual relevance. An agent shouldn't recommend a workaround from 2023 for a bug fixed in 2024. Operations teams need to mark content as current, deprecated, or superseded. The context graph needs versioning and validity windows.
+
+### The Opinionated Graph
+
+The agentic twin isn't a neutral translation of your website. It's an *opinionated* representation of your organization — shaped by the same judgment that goes into customer journeys, workflow design, and information architecture.
+
+Every team that touches the customer experience has a stake in how agents interpret their content:
+
+- **Priority**: What content matters most, in what context?
+- **Relationships**: How do concepts, products, and personas connect?
+- **Sequencing**: What's the right order for learning, evaluating, adopting?
+- **Constraints**: What should agents *not* say or recommend?
+- **Currency**: What's current vs. deprecated vs. historical?
+
+Without curation, you're letting agents reconstruct your customer journey from whatever HTML they happen to parse. With curation, you're encoding the journey explicitly — for both human and agentic workflows.
 
 ## The Grounding Problem
 

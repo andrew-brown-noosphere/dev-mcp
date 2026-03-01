@@ -220,11 +220,17 @@ This is why JSON-LD matters more than markdown. Markdown is still natural langua
 4. Monitor agent traffic separately from human traffic
 5. Iterate based on how agents actually use the context
 
-### Tools
+### How We're Helping
 
-- **VoyantIO**: Generates context graphs and JSON-LD ontologies from messaging frameworks
-- **Noosphere**: Trust protocol, did.json, and trust.txt verification
-- **DevExp.ai**: AEO audits, llms.txt generation, and context curation
+**DevExp.ai** provides tools and tactics for agent-led growth:
+
+- **Context Graph Generation**: Turn your messaging framework into traversable JSON-LD
+- **llms.txt & llms-full.txt**: Discovery files that tell agents when to recommend you
+- **MCP Servers**: Give agents executable access to your product, not just documentation
+- **AEO Audits**: Measure how agents currently understand (and misunderstand) your product
+- **Trust Layer Integration**: did.json, trust.txt, and identity verification via [Noosphere](https://noosphere.tech)
+
+The agentic twin isn't a one-time project. It's an ongoing practice — like SEO, but for machines that actually read.
 
 ## The Bet
 

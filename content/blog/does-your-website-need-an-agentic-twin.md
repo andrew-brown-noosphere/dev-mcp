@@ -8,7 +8,7 @@ When an AI agent reads your website, it parses HTML, strips navigation, guesses 
 
 ## The Inference Problem
 
-Your website is designed for humans. It has navigation menus, hero sections, testimonials, pricing tables, footer links. A human glances at this and immediately knows what matters.
+Your website is designed for humans. Decades of trial and error, human-centered design, UX research, and simple conventions have made even complex websites predictable and quickly understood. The conventions of organizing content by personas, products, docs, API portals — these structures are comfortable to people. Navigation menus, hero sections, testimonials, pricing tables, footer links. A human glances at this and immediately knows what matters.
 
 An agent sees a wall of text with semantic ambiguity at every turn:
 

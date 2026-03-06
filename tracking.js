@@ -9,7 +9,7 @@
 
   const script = document.currentScript;
   const ORG_ID = script?.getAttribute('data-org') || 'unknown';
-  const API_URL = 'https://www.voyant.io/api/telemetry';
+  const API_URL = '/api/telemetry';
 
   let sessionId = sessionStorage.getItem('v_sid');
   let visitorId = sessionStorage.getItem('v_vid');

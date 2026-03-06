@@ -52,6 +52,30 @@ function generateFingerprint(userAgent: string, ip: string, acceptLanguage: stri
 }
 
 // Parse user agent for device info
+// IP geolocation lookup (server-side, no CORS issues)
+async function lookupGeo(ip: string): Promise<{ city?: string; region?: string; country?: string }> {
+  if (!ip || ip === 'unknown' || ip.startsWith('10.') || ip.startsWith('192.168.') || ip.startsWith('127.')) {
+    return {};
+  }
+
+  try {
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.status === 'success') {
+        return {
+          city: data.city,
+          region: data.regionName,
+          country: data.country,
+        };
+      }
+    }
+  } catch (e) {
+    console.error('Geo lookup failed:', e);
+  }
+  return {};
+}
+
 function parseUserAgent(ua: string): { device_type: string; browser: string; os: string } {
   const uaLower = ua.toLowerCase();
 
@@ -97,7 +121,7 @@ async function notifySlack(visitor: {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*New Visitor on Voyant.io* :eyes:`
+          text: `*New Visitor on DevExp.ai* :eyes:`
         }
       },
       {
@@ -261,6 +285,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .eq('visitor_id', visitorId);
     } else {
       visitorId = generateId('vis');
+
+      // Look up geo data server-side
+      const geoData = await lookupGeo(ip);
+
       await supabase.from('site_visitors').insert({
         visitor_id: visitorId,
         org_id: orgId,
@@ -269,6 +297,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         device_type: uaInfo.device_type,
         browser: uaInfo.browser,
         os: uaInfo.os,
+        geo_city: geoData.city || null,
+        geo_region: geoData.region || null,
+        geo_country: geoData.country || null,
         first_seen: new Date().toISOString(),
         last_seen: new Date().toISOString(),
       });

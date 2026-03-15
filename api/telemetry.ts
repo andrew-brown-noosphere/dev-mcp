@@ -102,8 +102,20 @@ function parseUserAgent(ua: string): { device_type: string; browser: string; os:
   return { device_type, browser, os };
 }
 
+// Map org_id to site name for Slack notifications
+function getSiteName(orgId: string): string {
+  const siteMap: Record<string, string> = {
+    'voyant_landing': 'Voyant.io',
+    'devexp': 'DevExp.ai',
+    'devmcp': 'DevExp.ai',
+    'noosphere': 'Noosphere.tech',
+  };
+  return siteMap[orgId] || orgId;
+}
+
 // Send Slack notification for new visitors
 async function notifySlack(visitor: {
+  org_id: string;
   visitor_id: string;
   ip_address: string;
   device_type: string;
@@ -115,13 +127,15 @@ async function notifySlack(visitor: {
 }) {
   if (!slackWebhookUrl) return;
 
+  const siteName = getSiteName(visitor.org_id);
+
   try {
     const blocks = [
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*New Visitor on DevExp.ai* :eyes:`
+          text: `*New Visitor on ${siteName}* :eyes:`
         }
       },
       {
@@ -306,6 +320,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Notify Slack of new visitor
       await notifySlack({
+        org_id: orgId,
         visitor_id: visitorId,
         ip_address: ip,
         device_type: uaInfo.device_type,

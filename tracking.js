@@ -1,6 +1,6 @@
 /**
  * DevExp.ai Site Telemetry - Comprehensive tracking
- * Add to pages: <script src="/tracking.js" data-org="devmcp"></script>
+ * Add to pages: <script src="/tracking.js" data-org="devexp"></script>
  */
 (function() {
   // Skip tracking for internal/API paths

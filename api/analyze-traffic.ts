@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { org_id = 'devmcp', days = 7 } = req.query;
+    const { org_id = 'devexp', days = 7 } = req.query;
     const since = new Date(Date.now() - Number(days) * 24 * 60 * 60 * 1000).toISOString();
 
     // Fetch all telemetry data

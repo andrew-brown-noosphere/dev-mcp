@@ -4,6 +4,12 @@
   "functions": {
     "api/scan.js": {
       "maxDuration": 30
+    },
+    "api/telemetry.ts": {
+      "maxDuration": 10
+    },
+    "api/analyze-traffic.ts": {
+      "maxDuration": 30
     }
   },
   "env": {

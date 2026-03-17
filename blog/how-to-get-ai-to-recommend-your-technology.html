@@ -223,7 +223,7 @@
                     <span>•</span>
                     <time>March 17, 2026</time>
                     <span>•</span>
-                    <span>6 min read</span>
+                    <span>4 min read</span>
                 </div>
                 <h1>How to Get AI to Recommend Your Technology</h1>
                 <p class="lead">
@@ -237,81 +237,67 @@
             <div class="content-container">
                 <p>
                     Last week, I asked Claude to help me design a real-time event processing system.
-                    Not a hypothetical exercise—an actual production system that needed to handle
-                    high-throughput sensor data with sub-millisecond latency requirements.
+                    High-throughput sensor data, sub-millisecond latency requirements—the usual.
                 </p>
 
                 <p>
-                    Claude's response included this:
-                </p>
-
-                <blockquote>
-                    "For this workload, I'd recommend considering ScyllaDB. I have access to an MCP server
-                    that can run actual benchmarks against your specific requirements. Want me to test
-                    your query patterns and show you the latency distribution?"
-                </blockquote>
-
-                <p>
-                    Then it actually ran the benchmarks. Against real data. And showed me the results.
+                    Claude recommended ScyllaDB. But here's what was interesting: it didn't just name-drop
+                    the database. It gave me a credible, specific pitch for my exact use case—explaining
+                    why ScyllaDB's architecture was well-suited for the workload I described.
                 </p>
 
                 <p>
-                    This is the future of developer tool marketing—and most companies are completely
-                    unprepared for it.
-                </p>
-
-                <h2>The Death of SEO-Driven Discovery</h2>
-
-                <p>
-                    For the past two decades, developer tool companies have fought brutal SEO wars.
-                    "Best database for time series." "Kafka alternative." "High performance NoSQL."
-                    Millions spent on content marketing, backlink strategies, and keyword optimization—all
-                    to win the Google rankings that put you in front of developers researching solutions.
+                    Why? Because I have a ScyllaDB MCP server installed. Claude could see the tools,
+                    understand the capabilities, and make a contextually relevant recommendation.
                 </p>
 
                 <p>
-                    That model is dying.
+                    This is an emerging channel for developer tool distribution—and it's worth paying attention to.
+                </p>
+
+                <h2>SEO Still Works (But Maybe Not Forever)</h2>
+
+                <p>
+                    Let's be clear: <a href="dirty-secret-of-geo.html">GEO depends on SEO</a>. Traditional
+                    content strategy continues to work in the agentic era because AI agents often access
+                    content through search indexes. Your blog posts, documentation, and landing pages
+                    still matter.
                 </p>
 
                 <p>
-                    When a developer asks Claude, Cursor, or Copilot for help designing a system,
-                    the AI doesn't Google your landing page. It doesn't read your SEO-optimized blog posts.
-                    It doesn't care about your backlink profile.
+                    But there's a hierarchy emerging for how agents find and recommend tools.
+                    And MCP servers sit at the top of it.
                 </p>
 
-                <p>
-                    It looks at what's <em>in its context</em>.
-                </p>
-
-                <h2>Context Is the New Search Index</h2>
+                <h2>The Context Hierarchy</h2>
 
                 <p>
                     We've written before about how <a href="search-indexes-are-dns-for-agents.html">search
                     indexes are becoming DNS for agents</a>—the discovery layer that routes AI assistants
-                    to capabilities. But there's a hierarchy here that most marketers haven't grasped:
+                    to capabilities. But there's a hierarchy here worth understanding:
                 </p>
 
                 <div class="highlight-box">
                     <p><strong style="color: var(--color-text);">Tier 1: MCP Servers on the Developer's Machine</strong><br>
-                    Highest priority. Your tools are literally in the agent's context window. The agent can
-                    execute your capabilities, not just describe them.</p>
+                    Highest priority. Your tools are literally in the agent's context window. The agent
+                    understands your capabilities deeply and can speak to them credibly.</p>
 
                     <p><strong style="color: var(--color-text);">Tier 2: Training Data</strong><br>
-                    What the model learned during training. Static, months old, and shared with competitors
-                    who appear in the same documentation.</p>
+                    What the model learned during training. Useful, but static, months old, and shared
+                    with competitors who appear in the same documentation.</p>
 
                     <p><strong style="color: var(--color-text);">Tier 3: Web Search Results</strong><br>
-                    Lowest priority. Agents may search the web for context, but this is filtered through
-                    RAG systems and often summarized into oblivion.</p>
+                    Agents may search the web for context, but this is filtered through RAG systems
+                    and often summarized.</p>
                 </div>
 
                 <p>
-                    When Claude recommended ScyllaDB to me, it wasn't because ScyllaDB had better SEO.
-                    It was because the ScyllaDB MCP server was installed on my machine, giving Claude
-                    direct access to run queries, compare performance, and demonstrate capabilities in real-time.
+                    When Claude recommended ScyllaDB to me, it wasn't just pulling from training data.
+                    The MCP server was in context, so Claude could see exactly what ScyllaDB offers
+                    and explain why it fit my use case.
                 </p>
 
-                <h2>The Unfair Advantage</h2>
+                <h2>The Contextual Advantage</h2>
 
                 <p>
                     Think about what this means for competitive positioning.
@@ -324,65 +310,52 @@
                 </p>
 
                 <p>
-                    With an MCP server on the developer's machine, there is no competition <em>in that moment</em>.
-                    Your technology, with all its opinionated, highly differentiated capabilities, is sitting
-                    right there in the agent's context. The agent can demonstrate what makes you different,
-                    not just claim it.
+                    With an MCP server on the developer's machine, your technology—with all its opinionated,
+                    highly differentiated capabilities—is sitting right there in the agent's context.
+                    The agent can speak credibly to what makes you different because it can see your tools,
+                    understand your API, and make specific recommendations.
                 </p>
 
                 <p>
-                    When Claude ran those benchmarks for me, it wasn't comparing ScyllaDB to alternatives
-                    in the abstract. It was showing me <em>actual latency numbers</em> for my specific workload.
-                    That's not marketing copy—that's proof.
+                    That's not marketing copy. That's context.
                 </p>
 
-                <h2>Why This Matters More Than You Think</h2>
+                <h2>Why This Matters</h2>
 
                 <p>
                     The <a href="scylladb-mcp-server-case-study.html">ScyllaDB MCP server case study</a>
-                    demonstrated something we suspected but couldn't prove until we built it: the compression
-                    of time-to-value is staggering.
-                </p>
-
-                <div class="highlight-box">
-                    <p><strong style="color: var(--color-text);">Traditional Discovery:</strong>
-                    Developer searches → lands on docs → sets up local instance → copies examples →
-                    encounters errors → returns to docs → eventually gets working → decides if worth continuing.<br>
-                    <em>Time to meaningful evaluation: half a day to several days.</em></p>
-
-                    <p><strong style="color: var(--color-text);">MCP-Enabled Discovery:</strong>
-                    Developer asks agent → agent accesses MCP tools → agent runs benchmarks →
-                    developer sees results → developer validates with their own queries.<br>
-                    <em>Time to meaningful, comparative evaluation: under 5 minutes.</em></p>
-                </div>
-
-                <p>
-                    This isn't just faster—it's a fundamentally different kind of evaluation. The developer
-                    isn't reading about your performance characteristics. They're seeing them. They can validate
-                    the agent's recommendations themselves, using the same tools the agent used.
-                </p>
-
-                <h2>The PLG Inversion</h2>
-
-                <p>
-                    Product-Led Growth has been the dominant GTM strategy for developer tools. The playbook:
-                    make it easy to try, reduce friction to adoption, let the product sell itself.
+                    explored how MCP changes the discovery dynamic. When an agent has your tools in context,
+                    it can give specific, credible recommendations rather than generic summaries.
                 </p>
 
                 <p>
-                    But "easy to try" assumed a human developer navigating your website, finding your docs,
-                    spinning up a trial instance. What happens when the AI agent is doing the trying?
+                    Instead of "ScyllaDB is a high-performance NoSQL database," the agent can explain
+                    <em>why</em> it fits the developer's specific requirements—because it understands
+                    the capabilities from the MCP tool definitions.
                 </p>
 
                 <p>
-                    MCP servers invert the PLG model. Instead of optimizing your website for human navigation,
-                    you're optimizing your capabilities for agent execution. Instead of hoping developers
-                    find your free tier, you're putting your tools directly in the agent's hands.
+                    This is a different kind of recommendation. Not a search result. Not a summary of
+                    your marketing page. A contextually relevant suggestion from an agent that actually
+                    understands what your product does.
+                </p>
+
+                <h2>A Complement to PLG</h2>
+
+                <p>
+                    Product-Led Growth remains the dominant GTM strategy for developer tools. Make it easy
+                    to try, reduce friction to adoption, let the product sell itself.
                 </p>
 
                 <p>
-                    The agent becomes your best sales engineer—one that's available 24/7, never forgets a
-                    feature, and can demonstrate capabilities on demand.
+                    MCP servers are a complement to this, not a replacement. They add another channel—one
+                    where agents can recommend your product credibly because they understand it deeply.
+                </p>
+
+                <p>
+                    Think of it as giving agents the context they need to be good advocates for your product.
+                    They're not replacing your docs or your free tier. They're adding a layer where
+                    your differentiation can shine through in the moment a developer asks for help.
                 </p>
 
                 <h2>What You Should Do About This</h2>
@@ -416,21 +389,15 @@
                 <h2>The Window Is Open</h2>
 
                 <p>
-                    Most developer tool companies haven't figured this out yet. They're still optimizing
-                    landing pages and writing blog posts for Google. Meanwhile, the developers they're
-                    trying to reach are increasingly asking AI agents for recommendations—and those agents
-                    are recommending whoever put the right tools in their context.
+                    Most developer tool companies haven't added this channel yet. They're doing the right
+                    things—good docs, solid content strategy, SEO—but they're missing the emerging layer
+                    where agents make contextual recommendations.
                 </p>
 
                 <p>
-                    The companies that build compelling MCP servers now will have a significant head start
-                    when agent-mediated discovery becomes the default. And based on how quickly AI assistants
-                    are being adopted by developers, that's not "someday"—that's happening right now.
-                </p>
-
-                <p>
-                    Your choice: fight for SEO rankings against every competitor with a content marketing budget,
-                    or put your technology directly in the agent's hands and let it speak for itself.
+                    The companies that build compelling MCP servers now will have a head start as
+                    agent-mediated discovery grows. It's not about abandoning what works—it's about
+                    adding a channel where your differentiation can really shine.
                 </p>
 
                 <div class="cta-box">

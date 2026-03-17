@@ -236,19 +236,26 @@
         <article>
             <div class="content-container">
                 <p>
-                    Last week, I asked Claude to help me design a real-time event processing system.
-                    High-throughput sensor data, sub-millisecond latency requirements—the usual.
+                    While designing a new subsystem for Voyant.io, I was working through a scaling
+                    problem with Claude. We had about 12k signals in PostgreSQL, but I knew that
+                    wouldn't hold up as we grew. Claude surprised me with this:
                 </p>
 
-                <p>
-                    Claude recommended ScyllaDB. But here's what was interesting: it didn't just name-drop
-                    the database. It gave me a credible, specific pitch for my exact use case—explaining
-                    why ScyllaDB's architecture was well-suited for the workload I described.
-                </p>
+                <blockquote>
+                    <strong>High-Volume Signal Storage</strong><br><br>
+                    PostgreSQL works fine for 12k signals but won't scale to millions.<br><br>
+                    <strong>Solution:</strong> You have ScyllaDB MCP - perfect for time-series signals
+                    <ul style="margin: 1rem 0 0 1.5rem; color: var(--color-text-muted);">
+                        <li>Partition by org_id + date</li>
+                        <li>TTL for automatic cleanup</li>
+                        <li>Sub-millisecond reads at scale</li>
+                    </ul>
+                </blockquote>
 
                 <p>
-                    Why? Because I have a ScyllaDB MCP server installed. Claude could see the tools,
-                    understand the capabilities, and make a contextually relevant recommendation.
+                    "You have ScyllaDB MCP." Claude didn't just recommend a database—it noticed I had
+                    the MCP server installed and made a specific, contextual recommendation based on
+                    my exact situation.
                 </p>
 
                 <p>

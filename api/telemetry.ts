@@ -52,28 +52,13 @@ function generateFingerprint(userAgent: string, ip: string, acceptLanguage: stri
 }
 
 // Parse user agent for device info
-// IP geolocation lookup (server-side, no CORS issues)
-async function lookupGeo(ip: string): Promise<{ city?: string; region?: string; country?: string }> {
-  if (!ip || ip === 'unknown' || ip.startsWith('10.') || ip.startsWith('192.168.') || ip.startsWith('127.')) {
-    return {};
-  }
-
-  try {
-    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city`);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.status === 'success') {
-        return {
-          city: data.city,
-          region: data.regionName,
-          country: data.country,
-        };
-      }
-    }
-  } catch (e) {
-    console.error('Geo lookup failed:', e);
-  }
-  return {};
+// IP geolocation from Vercel headers (free, no API call, no rate limits)
+function getGeoFromHeaders(req: any): { city?: string; region?: string; country?: string } {
+  return {
+    city: req.headers['x-vercel-ip-city'] as string || undefined,
+    region: req.headers['x-vercel-ip-country-region'] as string || undefined,
+    country: req.headers['x-vercel-ip-country'] as string || undefined,
+  };
 }
 
 function parseUserAgent(ua: string): { device_type: string; browser: string; os: string } {
@@ -300,8 +285,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } else {
       visitorId = generateId('vis');
 
-      // Look up geo data server-side
-      const geoData = await lookupGeo(ip);
+      // Get geo data from Vercel headers (free, instant, no rate limits)
+      const geoData = getGeoFromHeaders(req);
 
       await supabase.from('site_visitors').insert({
         visitor_id: visitorId,

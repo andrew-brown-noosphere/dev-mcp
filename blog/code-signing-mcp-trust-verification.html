@@ -48,6 +48,40 @@
         h3 { font-size: 1.15rem; font-weight: 600; margin: 32px 0 16px; color: var(--color-text); }
         p { margin-bottom: 24px; color: var(--color-text-muted); }
         .lead { font-size: 1.1rem; font-style: italic; color: var(--color-text-subtle); }
+        /* Author byline */
+        .post-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .post-author-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-border);
+        }
+
+        .post-author-info {
+            text-align: left;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            color: var(--color-text);
+            font-size: 1rem;
+        }
+
+        .post-author-title {
+            font-size: 0.875rem;
+            color: var(--color-text-subtle);
+        }
+
 
         ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--color-text-muted); }
         li { margin-bottom: 8px; }

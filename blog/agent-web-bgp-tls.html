@@ -145,6 +145,40 @@
             h1 { font-size: 1.75rem; }
             body { font-size: 16px; }
         }
+    
+        /* Author byline */
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .post-author-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-border);
+        }
+
+        .post-author-info {
+            text-align: left;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            color: var(--color-text);
+            font-size: 1rem;
+        }
+
+        .post-author-title {
+            font-size: 0.875rem;
+            color: var(--color-text-subtle);
+        }
+
     </style>
     <script src="/tracking.js" data-org="devexp"></script>
 </head>
@@ -163,6 +197,13 @@
         <div class="container">
             <div class="meta">February 28, 2026 · Follow-on to <a href="/blog/search-indexes-are-dns-for-agents.html">Search Indexes Are DNS for Agents</a></div>
             <h1>Why the Agent Web Will Look More Like BGP + TLS Than Sitemaps + Robots.txt</h1>
+            <div class="post-author">
+                <img src="/images/authors/andrew.jpg" alt="Andrew Brown" class="post-author-image">
+                <div class="post-author-info">
+                    <div class="post-author-name">Andrew Brown</div>
+                    <div class="post-author-title">Founder, DevExp.ai</div>
+                </div>
+            </div>
         </div>
     </header>
 
